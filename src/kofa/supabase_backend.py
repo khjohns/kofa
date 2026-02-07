@@ -360,20 +360,29 @@ class KofaSupabaseBackend:
         log = _log if verbose else lambda msg: logger.info(msg)
 
         try:
-            # Find cases needing scraping
-            query = self.client.table("kofa_cases").select("sak_nr, page_url")
-            if refresh_pending:
-                # Re-scrape previously scraped cases that have no decision yet
-                query = query.not_.is_("scraped_at", "null").is_("avgjoerelse", "null")
-                log("Mode: refresh pending cases (scraped but no decision yet)")
-            elif not force:
-                query = query.is_("scraped_at", "null")
-            query = query.order("sak_nr", desc=True)
-            if limit:
-                query = query.limit(limit)
+            # Find cases needing scraping (paginate to avoid PostgREST 1000-row limit)
+            cases = []
+            page_size = 1000
+            offset = 0
+            while True:
+                query = self.client.table("kofa_cases").select("sak_nr, page_url")
+                if refresh_pending:
+                    query = query.not_.is_("scraped_at", "null").is_("avgjoerelse", "null")
+                elif not force:
+                    query = query.is_("scraped_at", "null")
+                query = query.order("sak_nr", desc=True).range(offset, offset + page_size - 1)
+                result = query.execute()
+                batch = result.data or []
+                cases.extend(batch)
+                if len(batch) < page_size:
+                    break
+                offset += page_size
 
-            result = query.execute()
-            cases = result.data or []
+            if refresh_pending:
+                log("Mode: refresh pending cases (scraped but no decision yet)")
+
+            if limit:
+                cases = cases[:limit]
             total = len(cases)
 
             if not cases:
