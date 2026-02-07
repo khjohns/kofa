@@ -96,10 +96,67 @@ class KofaService:
 
         return "\n".join(lines)
 
+    def finn_praksis(
+        self,
+        lov: str,
+        paragraf: str | None = None,
+        limit: int = 20,
+    ) -> str:
+        """Find KOFA cases citing a specific law section."""
+        from kofa.reference_extractor import LAW_ALIASES
+
+        # Normalize law name
+        canonical = LAW_ALIASES.get(lov.lower().strip())
+        if not canonical:
+            # Try as-is (user may already pass canonical name)
+            canonical = lov.lower().strip()
+
+        results = self.backend.find_by_law_reference(canonical, paragraf, limit)
+
+        if not results:
+            section_label = f" {paragraf}" if paragraf else ""
+            return f"Ingen KOFA-saker funnet som refererer til {lov} {section_label}".strip()
+
+        section_label = f" {paragraf}" if paragraf else ""
+        lines = [f"## KOFA-praksis: {lov} {section_label}\n".strip()]
+        lines.append(f"Fant {len(results)} saker:\n")
+
+        for r in results:
+            sak_nr = r.get("sak_nr", "?")
+            law_section = r.get("law_section", "")
+            case_info = r.get("kofa_cases", {}) or {}
+            innklaget = case_info.get("innklaget", "")
+            avgjoerelse = case_info.get("avgjoerelse", "")
+            saken_gjelder = case_info.get("saken_gjelder", "")
+            avsluttet = case_info.get("avsluttet", "")
+
+            parts = [f"### {sak_nr}"]
+            if law_section:
+                parts.append(f"**Referert paragraf:** {law_section}")
+            if innklaget:
+                parts.append(f"**Innklaget:** {innklaget}")
+            if avgjoerelse:
+                parts.append(f"**Avgjoerelse:** {avgjoerelse}")
+            if saken_gjelder:
+                parts.append(f"*{saken_gjelder}*")
+            if avsluttet:
+                parts.append(f"Avsluttet: {avsluttet}")
+
+            context = r.get("context", "")
+            if context:
+                snippet = context[:200] + "..." if len(context) > 200 else context
+                parts.append(f"> {snippet}")
+
+            parts.append("")
+            lines.append("\n".join(parts))
+
+        return "\n".join(lines)
+
     def sync(
         self,
         scrape: bool = False,
         pdf: bool = False,
+        references: bool = False,
         force: bool = False,
         limit: int | None = None,
         max_time: int = 0,
@@ -111,8 +168,8 @@ class KofaService:
         """Run sync operation."""
         lines = ["## Synkronisering\n"]
 
-        # WP API sync (skip if only doing PDF extraction)
-        if not pdf:
+        # WP API sync (skip if only doing PDF or reference extraction)
+        if not pdf and not references:
             wp_stats = self.backend.sync_from_wp_api(force=force, verbose=verbose)
             lines.append(f"### WordPress API")
             lines.append(f"- Hentet **{wp_stats['upserted']}** saker fra {wp_stats['pages']} sider")
@@ -157,6 +214,23 @@ class KofaService:
                 lines.append(f"- {pdf_stats['skipped']} hoppet over")
             if pdf_stats.get("stopped_reason"):
                 lines.append(f"- Stoppet: {pdf_stats['stopped_reason']}")
+
+        # Reference extraction (optional)
+        if references:
+            ref_stats = self.backend.sync_references(
+                limit=limit,
+                verbose=verbose,
+                force=force,
+            )
+            lines.append(f"\n### Referanse-ekstraksjon")
+            lines.append(
+                f"- Prosessert **{ref_stats['cases_processed']}** saker "
+                f"({ref_stats['law_refs']} lovhenvisninger, {ref_stats['case_refs']} sakskryssreferanser)"
+            )
+            if ref_stats["errors"]:
+                lines.append(f"- {ref_stats['errors']} feil")
+            if ref_stats.get("stopped_reason"):
+                lines.append(f"- Stoppet: {ref_stats['stopped_reason']}")
 
         return "\n".join(lines)
 

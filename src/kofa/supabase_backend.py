@@ -651,7 +651,9 @@ class KofaSupabaseBackend:
 
                         if not result.paragraphs:
                             logger.warning(f"{sak_nr}: No paragraphs extracted")
-                            # Still mark as extracted to avoid retrying
+                            # Store raw text even without paragraphs (older prose format)
+                            if result.raw_text:
+                                self._store_decision_text(result)
                             self._mark_pdf_extracted(sak_nr)
                             stats["skipped"] += 1
                             consecutive_errors = 0
@@ -744,19 +746,30 @@ class KofaSupabaseBackend:
             "sak_nr", decision.sak_nr
         ).execute()
 
-        # Insert paragraphs in batches
+        # Build rows from paragraphs (use sequential index as paragraph_number
+        # since PDF numbering can restart per section and produce duplicates)
         rows = []
-        for p in decision.paragraphs:
+        for i, p in enumerate(decision.paragraphs):
             row = {
                 "sak_nr": decision.sak_nr,
-                "paragraph_number": p.number,
+                "paragraph_number": i + 1,
                 "section": p.section,
                 "text": p.text,
             }
             # Store raw full text on first row only (for FTS)
-            if p.number == decision.paragraphs[0].number:
+            if i == 0:
                 row["raw_full_text"] = decision.raw_text
             rows.append(row)
+
+        # If no paragraphs but we have raw text, store a single row
+        if not rows and decision.raw_text:
+            rows.append({
+                "sak_nr": decision.sak_nr,
+                "paragraph_number": 0,
+                "section": "raw",
+                "text": "",
+                "raw_full_text": decision.raw_text,
+            })
 
         # Batch insert (PostgREST handles up to ~1000 rows)
         if rows:
@@ -802,6 +815,351 @@ class KofaSupabaseBackend:
             ).execute()
         except Exception as e:
             logger.warning(f"Could not update sync cursor for {source}: {e}")
+
+    # =========================================================================
+    # Sync: Reference extraction
+    # =========================================================================
+
+    def sync_references(
+        self,
+        limit: int | None = None,
+        verbose: bool = False,
+        force: bool = False,
+    ) -> dict:
+        """
+        Extract law and case references from decision text (2020+ cases).
+
+        Reads paragraphs from kofa_decision_text, runs regex extraction,
+        deduplicates, resolves lovdata_doc_id, and stores results.
+
+        Args:
+            limit: Max number of cases to process (None = all pending)
+            verbose: Print progress to stdout
+            force: Re-extract references for all cases
+
+        Returns:
+            dict with extraction stats
+        """
+        from kofa.reference_extractor import ReferenceExtractor
+
+        global _shutdown_requested
+        _shutdown_requested = False
+
+        prev_sigint = signal.getsignal(signal.SIGINT)
+        prev_sigterm = signal.getsignal(signal.SIGTERM)
+        signal.signal(signal.SIGINT, _request_shutdown)
+        signal.signal(signal.SIGTERM, _request_shutdown)
+
+        stats = {
+            "cases_processed": 0,
+            "law_refs": 0,
+            "case_refs": 0,
+            "errors": 0,
+            "stopped_reason": None,
+        }
+        start_time = time.time()
+        log = _log if verbose else lambda msg: logger.info(msg)
+
+        try:
+            # Find 2020+ cases with extracted text
+            cases = self._find_cases_needing_references(force)
+
+            if limit:
+                cases = cases[:limit]
+            total = len(cases)
+
+            if not cases:
+                log("No cases need reference extraction")
+                return stats
+
+            log(f"Found {total} cases for reference extraction")
+
+            # Build lovdata doc ID lookup cache
+            doc_id_map = self._build_lovdata_doc_id_map()
+            log(f"Loaded {len(doc_id_map)} lovdata document mappings")
+
+            extractor = ReferenceExtractor()
+
+            for sak_nr in cases:
+                if _shutdown_requested:
+                    stats["stopped_reason"] = "interrupted"
+                    log("Shutdown requested...")
+                    break
+
+                try:
+                    # Get all paragraphs for this case
+                    paragraphs = self._get_decision_paragraphs(sak_nr)
+                    if not paragraphs:
+                        continue
+
+                    all_law_refs = []
+                    all_case_refs = []
+
+                    for para in paragraphs:
+                        text = para.get("text", "")
+                        if not text:
+                            continue
+                        para_num = para.get("paragraph_number")
+                        law_refs, case_refs = extractor.extract_all(text)
+
+                        # Attach paragraph number and context
+                        for ref in law_refs:
+                            all_law_refs.append({
+                                "sak_nr": sak_nr,
+                                "paragraph_number": para_num,
+                                "reference_type": ref.reference_type,
+                                "law_name": ref.law_name,
+                                "law_section": ref.section,
+                                "raw_text": ref.raw_text,
+                                "lovdata_doc_id": doc_id_map.get(ref.law_name),
+                                "context": text[:300],
+                            })
+
+                        for ref in case_refs:
+                            all_case_refs.append({
+                                "from_sak_nr": sak_nr,
+                                "to_sak_nr": ref.sak_nr,
+                                "paragraph_number": para_num,
+                                "context": text[:300],
+                            })
+
+                    # Deduplicate within case (same law+section across paragraphs)
+                    all_law_refs = self._deduplicate_law_refs(all_law_refs)
+                    all_case_refs = self._deduplicate_case_refs(all_case_refs)
+
+                    # Store
+                    self._store_references(sak_nr, all_law_refs, all_case_refs, force)
+
+                    stats["cases_processed"] += 1
+                    stats["law_refs"] += len(all_law_refs)
+                    stats["case_refs"] += len(all_case_refs)
+
+                except Exception as e:
+                    logger.warning(f"Error extracting refs from {sak_nr}: {e}")
+                    stats["errors"] += 1
+
+                # Progress
+                processed = stats["cases_processed"] + stats["errors"]
+                if processed > 0 and processed % 50 == 0:
+                    elapsed_min = (time.time() - start_time) / 60
+                    rate = processed / elapsed_min if elapsed_min > 0 else 0
+                    log(
+                        f"Progress: {processed}/{total} "
+                        f"({stats['law_refs']} law refs, {stats['case_refs']} case refs) "
+                        f"| {rate:.0f}/min"
+                    )
+
+        finally:
+            signal.signal(signal.SIGINT, prev_sigint)
+            signal.signal(signal.SIGTERM, prev_sigterm)
+
+        elapsed = time.time() - start_time
+        status_label = "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        log(f"{status_label} in {elapsed:.1f}s")
+        log(
+            f"Processed: {stats['cases_processed']}, "
+            f"Law refs: {stats['law_refs']}, Case refs: {stats['case_refs']}, "
+            f"Errors: {stats['errors']}"
+        )
+
+        if stats["cases_processed"] > 0:
+            self._update_sync_cursor(
+                "references",
+                datetime.now(timezone.utc).isoformat(),
+                stats["cases_processed"],
+            )
+
+        return stats
+
+    def _find_cases_needing_references(self, force: bool) -> list[str]:
+        """Find 2020+ cases with decision text that need reference extraction."""
+        # Get all cases with decision text from 2020+
+        cases_with_text: list[str] = []
+        page_size = 1000
+        offset = 0
+        while True:
+            result = (
+                self.client.table("kofa_decision_text")
+                .select("sak_nr")
+                .gte("sak_nr", "2020/")
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            batch = result.data or []
+            cases_with_text.extend(r["sak_nr"] for r in batch)
+            if len(batch) < page_size:
+                break
+            offset += page_size
+
+        # Deduplicate (multiple paragraphs per case)
+        unique_cases = sorted(set(cases_with_text))
+
+        if force:
+            return unique_cases
+
+        # Exclude cases that already have references extracted
+        already_extracted: set[str] = set()
+        offset = 0
+        while True:
+            result = (
+                self.client.table("kofa_law_references")
+                .select("sak_nr")
+                .limit(page_size)
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            batch = result.data or []
+            already_extracted.update(r["sak_nr"] for r in batch)
+            if len(batch) < page_size:
+                break
+            offset += page_size
+
+        # Also check case_references
+        offset = 0
+        while True:
+            result = (
+                self.client.table("kofa_case_references")
+                .select("from_sak_nr")
+                .limit(page_size)
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            batch = result.data or []
+            already_extracted.update(r["from_sak_nr"] for r in batch)
+            if len(batch) < page_size:
+                break
+            offset += page_size
+
+        return [c for c in unique_cases if c not in already_extracted]
+
+    def _get_decision_paragraphs(self, sak_nr: str) -> list[dict]:
+        """Get all decision text paragraphs for a case."""
+        result = (
+            self.client.table("kofa_decision_text")
+            .select("paragraph_number, section, text")
+            .eq("sak_nr", sak_nr)
+            .order("paragraph_number")
+            .execute()
+        )
+        return result.data or []
+
+    def _build_lovdata_doc_id_map(self) -> dict[str, str]:
+        """Build mapping from canonical law names to lovdata_documents.dok_id."""
+        # Known dok_ids for the most common laws in KOFA decisions
+        KNOWN_DOK_IDS = {
+            "anskaffelsesforskriften": "forskrift/2016-08-12-974",
+            "anskaffelsesloven": "lov/2016-06-17-73",
+            "klagenemndsforskriften": "forskrift/2002-11-15-1288",
+            "offentleglova": "lov/2006-05-19-16",
+        }
+
+        # Start with known IDs (these are stable Lovdata identifiers)
+        name_to_doc_id: dict[str, str] = dict(KNOWN_DOK_IDS)
+
+        # Discover additional laws by querying short_title
+        try:
+            for search_term, canonical in [
+                ("Konkurranseloven%", "konkurranseloven"),
+                ("Forvaltningsloven%", "forvaltningsloven"),
+            ]:
+                result = (
+                    self.client.table("lovdata_documents")
+                    .select("dok_id")
+                    .ilike("short_title", search_term)
+                    .eq("doc_type", "lov")
+                    .order("date_in_force", desc=True)
+                    .limit(1)
+                    .execute()
+                )
+                if result.data:
+                    name_to_doc_id.setdefault(canonical, result.data[0]["dok_id"])
+        except Exception as e:
+            logger.warning(f"Could not discover additional lovdata documents: {e}")
+
+        return name_to_doc_id
+
+    @staticmethod
+    def _deduplicate_law_refs(refs: list[dict]) -> list[dict]:
+        """Deduplicate law references within a case (keep first occurrence)."""
+        seen: set[tuple[str, str]] = set()
+        unique = []
+        for ref in refs:
+            key = (ref["law_name"], ref["law_section"])
+            if key not in seen:
+                seen.add(key)
+                unique.append(ref)
+        return unique
+
+    @staticmethod
+    def _deduplicate_case_refs(refs: list[dict]) -> list[dict]:
+        """Deduplicate case references within a case."""
+        seen: set[str] = set()
+        unique = []
+        for ref in refs:
+            if ref["to_sak_nr"] not in seen:
+                seen.add(ref["to_sak_nr"])
+                unique.append(ref)
+        return unique
+
+    def _store_references(
+        self,
+        sak_nr: str,
+        law_refs: list[dict],
+        case_refs: list[dict],
+        force: bool,
+    ) -> None:
+        """Store extracted references in database."""
+        if force:
+            # Delete existing references for this case
+            self.client.table("kofa_law_references").delete().eq(
+                "sak_nr", sak_nr
+            ).execute()
+            self.client.table("kofa_case_references").delete().eq(
+                "from_sak_nr", sak_nr
+            ).execute()
+
+        if law_refs:
+            self.client.table("kofa_law_references").insert(law_refs).execute()
+        if case_refs:
+            self.client.table("kofa_case_references").insert(case_refs).execute()
+
+    # =========================================================================
+    # Query: Find cases by law reference
+    # =========================================================================
+
+    @with_retry()
+    def find_by_law_reference(
+        self,
+        law_name: str,
+        section: str | None = None,
+        limit: int = 20,
+    ) -> list[dict]:
+        """
+        Find KOFA cases citing a specific law section.
+
+        Args:
+            law_name: Canonical law name (e.g. "anskaffelsesforskriften")
+            section: Section number (e.g. "2-4") or None for all sections
+            limit: Max results
+
+        Returns:
+            List of dicts with case info and reference context
+        """
+        query = (
+            self.client.table("kofa_law_references")
+            .select(
+                "sak_nr, law_section, raw_text, context, "
+                "kofa_cases(innklaget, avgjoerelse, saken_gjelder, avsluttet)"
+            )
+            .eq("law_name", law_name)
+        )
+
+        if section:
+            query = query.eq("law_section", section)
+
+        query = query.order("sak_nr", desc=True).limit(limit)
+        result = query.execute()
+        return result.data or []
 
     # =========================================================================
     # Status

@@ -36,6 +36,7 @@ Tilgang til ~5000 avgjørelser fra KOFA (Klagenemnda for offentlige anskaffelser
 | `sok(query, limit?)` | Fulltekstsøk i KOFA-saker |
 | `hent_sak(sak_nr)` | Hent en spesifikk sak med alle detaljer |
 | `siste_saker(limit?, sakstype?, avgjoerelse?, innklaget?)` | Siste avgjørelser med filtre |
+| `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf |
 | `statistikk(aar?, gruppering?)` | Aggregert statistikk |
 
 ## Søketips
@@ -51,6 +52,13 @@ Tilgang til ~5000 avgjørelser fra KOFA (Klagenemnda for offentlige anskaffelser
 - **sakstype**: "Rådgivende sak", "Gebyrsak", "Overtredelsesgebyr"
 - **avgjoerelse**: "Brudd på regelverket", "Ikke brudd", "Avvist"
 - **innklaget**: Navn på innklaget virksomhet (delvis match)
+
+## Finn praksis (lovhenvisninger)
+
+- `finn_praksis(lov="anskaffelsesforskriften", paragraf="2-4")` → saker som refererer til foa § 2-4
+- `finn_praksis(lov="anskaffelsesloven", paragraf="4")` → saker som refererer til loa § 4
+- `finn_praksis(lov="forvaltningsloven")` → alle saker som refererer til forvaltningsloven
+- Dekker saker fra 2020+
 
 ## Statistikk
 
@@ -158,6 +166,37 @@ class MCPServer:
                         },
                     },
                     "required": [],
+                },
+            },
+            {
+                "name": "finn_praksis",
+                "title": "Finn KOFA-praksis etter lovhenvisning",
+                "description": (
+                    "Finn KOFA-saker som refererer til en bestemt lov eller forskrift. "
+                    "Dekker saker fra 2020+. "
+                    "Eks: finn_praksis(lov='anskaffelsesforskriften', paragraf='2-4')"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "lov": {
+                            "type": "string",
+                            "description": (
+                                "Lovnavn: 'anskaffelsesloven', 'anskaffelsesforskriften', "
+                                "'forvaltningsloven', 'konkurranseloven', etc."
+                            ),
+                        },
+                        "paragraf": {
+                            "type": "string",
+                            "description": "Paragrafnummer (f.eks. '2-4', '12'). Utelat for alle paragrafer.",
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maks antall resultater (standard: 20)",
+                            "default": 20,
+                        },
+                    },
+                    "required": ["lov"],
                 },
             },
             {
@@ -306,6 +345,12 @@ class MCPServer:
                     sakstype=arguments.get("sakstype"),
                     avgjoerelse=arguments.get("avgjoerelse"),
                     innklaget=arguments.get("innklaget"),
+                )
+            elif tool_name == "finn_praksis":
+                content = self.service.finn_praksis(
+                    lov=arguments.get("lov", ""),
+                    paragraf=arguments.get("paragraf"),
+                    limit=arguments.get("limit", 20),
                 )
             elif tool_name == "statistikk":
                 content = self.service.statistics(
