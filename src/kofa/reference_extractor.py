@@ -4,8 +4,7 @@ Reference extraction from KOFA decision text.
 Extracts law references (anskaffelsesloven, anskaffelsesforskriften, etc.)
 and KOFA cross-references (sak 2019/491) from structured decision paragraphs.
 
-Scope: Designed for 2020+ cases using current anskaffelsesloven (2016)
-and anskaffelsesforskriften (2016).
+Supports both old (pre-2017) and new (2017+) regulations via version detection.
 """
 
 from __future__ import annotations
@@ -167,6 +166,93 @@ _CASE_REF_RE = re.compile(
     r"(\d{4}/\d+)",
     re.IGNORECASE,
 )
+
+# =============================================================================
+# Regulation version detection
+# =============================================================================
+
+# Old regulations (pre-2017)
+_OLD_REGULATION_PATTERNS = [
+    re.compile(r"lov om offentlige anskaffelser av 16\.?\s*juli 1999", re.IGNORECASE),
+    re.compile(r"forskrift om offentlige anskaffelser av 7\.?\s*april 2006", re.IGNORECASE),
+    re.compile(r"1999\s*nr\.?\s*69"),       # LOA 1999 nr. 69
+    re.compile(r"2006\s*nr\.?\s*402"),       # FOA 2006 nr. 402
+    re.compile(r"den tidligere anskaffelsesloven", re.IGNORECASE),
+    re.compile(r"den tidligere anskaffelsesforskriften", re.IGNORECASE),
+    re.compile(r"dagjeldende\s+(forskrift|lov)\s+om\s+offentlige", re.IGNORECASE),
+]
+
+# New regulations (2017+)
+_NEW_REGULATION_PATTERNS = [
+    re.compile(r"lov om offentlige anskaffelser av 17\.?\s*juni 2016", re.IGNORECASE),
+    re.compile(r"forskrift om offentlige anskaffelser av 12\.?\s*august 2016", re.IGNORECASE),
+    re.compile(r"2016\s*nr\.?\s*73"),        # LOA 2016 nr. 73
+    re.compile(r"2016\s*nr\.?\s*974"),       # FOA 2016 nr. 974
+]
+
+
+def detect_regulation_version(paragraphs: list[str], sak_nr: str = "") -> str:
+    """
+    Detect whether a KOFA case applies old or new procurement regulations.
+
+    Strategy:
+    1. Search for explicit old regulation references → "old"
+    2. Search for explicit new regulation references → "new"
+    3. If both found → "new" (KOFA discusses old as context, applies new)
+    4. No match + sak_nr starts with 2016/ or earlier → "old"
+    5. No match otherwise → "new" (reasonable default from 2017+)
+
+    Args:
+        paragraphs: List of decision text paragraphs
+        sak_nr: Case number (e.g. "2016/104") for fallback heuristic
+
+    Returns:
+        "old" or "new"
+    """
+    has_old = False
+    has_new = False
+
+    for text in paragraphs:
+        if not has_old:
+            for pattern in _OLD_REGULATION_PATTERNS:
+                if pattern.search(text):
+                    has_old = True
+                    break
+        if not has_new:
+            for pattern in _NEW_REGULATION_PATTERNS:
+                if pattern.search(text):
+                    has_new = True
+                    break
+        if has_old and has_new:
+            break
+
+    # Decision logic
+    if has_new:
+        return "new"       # Explicit new, or both (new takes precedence)
+    if has_old:
+        # "den tidligere" / "dagjeldende" in cases from 2018+ is historical
+        # context, not old-law application. Only trust old-only signals for
+        # the transition years 2016-2017.
+        if sak_nr:
+            try:
+                year = int(sak_nr.split("/")[0])
+                if year >= 2018:
+                    return "new"
+            except (ValueError, IndexError):
+                pass
+        return "old"       # Only old patterns found (transition-era case)
+
+    # Fallback: use case number year
+    if sak_nr:
+        try:
+            year = int(sak_nr.split("/")[0])
+            if year <= 2016:
+                return "old"
+        except (ValueError, IndexError):
+            pass
+
+    return "new"
+
 
 # =============================================================================
 # Extractor class

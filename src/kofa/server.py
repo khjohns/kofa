@@ -39,7 +39,7 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | `sok(query, limit?)` | Fulltekstsøk i KOFA-saker |
 | `hent_sak(sak_nr)` | Hent en spesifikk sak med alle detaljer |
 | `siste_saker(limit?, sakstype?, avgjoerelse?, innklaget?)` | Siste avgjørelser med filtre |
-| `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf |
+| `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf (2017+) |
 | `relaterte_saker(sak_nr)` | Kryssreferanser: saker denne saken siterer og saker som siterer denne |
 | `mest_siterte(limit?)` | De mest siterte/prinsipielle KOFA-sakene |
 | `statistikk(aar?, gruppering?)` | Aggregert statistikk |
@@ -105,19 +105,20 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 
 ## finn_praksis — lovhenvisninger
 
-Basert på 3200+ lovhenvisninger ekstrahert fra avgjørelsestekst (2020+).
+Basert på lovhenvisninger ekstrahert fra avgjørelsestekst (2017+).
+Hvert resultat er merket med reguleringsversjon: ny (2016-forskriften) eller gammel (pre-2017).
 
 **Støttede lovnavn og aliaser:**
 
-| Lov | Aliaser | Antall refs |
-|-----|---------|-------------|
-| anskaffelsesforskriften | `forskriften`, `foa` | ~620 |
-| anskaffelsesloven | `loven`, `loa` | ~620 |
-| klagenemndsforskriften | | ~1670 |
-| forsyningsforskriften | | ~180 |
-| forvaltningsloven | | ~100 |
-| offentleglova | `offentlighetsloven` | ~30 |
-| konkurranseloven | | ~2 |
+| Lov | Aliaser |
+|-----|---------|
+| anskaffelsesforskriften | `forskriften`, `foa` |
+| anskaffelsesloven | `loven`, `loa` |
+| klagenemndsforskriften | |
+| forsyningsforskriften | |
+| forvaltningsloven | |
+| offentleglova | `offentlighetsloven` |
+| konkurranseloven | |
 
 **Eksempler:**
 - `finn_praksis(lov="anskaffelsesforskriften", paragraf="8-3")` → kvalifikasjonskrav
@@ -125,7 +126,8 @@ Basert på 3200+ lovhenvisninger ekstrahert fra avgjørelsestekst (2020+).
 - `finn_praksis(lov="loa", paragraf="4")` → grunnleggende prinsipper
 - `finn_praksis(lov="forvaltningsloven")` → alle saker som nevner forvaltningsloven
 
-**Merk:** Dekker kun saker fra 2020+ (gjeldende anskaffelseslov/forskrift fra 2016).
+**Merk:** Saker merket «gammel forskrift» bruker anskaffelsesloven 1999 / forskriften 2006.
+Paragrafnumre i gammel og ny forskrift kan ha ulik betydning.
 
 ## Statistikk
 
@@ -147,7 +149,7 @@ KOFA MCP og Paragraf MCP utfyller hverandre:
 
 ## Begrensninger
 
-- **Kun metadata for eldre saker:** Saker før 2020 har kun parter/tema/utfall, ikke lovhenvisninger
+- **Kun metadata for eldre saker:** Saker før 2017 har kun parter/tema/utfall, ikke lovhenvisninger
 - **Ikke rettsavgjørelser:** KOFA er forvaltningsorgan, ikke domstol — avgjørelsene er ikke bindende rettspraksis
 - **Sammendrag, ikke fulltekst:** `sok` og `siste_saker` returnerer sammendrag. Fulltekst er tilgjengelig via PDF-lenke i `hent_sak`
 """
@@ -252,7 +254,7 @@ class MCPServer:
                 "title": "Finn KOFA-praksis etter lovhenvisning",
                 "description": (
                     "Finn KOFA-saker som refererer til en bestemt lov eller forskrift. "
-                    "Dekker saker fra 2020+. "
+                    "Dekker saker fra 2017+. "
                     "Eks: finn_praksis(lov='anskaffelsesforskriften', paragraf='2-4')"
                 ),
                 "inputSchema": {

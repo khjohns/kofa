@@ -130,7 +130,10 @@ class KofaService:
             saken_gjelder = case_info.get("saken_gjelder", "")
             avsluttet = case_info.get("avsluttet", "")
 
-            parts = [f"### {sak_nr}"]
+            reg_version = r.get("regulation_version", "")
+            version_label = " (gammel forskrift)" if reg_version == "old" else ""
+
+            parts = [f"### {sak_nr}{version_label}"]
             if law_section:
                 parts.append(f"**Referert paragraf:** {law_section}")
             if innklaget:

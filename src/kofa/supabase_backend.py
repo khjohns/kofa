@@ -41,6 +41,12 @@ WP_API_BASE = "https://www.klagenemndssekretariatet.no/wp-json/wp/v2"
 # HTML tag stripping pattern
 HTML_TAG_RE = re.compile(r"<[^>]+>")
 
+# Old (pre-2017) regulation dok_ids for lovdata cross-reference
+_OLD_DOK_IDS: dict[str, str] = {
+    "anskaffelsesforskriften": "forskrift/2006-04-07-402",
+    "anskaffelsesloven": "lov/1999-07-16-69",
+}
+
 
 def _strip_html(text: str) -> str:
     """Strip HTML tags and decode entities."""
@@ -827,10 +833,11 @@ class KofaSupabaseBackend:
         force: bool = False,
     ) -> dict:
         """
-        Extract law and case references from decision text (2020+ cases).
+        Extract law and case references from decision text (2017+ cases).
 
         Reads paragraphs from kofa_decision_text, runs regex extraction,
-        deduplicates, resolves lovdata_doc_id, and stores results.
+        deduplicates, detects regulation version (old/new), resolves
+        lovdata_doc_id, and stores results.
 
         Args:
             limit: Max number of cases to process (None = all pending)
@@ -840,7 +847,7 @@ class KofaSupabaseBackend:
         Returns:
             dict with extraction stats
         """
-        from kofa.reference_extractor import ReferenceExtractor
+        from kofa.reference_extractor import ReferenceExtractor, detect_regulation_version
 
         global _shutdown_requested
         _shutdown_requested = False
@@ -895,12 +902,22 @@ class KofaSupabaseBackend:
                     all_law_refs = []
                     all_case_refs = []
 
+                    # Detect regulation version for this case
+                    para_texts = [p.get("text", "") for p in paragraphs if p.get("text")]
+                    reg_version = detect_regulation_version(para_texts, sak_nr)
+
                     for para in paragraphs:
                         text = para.get("text", "")
                         if not text:
                             continue
                         para_num = para.get("paragraph_number")
                         law_refs, case_refs = extractor.extract_all(text)
+
+                        # Resolve lovdata_doc_id based on regulation version
+                        def _resolve_doc_id(ref_law_name: str) -> str | None:
+                            if reg_version == "old" and ref_law_name in _OLD_DOK_IDS:
+                                return _OLD_DOK_IDS[ref_law_name]
+                            return doc_id_map.get(ref_law_name)
 
                         # Attach paragraph number and context
                         for ref in law_refs:
@@ -911,7 +928,8 @@ class KofaSupabaseBackend:
                                 "law_name": ref.law_name,
                                 "law_section": ref.section,
                                 "raw_text": ref.raw_text,
-                                "lovdata_doc_id": doc_id_map.get(ref.law_name),
+                                "lovdata_doc_id": _resolve_doc_id(ref.law_name),
+                                "regulation_version": reg_version,
                                 "context": text[:300],
                             })
 
@@ -972,8 +990,8 @@ class KofaSupabaseBackend:
         return stats
 
     def _find_cases_needing_references(self, force: bool) -> list[str]:
-        """Find 2020+ cases with decision text that need reference extraction."""
-        # Get all cases with decision text from 2020+
+        """Find 2017+ cases with decision text that need reference extraction."""
+        # Get all cases with decision text from 2017+
         cases_with_text: list[str] = []
         page_size = 1000
         offset = 0
@@ -981,7 +999,7 @@ class KofaSupabaseBackend:
             result = (
                 self.client.table("kofa_decision_text")
                 .select("sak_nr")
-                .gte("sak_nr", "2020/")
+                .gte("sak_nr", "2017/")
                 .range(offset, offset + page_size - 1)
                 .execute()
             )
@@ -1044,8 +1062,12 @@ class KofaSupabaseBackend:
         return result.data or []
 
     def _build_lovdata_doc_id_map(self) -> dict[str, str]:
-        """Build mapping from canonical law names to lovdata_documents.dok_id."""
-        # Known dok_ids for the most common laws in KOFA decisions
+        """Build mapping from canonical law names to lovdata_documents.dok_id.
+
+        Returns dok_ids for the current (new) regulations.
+        Old regulation dok_ids are handled separately via _OLD_DOK_IDS.
+        """
+        # Known dok_ids for current (2016+) regulations
         KNOWN_DOK_IDS = {
             "anskaffelsesforskriften": "forskrift/2016-08-12-974",
             "anskaffelsesloven": "lov/2016-06-17-73",
@@ -1148,7 +1170,7 @@ class KofaSupabaseBackend:
         query = (
             self.client.table("kofa_law_references")
             .select(
-                "sak_nr, law_section, raw_text, context, "
+                "sak_nr, law_section, raw_text, context, regulation_version, "
                 "kofa_cases(innklaget, avgjoerelse, saken_gjelder, avsluttet)"
             )
             .eq("law_name", law_name)
