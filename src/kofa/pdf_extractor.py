@@ -36,6 +36,7 @@ SECTION_KEYWORDS = {
         "klagenemnda si vurdering",
         "vurderinga til klagenemnda",
         "nemndas vurdering",
+        "sekretariatets vurdering",
     ],
     "konklusjon": ["konklusjon"],
 }
