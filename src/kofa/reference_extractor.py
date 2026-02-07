@@ -167,7 +167,12 @@ def _clean_eu_case_name(name: str) -> str:
     s = re.sub(r"\s+", " ", s).strip()
     # Strip trailing connector words (e.g. "Finn Frogne og" → "Finn Frogne")
     s = _TRAILING_CONNECTOR_RE.sub("", s)
-    return s.strip()
+    s = s.strip()
+    # Discard single-character "names" — typically the appeal suffix "P"
+    # from case IDs like "C-677/15P" that got split by the regex
+    if len(s) <= 1:
+        return ""
+    return s
 
 
 # =============================================================================
