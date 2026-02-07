@@ -99,6 +99,7 @@ class KofaService:
     def sync(
         self,
         scrape: bool = False,
+        pdf: bool = False,
         force: bool = False,
         limit: int | None = None,
         max_time: int = 0,
@@ -110,12 +111,13 @@ class KofaService:
         """Run sync operation."""
         lines = ["## Synkronisering\n"]
 
-        # WP API sync
-        wp_stats = self.backend.sync_from_wp_api(force=force, verbose=verbose)
-        lines.append(f"### WordPress API")
-        lines.append(f"- Hentet **{wp_stats['upserted']}** saker fra {wp_stats['pages']} sider")
-        if wp_stats["errors"]:
-            lines.append(f"- {wp_stats['errors']} feil")
+        # WP API sync (skip if only doing PDF extraction)
+        if not pdf:
+            wp_stats = self.backend.sync_from_wp_api(force=force, verbose=verbose)
+            lines.append(f"### WordPress API")
+            lines.append(f"- Hentet **{wp_stats['upserted']}** saker fra {wp_stats['pages']} sider")
+            if wp_stats["errors"]:
+                lines.append(f"- {wp_stats['errors']} feil")
 
         # HTML scraping (optional)
         if scrape:
@@ -136,6 +138,25 @@ class KofaService:
                 lines.append(f"- {html_stats['skipped']} hoppet over")
             if html_stats.get("stopped_reason"):
                 lines.append(f"- Stoppet: {html_stats['stopped_reason']}")
+
+        # PDF text extraction (optional)
+        if pdf:
+            pdf_stats = self.backend.sync_pdf_text(
+                limit=limit,
+                max_time=max_time,
+                delay=delay,
+                max_errors=max_errors,
+                verbose=verbose,
+                force=force,
+            )
+            lines.append(f"\n### PDF-ekstraksjon")
+            lines.append(f"- Ekstrahert **{pdf_stats['extracted']}** avgjørelser ({pdf_stats['total_paragraphs']} avsnitt)")
+            if pdf_stats["errors"]:
+                lines.append(f"- {pdf_stats['errors']} feil")
+            if pdf_stats["skipped"]:
+                lines.append(f"- {pdf_stats['skipped']} hoppet over")
+            if pdf_stats.get("stopped_reason"):
+                lines.append(f"- Stoppet: {pdf_stats['stopped_reason']}")
 
         return "\n".join(lines)
 

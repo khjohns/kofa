@@ -64,6 +64,7 @@ def cmd_sync(args):
     service = KofaService()
     result = service.sync(
         scrape=args.scrape,
+        pdf=args.pdf,
         force=args.force,
         limit=args.limit,
         max_time=args.max_time,
@@ -102,6 +103,7 @@ def main():
     # sync
     sync_parser = subparsers.add_parser("sync", help="Sync data from KOFA")
     sync_parser.add_argument("--scrape", action="store_true", help="Also scrape HTML metadata")
+    sync_parser.add_argument("--pdf", action="store_true", help="Extract text from decision PDFs")
     sync_parser.add_argument("--force", "-f", action="store_true", help="Force full re-sync")
     sync_parser.add_argument("--limit", type=int, default=None, help="Max cases to scrape")
     sync_parser.add_argument("--max-time", type=int, default=0, help="Stop after N minutes (0=unlimited)")

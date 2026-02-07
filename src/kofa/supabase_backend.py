@@ -539,6 +539,236 @@ class KofaSupabaseBackend:
         return update
 
     # =========================================================================
+    # Sync: PDF text extraction
+    # =========================================================================
+
+    def sync_pdf_text(
+        self,
+        limit: int | None = None,
+        max_time: int = 0,
+        delay: float = 0.5,
+        max_errors: int = 20,
+        verbose: bool = False,
+        force: bool = False,
+    ) -> dict:
+        """
+        Download PDFs and extract structured decision text.
+
+        Stores numbered paragraphs in kofa_decision_text table.
+        Tracks extraction status via `pdf_extracted_at` column on kofa_cases.
+
+        Args:
+            limit: Max number of PDFs to process (None = all pending)
+            max_time: Stop after N minutes (0 = unlimited)
+            delay: Seconds between downloads (be polite)
+            max_errors: Stop after N consecutive errors
+            verbose: Print detailed progress to stdout
+            force: Re-extract all PDFs, even previously extracted ones
+
+        Returns:
+            dict with extraction stats
+        """
+        from kofa.pdf_extractor import PdfExtractor
+
+        global _shutdown_requested
+        _shutdown_requested = False
+
+        prev_sigint = signal.getsignal(signal.SIGINT)
+        prev_sigterm = signal.getsignal(signal.SIGTERM)
+        signal.signal(signal.SIGINT, _request_shutdown)
+        signal.signal(signal.SIGTERM, _request_shutdown)
+
+        stats = {
+            "extracted": 0,
+            "errors": 0,
+            "skipped": 0,
+            "total_paragraphs": 0,
+            "stopped_reason": None,
+        }
+        start_time = time.time()
+        consecutive_errors = 0
+        log = _log if verbose else lambda msg: logger.info(msg)
+
+        try:
+            # Find cases with PDF URLs that haven't been extracted
+            cases = []
+            page_size = 1000
+            offset = 0
+            while True:
+                query = (
+                    self.client.table("kofa_cases")
+                    .select("sak_nr, pdf_url")
+                    .not_.is_("pdf_url", "null")
+                )
+                if not force:
+                    query = query.is_("pdf_extracted_at", "null")
+                query = query.order("sak_nr", desc=True).range(offset, offset + page_size - 1)
+                result = query.execute()
+                batch = result.data or []
+                cases.extend(batch)
+                if len(batch) < page_size:
+                    break
+                offset += page_size
+
+            if limit:
+                cases = cases[:limit]
+            total = len(cases)
+
+            if not cases:
+                log("No PDFs need extraction")
+                return stats
+
+            log(f"Found {total} PDFs to extract (delay={delay}s, max_time={max_time or 'unlimited'}min)")
+
+            extractor = PdfExtractor()
+
+            for i, case in enumerate(cases):
+                if _shutdown_requested:
+                    stats["stopped_reason"] = "interrupted"
+                    log("Shutdown requested...")
+                    break
+
+                if max_time > 0:
+                    elapsed_min = (time.time() - start_time) / 60
+                    if elapsed_min >= max_time:
+                        stats["stopped_reason"] = "time_limit"
+                        log(f"Time limit reached ({max_time} min)")
+                        break
+
+                if consecutive_errors >= max_errors:
+                    stats["stopped_reason"] = "too_many_errors"
+                    log(f"Stopped: {max_errors} consecutive errors")
+                    break
+
+                sak_nr = case["sak_nr"]
+                pdf_url = case["pdf_url"]
+
+                # Extract with retry
+                success = False
+                for attempt in range(3):
+                    try:
+                        result = extractor.extract_from_url(pdf_url, sak_nr)
+
+                        if not result.paragraphs:
+                            logger.warning(f"{sak_nr}: No paragraphs extracted")
+                            # Still mark as extracted to avoid retrying
+                            self._mark_pdf_extracted(sak_nr)
+                            stats["skipped"] += 1
+                            consecutive_errors = 0
+                            success = True
+                            break
+
+                        self._store_decision_text(result)
+                        self._mark_pdf_extracted(sak_nr)
+                        stats["extracted"] += 1
+                        stats["total_paragraphs"] += result.paragraph_count
+                        consecutive_errors = 0
+                        success = True
+                        break
+                    except httpx.TimeoutException:
+                        if attempt < 2:
+                            wait = 2 ** (attempt + 1)
+                            logger.warning(f"Timeout downloading {sak_nr}, retry in {wait}s")
+                            time.sleep(wait)
+                        else:
+                            logger.warning(f"Timeout downloading {sak_nr} after 3 attempts")
+                            stats["errors"] += 1
+                            consecutive_errors += 1
+                    except httpx.HTTPStatusError as e:
+                        status_code = e.response.status_code
+                        if status_code == 404:
+                            self._mark_pdf_extracted(sak_nr)
+                            stats["skipped"] += 1
+                            consecutive_errors = 0
+                            success = True
+                            break
+                        elif status_code in (429, 503):
+                            wait = min(30, 5 * (attempt + 1))
+                            logger.warning(f"HTTP {status_code} for {sak_nr}, waiting {wait}s")
+                            time.sleep(wait)
+                        else:
+                            logger.warning(f"HTTP {status_code} downloading {sak_nr}")
+                            stats["errors"] += 1
+                            consecutive_errors += 1
+                            break
+                    except Exception as e:
+                        logger.warning(f"Error extracting {sak_nr}: {e}")
+                        stats["errors"] += 1
+                        consecutive_errors += 1
+                        break
+
+                # Progress
+                processed = stats["extracted"] + stats["errors"] + stats["skipped"]
+                if processed > 0 and processed % 25 == 0:
+                    elapsed_min = (time.time() - start_time) / 60
+                    rate = processed / elapsed_min if elapsed_min > 0 else 0
+                    remaining = total - processed
+                    eta_min = remaining / rate if rate > 0 else 0
+                    log(
+                        f"Progress: {processed}/{total} "
+                        f"({stats['extracted']} ok, {stats['errors']} err, {stats['skipped']} skip, "
+                        f"{stats['total_paragraphs']} paras) "
+                        f"| {rate:.0f}/min, ETA {eta_min:.0f} min"
+                    )
+
+                if success and delay > 0:
+                    time.sleep(delay)
+
+        finally:
+            signal.signal(signal.SIGINT, prev_sigint)
+            signal.signal(signal.SIGTERM, prev_sigterm)
+
+        # Final summary
+        elapsed = time.time() - start_time
+        processed = stats["extracted"] + stats["errors"] + stats["skipped"]
+        rate = processed / (elapsed / 60) if elapsed > 0 else 0
+
+        status_label = "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        log(f"{status_label} in {elapsed / 60:.1f} min")
+        log(f"Extracted: {stats['extracted']}, Errors: {stats['errors']}, Skipped: {stats['skipped']}")
+        log(f"Total paragraphs: {stats['total_paragraphs']}, Rate: {rate:.0f}/min avg")
+
+        if stats["extracted"] > 0:
+            self._update_sync_cursor(
+                "pdf_extract",
+                datetime.now(timezone.utc).isoformat(),
+                stats["extracted"],
+            )
+
+        return stats
+
+    def _store_decision_text(self, decision) -> None:
+        """Store extracted decision text in kofa_decision_text table."""
+        # Delete existing rows for this case (in case of re-extraction)
+        self.client.table("kofa_decision_text").delete().eq(
+            "sak_nr", decision.sak_nr
+        ).execute()
+
+        # Insert paragraphs in batches
+        rows = []
+        for p in decision.paragraphs:
+            row = {
+                "sak_nr": decision.sak_nr,
+                "paragraph_number": p.number,
+                "section": p.section,
+                "text": p.text,
+            }
+            # Store raw full text on first row only (for FTS)
+            if p.number == decision.paragraphs[0].number:
+                row["raw_full_text"] = decision.raw_text
+            rows.append(row)
+
+        # Batch insert (PostgREST handles up to ~1000 rows)
+        if rows:
+            self.client.table("kofa_decision_text").insert(rows).execute()
+
+    def _mark_pdf_extracted(self, sak_nr: str) -> None:
+        """Mark a case as having had its PDF extracted."""
+        self.client.table("kofa_cases").update({
+            "pdf_extracted_at": datetime.now(timezone.utc).isoformat(),
+        }).eq("sak_nr", sak_nr).execute()
+
+    # =========================================================================
     # Sync metadata (cursors)
     # =========================================================================
 
