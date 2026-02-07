@@ -70,6 +70,7 @@ def cmd_sync(args):
         delay=args.delay,
         max_errors=args.max_errors,
         verbose=True,
+        refresh_pending=args.refresh_pending,
     )
     print(result)
 
@@ -106,6 +107,7 @@ def main():
     sync_parser.add_argument("--max-time", type=int, default=0, help="Stop after N minutes (0=unlimited)")
     sync_parser.add_argument("--delay", type=float, default=1.0, help="Delay between scrape requests (seconds)")
     sync_parser.add_argument("--max-errors", type=int, default=20, help="Stop after N consecutive errors")
+    sync_parser.add_argument("--refresh-pending", action="store_true", help="Re-scrape cases with no decision yet")
 
     # status
     subparsers.add_parser("status", help="Show sync status")

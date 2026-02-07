@@ -105,6 +105,7 @@ class KofaService:
         delay: float = 1.0,
         max_errors: int = 20,
         verbose: bool = False,
+        refresh_pending: bool = False,
     ) -> str:
         """Run sync operation."""
         lines = ["## Synkronisering\n"]
@@ -125,6 +126,7 @@ class KofaService:
                 max_errors=max_errors,
                 verbose=verbose,
                 force=force,
+                refresh_pending=refresh_pending,
             )
             lines.append(f"\n### HTML-skraping")
             lines.append(f"- Beriket **{html_stats['scraped']}** saker med metadata")

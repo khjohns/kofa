@@ -318,6 +318,7 @@ class KofaSupabaseBackend:
         max_errors: int = 20,
         verbose: bool = False,
         force: bool = False,
+        refresh_pending: bool = False,
     ) -> dict:
         """
         Scrape HTML metadata for cases not yet scraped.
@@ -333,6 +334,8 @@ class KofaSupabaseBackend:
             max_errors: Stop after N consecutive errors (server might be down)
             force: Re-scrape all cases, even previously scraped ones
             verbose: Print detailed progress to stdout
+            refresh_pending: Re-scrape cases that were scraped but have no
+                decision yet (avgjoerelse IS NULL AND scraped_at IS NOT NULL)
 
         Returns:
             dict with scrape stats
@@ -359,7 +362,11 @@ class KofaSupabaseBackend:
         try:
             # Find cases needing scraping
             query = self.client.table("kofa_cases").select("sak_nr, page_url")
-            if not force:
+            if refresh_pending:
+                # Re-scrape previously scraped cases that have no decision yet
+                query = query.not_.is_("scraped_at", "null").is_("avgjoerelse", "null")
+                log("Mode: refresh pending cases (scraped but no decision yet)")
+            elif not force:
                 query = query.is_("scraped_at", "null")
             query = query.order("sak_nr", desc=True)
             if limit:
