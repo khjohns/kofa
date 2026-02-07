@@ -96,12 +96,21 @@ class KofaService:
 
         return "\n".join(lines)
 
-    def sync(self, scrape: bool = False, force: bool = False, limit: int | None = None) -> str:
+    def sync(
+        self,
+        scrape: bool = False,
+        force: bool = False,
+        limit: int | None = None,
+        max_time: int = 0,
+        delay: float = 1.0,
+        max_errors: int = 20,
+        verbose: bool = False,
+    ) -> str:
         """Run sync operation."""
         lines = ["## Synkronisering\n"]
 
         # WP API sync
-        wp_stats = self.backend.sync_from_wp_api(force=force)
+        wp_stats = self.backend.sync_from_wp_api(force=force, verbose=verbose)
         lines.append(f"### WordPress API")
         lines.append(f"- Hentet **{wp_stats['upserted']}** saker fra {wp_stats['pages']} sider")
         if wp_stats["errors"]:
@@ -109,13 +118,22 @@ class KofaService:
 
         # HTML scraping (optional)
         if scrape:
-            html_stats = self.backend.sync_html_metadata(limit=limit)
+            html_stats = self.backend.sync_html_metadata(
+                limit=limit,
+                max_time=max_time,
+                delay=delay,
+                max_errors=max_errors,
+                verbose=verbose,
+                force=force,
+            )
             lines.append(f"\n### HTML-skraping")
             lines.append(f"- Beriket **{html_stats['scraped']}** saker med metadata")
             if html_stats["errors"]:
                 lines.append(f"- {html_stats['errors']} feil")
             if html_stats["skipped"]:
                 lines.append(f"- {html_stats['skipped']} hoppet over")
+            if html_stats.get("stopped_reason"):
+                lines.append(f"- Stoppet: {html_stats['stopped_reason']}")
 
         return "\n".join(lines)
 

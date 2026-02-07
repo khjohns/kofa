@@ -2,13 +2,13 @@
 KOFA CLI - MCP server for Norwegian public procurement decisions.
 
 Usage:
-    kofa serve              # stdio MCP server
-    kofa serve --http       # HTTP MCP server (Flask)
-    kofa serve --http --port 8000
-    kofa sync               # Sync from KOFA WordPress API
-    kofa sync --scrape      # Also scrape HTML metadata
-    kofa sync --force       # Force full re-sync
-    kofa status             # Show sync status
+    kofa serve                  # stdio MCP server
+    kofa serve --http           # HTTP MCP server (Flask)
+    kofa sync                   # Sync from KOFA WordPress API
+    kofa sync --scrape          # Also scrape HTML metadata
+    kofa sync --scrape --limit 100 --max-time 30   # Scrape 100 cases, max 30 min
+    kofa sync --force           # Force full re-sync
+    kofa status                 # Show sync status
 """
 
 import argparse
@@ -62,11 +62,14 @@ def cmd_sync(args):
     from kofa.service import KofaService
 
     service = KofaService()
-    print("Syncing from KOFA...")
     result = service.sync(
         scrape=args.scrape,
         force=args.force,
         limit=args.limit,
+        max_time=args.max_time,
+        delay=args.delay,
+        max_errors=args.max_errors,
+        verbose=True,
     )
     print(result)
 
@@ -100,6 +103,9 @@ def main():
     sync_parser.add_argument("--scrape", action="store_true", help="Also scrape HTML metadata")
     sync_parser.add_argument("--force", "-f", action="store_true", help="Force full re-sync")
     sync_parser.add_argument("--limit", type=int, default=None, help="Max cases to scrape")
+    sync_parser.add_argument("--max-time", type=int, default=0, help="Stop after N minutes (0=unlimited)")
+    sync_parser.add_argument("--delay", type=float, default=1.0, help="Delay between scrape requests (seconds)")
+    sync_parser.add_argument("--max-errors", type=int, default=20, help="Stop after N consecutive errors")
 
     # status
     subparsers.add_parser("status", help="Show sync status")
