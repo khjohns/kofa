@@ -42,6 +42,8 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf (2017+) |
 | `relaterte_saker(sak_nr)` | Kryssreferanser: saker denne saken siterer og saker som siterer denne |
 | `mest_siterte(limit?)` | De mest siterte/prinsipielle KOFA-sakene |
+| `eu_praksis(eu_case_id, limit?)` | Finn KOFA-saker som refererer til en bestemt EU-dom |
+| `mest_siterte_eu(limit?)` | De mest siterte EU-dommene i KOFA |
 | `statistikk(aar?, gruppering?)` | Aggregert statistikk |
 
 ## Velg riktig verktøy
@@ -55,6 +57,8 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | Spør om en bestemt kommune/virksomhet | `sok("Bergen kommune")` eller `siste_saker(innklaget="Bergen")` | Navnesøk |
 | Leser en sak og vil se kontekst | `relaterte_saker("2023/1099")` | Finner saker den bygger på + saker som bygger på den |
 | Vil se prinsipielle avgjørelser | `mest_siterte(limit=10)` | De viktigste/mest refererte sakene |
+| Spør om en EU-dom | `eu_praksis(eu_case_id="C-19/00")` | KOFA-saker som anvender EU-dommen |
+| Vil se viktigste EU-dommer | `mest_siterte_eu(limit=10)` | De mest refererte EU-dommene i KOFA |
 
 **Kjerneforskjell mellom `sok` og `finn_praksis`:**
 - `sok` søker i sakens metadata (parter, tema, sammendrag)
@@ -320,6 +324,48 @@ class MCPServer:
                 },
             },
             {
+                "name": "eu_praksis",
+                "title": "Finn EU-domstolspraksis i KOFA",
+                "description": (
+                    "Finn KOFA-saker som refererer til en bestemt EU-domstolsavgjørelse. "
+                    "Eks: eu_praksis(eu_case_id='C-19/00') for SIAC Construction"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "eu_case_id": {
+                            "type": "string",
+                            "description": "EU-saksnummer (f.eks. 'C-19/00', 'C-368/10')",
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maks antall resultater (standard: 20)",
+                            "default": 20,
+                        },
+                    },
+                    "required": ["eu_case_id"],
+                },
+            },
+            {
+                "name": "mest_siterte_eu",
+                "title": "Mest siterte EU-dommer i KOFA",
+                "description": (
+                    "Finn de mest siterte EU-domstolsavgjørelsene i KOFA-saker. "
+                    "Viser hvilke EU-dommer KOFA oftest refererer til."
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maks antall resultater (standard: 20)",
+                            "default": 20,
+                        },
+                    },
+                    "required": [],
+                },
+            },
+            {
                 "name": "statistikk",
                 "title": "KOFA-statistikk",
                 "description": (
@@ -478,6 +524,15 @@ class MCPServer:
                 )
             elif tool_name == "mest_siterte":
                 content = self.service.most_cited(
+                    limit=arguments.get("limit", 20),
+                )
+            elif tool_name == "eu_praksis":
+                content = self.service.eu_praksis(
+                    eu_case_id=arguments.get("eu_case_id", ""),
+                    limit=arguments.get("limit", 20),
+                )
+            elif tool_name == "mest_siterte_eu":
+                content = self.service.mest_siterte_eu(
                     limit=arguments.get("limit", 20),
                 )
             elif tool_name == "statistikk":

@@ -37,6 +37,16 @@ class CaseReference:
     position: int
 
 
+@dataclass
+class EUCaseReference:
+    """A reference to an EU Court of Justice case."""
+
+    case_id: str           # e.g. "C-19/00"
+    case_name: str         # e.g. "SIAC Construction" (may be empty)
+    raw_text: str
+    position: int
+
+
 # =============================================================================
 # Law name normalization
 # =============================================================================
@@ -165,6 +175,21 @@ _CASE_REF_RE = re.compile(
     r"(?:klagenemndas?\s+)?(?:sak|KOFA)\s+"
     r"(\d{4}/\d+)",
     re.IGNORECASE,
+)
+
+# Pattern 4: EU Court of Justice case references
+# Matches: "C-19/00 SIAC Construction", "C-368/10 (Max Havelaar)", "C-213/13"
+# Name follows either in parentheses or as capitalized words with connectors
+_EU_CASE_RE = re.compile(
+    r"(C-\d+/\d+)"                                          # case number
+    r"(?:"
+    r"\s+\(([^)]+)\)"                                        # name in parens: (Max Havelaar)
+    r"|"
+    r"\s+((?:[A-ZÆØÅ][\wæøåÆØÅ\x27\u2019\u00B4-]*"         # first capitalized word
+    r"(?:\s+(?:[A-ZÆØÅ][\wæøåÆØÅ\x27\u2019\u00B4-]*"       # more capitalized words
+    r"|mot|v\.|dell|della|del|di|und|gegen|et|og))*"         # or connectors
+    r"))(?=[\s,.\)\];:]|avsnitt|premiss|$)"                  # boundary
+    r")?",
 )
 
 # =============================================================================
@@ -371,8 +396,33 @@ class ReferenceExtractor:
 
         return refs
 
+    def extract_eu_references(self, text: str) -> list[EUCaseReference]:
+        """Extract EU Court of Justice case references from text."""
+        refs: list[EUCaseReference] = []
+        seen: set[str] = set()
+
+        for m in _EU_CASE_RE.finditer(text):
+            case_id = m.group(1)
+            if case_id in seen:
+                continue
+            seen.add(case_id)
+            # Name is in group 2 (parens) or group 3 (direct)
+            case_name = (m.group(2) or m.group(3) or "").strip()
+            refs.append(EUCaseReference(
+                case_id=case_id,
+                case_name=case_name,
+                raw_text=m.group(0).strip(),
+                position=m.start(),
+            ))
+
+        return refs
+
     def extract_all(
         self, text: str
-    ) -> tuple[list[LawReference], list[CaseReference]]:
+    ) -> tuple[list[LawReference], list[CaseReference], list[EUCaseReference]]:
         """Extract all references from text."""
-        return self.extract_law_references(text), self.extract_case_references(text)
+        return (
+            self.extract_law_references(text),
+            self.extract_case_references(text),
+            self.extract_eu_references(text),
+        )

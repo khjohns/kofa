@@ -861,6 +861,7 @@ class KofaSupabaseBackend:
             "cases_processed": 0,
             "law_refs": 0,
             "case_refs": 0,
+            "eu_refs": 0,
             "errors": 0,
             "stopped_reason": None,
         }
@@ -901,6 +902,7 @@ class KofaSupabaseBackend:
 
                     all_law_refs = []
                     all_case_refs = []
+                    all_eu_refs = []
 
                     # Detect regulation version for this case
                     para_texts = [p.get("text", "") for p in paragraphs if p.get("text")]
@@ -911,7 +913,7 @@ class KofaSupabaseBackend:
                         if not text:
                             continue
                         para_num = para.get("paragraph_number")
-                        law_refs, case_refs = extractor.extract_all(text)
+                        law_refs, case_refs, eu_refs = extractor.extract_all(text)
 
                         # Resolve lovdata_doc_id based on regulation version
                         def _resolve_doc_id(ref_law_name: str) -> str | None:
@@ -941,16 +943,27 @@ class KofaSupabaseBackend:
                                 "context": text[:300],
                             })
 
-                    # Deduplicate within case (same law+section across paragraphs)
+                        for ref in eu_refs:
+                            all_eu_refs.append({
+                                "sak_nr": sak_nr,
+                                "eu_case_id": ref.case_id,
+                                "eu_case_name": ref.case_name or None,
+                                "paragraph_number": para_num,
+                                "context": text[:300],
+                            })
+
+                    # Deduplicate within case
                     all_law_refs = self._deduplicate_law_refs(all_law_refs)
                     all_case_refs = self._deduplicate_case_refs(all_case_refs)
+                    all_eu_refs = self._deduplicate_eu_refs(all_eu_refs)
 
                     # Store
-                    self._store_references(sak_nr, all_law_refs, all_case_refs, force)
+                    self._store_references(sak_nr, all_law_refs, all_case_refs, force, all_eu_refs)
 
                     stats["cases_processed"] += 1
                     stats["law_refs"] += len(all_law_refs)
                     stats["case_refs"] += len(all_case_refs)
+                    stats["eu_refs"] += len(all_eu_refs)
 
                 except Exception as e:
                     logger.warning(f"Error extracting refs from {sak_nr}: {e}")
@@ -963,7 +976,7 @@ class KofaSupabaseBackend:
                     rate = processed / elapsed_min if elapsed_min > 0 else 0
                     log(
                         f"Progress: {processed}/{total} "
-                        f"({stats['law_refs']} law refs, {stats['case_refs']} case refs) "
+                        f"({stats['law_refs']} law, {stats['case_refs']} case, {stats['eu_refs']} EU refs) "
                         f"| {rate:.0f}/min"
                     )
 
@@ -977,7 +990,7 @@ class KofaSupabaseBackend:
         log(
             f"Processed: {stats['cases_processed']}, "
             f"Law refs: {stats['law_refs']}, Case refs: {stats['case_refs']}, "
-            f"Errors: {stats['errors']}"
+            f"EU refs: {stats['eu_refs']}, Errors: {stats['errors']}"
         )
 
         if stats["cases_processed"] > 0:
@@ -1123,12 +1136,28 @@ class KofaSupabaseBackend:
                 unique.append(ref)
         return unique
 
+    @staticmethod
+    def _deduplicate_eu_refs(refs: list[dict]) -> list[dict]:
+        """Deduplicate EU case references within a case, keeping longest name."""
+        by_id: dict[str, dict] = {}
+        for ref in refs:
+            case_id = ref["eu_case_id"]
+            if case_id not in by_id:
+                by_id[case_id] = ref
+            else:
+                new_name = ref.get("eu_case_name") or ""
+                old_name = by_id[case_id].get("eu_case_name") or ""
+                if len(new_name) > len(old_name):
+                    by_id[case_id]["eu_case_name"] = ref["eu_case_name"]
+        return list(by_id.values())
+
     def _store_references(
         self,
         sak_nr: str,
         law_refs: list[dict],
         case_refs: list[dict],
         force: bool,
+        eu_refs: list[dict] | None = None,
     ) -> None:
         """Store extracted references in database."""
         if force:
@@ -1139,11 +1168,16 @@ class KofaSupabaseBackend:
             self.client.table("kofa_case_references").delete().eq(
                 "from_sak_nr", sak_nr
             ).execute()
+            self.client.table("kofa_eu_references").delete().eq(
+                "sak_nr", sak_nr
+            ).execute()
 
         if law_refs:
             self.client.table("kofa_law_references").insert(law_refs).execute()
         if case_refs:
             self.client.table("kofa_case_references").insert(case_refs).execute()
+        if eu_refs:
+            self.client.table("kofa_eu_references").insert(eu_refs).execute()
 
     # =========================================================================
     # Query: Find cases by law reference
@@ -1253,6 +1287,35 @@ class KofaSupabaseBackend:
         """
         result = self.client.rpc(
             "kofa_most_cited",
+            {"max_results": limit},
+        ).execute()
+        return result.data or []
+
+    # =========================================================================
+    # Query: EU case references
+    # =========================================================================
+
+    @with_retry()
+    def find_by_eu_case(self, eu_case_id: str, limit: int = 20) -> list[dict]:
+        """Find KOFA cases citing a specific EU Court case."""
+        result = (
+            self.client.table("kofa_eu_references")
+            .select(
+                "sak_nr, eu_case_id, eu_case_name, context, "
+                "kofa_cases(innklaget, avgjoerelse, saken_gjelder, avsluttet)"
+            )
+            .eq("eu_case_id", eu_case_id)
+            .order("sak_nr", desc=True)
+            .limit(limit)
+            .execute()
+        )
+        return result.data or []
+
+    @with_retry()
+    def most_cited_eu_cases(self, limit: int = 20) -> list[dict]:
+        """Find the most frequently cited EU Court cases in KOFA decisions."""
+        result = self.client.rpc(
+            "kofa_most_cited_eu",
             {"max_results": limit},
         ).execute()
         return result.data or []

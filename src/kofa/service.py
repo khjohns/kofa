@@ -213,6 +213,68 @@ class KofaService:
 
         return "\n".join(lines)
 
+    def eu_praksis(self, eu_case_id: str, limit: int = 20) -> str:
+        """Find KOFA cases citing a specific EU Court case."""
+        results = self.backend.find_by_eu_case(eu_case_id, limit)
+
+        if not results:
+            return f"Ingen KOFA-saker funnet som refererer til EU-sak {eu_case_id}."
+
+        # Get case name from first result that has one
+        eu_name = ""
+        for r in results:
+            if r.get("eu_case_name"):
+                eu_name = f" {r['eu_case_name']}"
+                break
+
+        lines = [f"## EU-domstolspraksis i KOFA: {eu_case_id}{eu_name}\n"]
+        lines.append(f"Fant {len(results)} KOFA-saker som refererer til denne EU-dommen:\n")
+
+        for r in results:
+            sak_nr = r.get("sak_nr", "?")
+            case_info = r.get("kofa_cases", {}) or {}
+            innklaget = case_info.get("innklaget", "")
+            avgjoerelse = case_info.get("avgjoerelse", "")
+            saken_gjelder = case_info.get("saken_gjelder", "")
+
+            parts = [f"### {sak_nr}"]
+            if innklaget:
+                parts.append(f"**Innklaget:** {innklaget}")
+            if avgjoerelse:
+                parts.append(f"**Avgjoerelse:** {avgjoerelse}")
+            if saken_gjelder:
+                parts.append(f"*{saken_gjelder}*")
+
+            context = r.get("context", "")
+            if context:
+                snippet = context[:200] + "..." if len(context) > 200 else context
+                parts.append(f"> {snippet}")
+
+            parts.append("")
+            lines.append("\n".join(parts))
+
+        return "\n".join(lines)
+
+    def mest_siterte_eu(self, limit: int = 20) -> str:
+        """Find the most frequently cited EU Court cases in KOFA decisions."""
+        results = self.backend.most_cited_eu_cases(limit)
+
+        if not results:
+            return "Ingen EU-siteringsdata tilgjengelig."
+
+        lines = ["## Mest siterte EU-dommer i KOFA\n"]
+        lines.append("Basert på referanser i avgjørelsestekst.\n")
+
+        for r in results:
+            case_id = r.get("eu_case_id", "?")
+            name = r.get("eu_case_name", "")
+            count = r.get("cited_count", 0)
+
+            name_str = f" {name}" if name else ""
+            lines.append(f"- **{case_id}{name_str}** — sitert i {count} KOFA-saker")
+
+        return "\n".join(lines)
+
     @staticmethod
     def _format_ref_line(case: dict) -> str:
         """Format a cross-referenced case as a compact line."""
@@ -307,7 +369,8 @@ class KofaService:
             lines.append(f"\n### Referanse-ekstraksjon")
             lines.append(
                 f"- Prosessert **{ref_stats['cases_processed']}** saker "
-                f"({ref_stats['law_refs']} lovhenvisninger, {ref_stats['case_refs']} sakskryssreferanser)"
+                f"({ref_stats['law_refs']} lovhenvisninger, {ref_stats['case_refs']} sakskryssreferanser, "
+                f"{ref_stats.get('eu_refs', 0)} EU-referanser)"
             )
             if ref_stats["errors"]:
                 lines.append(f"- {ref_stats['errors']} feil")
