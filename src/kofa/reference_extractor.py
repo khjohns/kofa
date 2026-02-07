@@ -124,6 +124,24 @@ def _normalize_section(section: str) -> str:
     return s.strip()
 
 
+# Trailing connector words that should be stripped from EU case names
+_TRAILING_CONNECTOR_RE = re.compile(
+    r"\s+(?:og|mot|v\.|et|und|gegen)\s*$"
+)
+
+
+def _clean_eu_case_name(name: str) -> str:
+    """Clean up EU case name: remove newlines, page numbers, trailing connectors."""
+    # Remove newlines and collapse whitespace (PDF artifacts)
+    s = re.sub(r"\s*\n\s*", " ", name)
+    # Remove stray page numbers that crept in (e.g. "Max 3 Havelaar" from page break)
+    s = re.sub(r"\s+\d+\s+", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    # Strip trailing connector words (e.g. "Finn Frogne og" → "Finn Frogne")
+    s = _TRAILING_CONNECTOR_RE.sub("", s)
+    return s.strip()
+
+
 # =============================================================================
 # Regex patterns
 # =============================================================================
@@ -407,7 +425,7 @@ class ReferenceExtractor:
                 continue
             seen.add(case_id)
             # Name is in group 2 (parens) or group 3 (direct)
-            case_name = (m.group(2) or m.group(3) or "").strip()
+            case_name = _clean_eu_case_name(m.group(2) or m.group(3) or "")
             refs.append(EUCaseReference(
                 case_id=case_id,
                 case_name=case_name,

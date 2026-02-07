@@ -936,6 +936,8 @@ class KofaSupabaseBackend:
                             })
 
                         for ref in case_refs:
+                            if ref.sak_nr == sak_nr:
+                                continue  # Skip self-references
                             all_case_refs.append({
                                 "from_sak_nr": sak_nr,
                                 "to_sak_nr": ref.sak_nr,
