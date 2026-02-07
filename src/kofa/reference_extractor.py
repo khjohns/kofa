@@ -130,6 +130,25 @@ _NAMED_LAW_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Pattern 1b: Abbreviation + § (e.g. "FOA § 8-3", "LOA § 4")
+_ABBREV_LAW_RE = re.compile(
+    r"\b(FOA|LOA|foa|loa)"                                        # abbreviation
+    r"\s+§§?\s*"                                                   # §
+    r"([\d]+(?:-[\d]+)?)"                                          # section number
+    r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
+    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",                     # optional subsection
+)
+
+# Pattern 1c: Abbreviation WITHOUT § (e.g. "FOA 7-9 (2)")
+# Requires dash in section number to avoid matching years like "FOA 2016"
+_ABBREV_NO_SIGN_RE = re.compile(
+    r"\b(FOA|LOA|foa|loa)"                                        # abbreviation
+    r"\s+"                                                         # space (no §)
+    r"(\d+-\d+)"                                                   # section with dash (required)
+    r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
+    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",                     # optional subsection
+)
+
 # Pattern 2: "lov/forskrift om <name> § <section>"
 _DESCRIPTIVE_LAW_RE = re.compile(
     r"(?:lov|forskrift)\s+om\s+"                              # "lov om" / "forskrift om"
@@ -168,6 +187,48 @@ class ReferenceExtractor:
             section = m.group(2)
             subsection = (m.group(3) or "").strip()
             canonical = _normalize_law_name(raw_name)
+            if not canonical:
+                continue
+            full_section = section + (" " + subsection if subsection else "")
+            key = (canonical, _normalize_section(full_section))
+            if key in seen:
+                continue
+            seen.add(key)
+            refs.append(LawReference(
+                law_name=canonical,
+                section=_normalize_section(full_section),
+                raw_text=m.group(0).strip(),
+                reference_type=_classify_reference_type(canonical),
+                position=m.start(),
+            ))
+
+        # Pattern 1b: Abbreviation references (FOA §, LOA §)
+        for m in _ABBREV_LAW_RE.finditer(text):
+            abbrev = m.group(1)
+            section = m.group(2)
+            subsection = (m.group(3) or "").strip()
+            canonical = _normalize_law_name(abbrev)
+            if not canonical:
+                continue
+            full_section = section + (" " + subsection if subsection else "")
+            key = (canonical, _normalize_section(full_section))
+            if key in seen:
+                continue
+            seen.add(key)
+            refs.append(LawReference(
+                law_name=canonical,
+                section=_normalize_section(full_section),
+                raw_text=m.group(0).strip(),
+                reference_type=_classify_reference_type(canonical),
+                position=m.start(),
+            ))
+
+        # Pattern 1c: Abbreviation WITHOUT § (e.g. "FOA 7-9 (2)")
+        for m in _ABBREV_NO_SIGN_RE.finditer(text):
+            abbrev = m.group(1)
+            section = m.group(2)
+            subsection = (m.group(3) or "").strip()
+            canonical = _normalize_law_name(abbrev)
             if not canonical:
                 continue
             full_section = section + (" " + subsection if subsection else "")
