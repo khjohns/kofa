@@ -1161,6 +1161,80 @@ class KofaSupabaseBackend:
         result = query.execute()
         return result.data or []
 
+    def find_related_cases(self, sak_nr: str) -> dict:
+        """
+        Find cases related to a given case via cross-references.
+
+        Returns both cases that this case references (cites)
+        and cases that reference this case (cited by).
+        """
+        # Cases this case cites (to_sak_nr has no FK, so fetch case info separately)
+        cites_refs = (
+            self.client.table("kofa_case_references")
+            .select("to_sak_nr")
+            .eq("from_sak_nr", sak_nr)
+            .execute()
+        )
+        cited_nrs = list({r["to_sak_nr"] for r in (cites_refs.data or [])})
+
+        cites = []
+        if cited_nrs:
+            cases_result = (
+                self.client.table("kofa_cases")
+                .select("sak_nr, innklaget, avgjoerelse, saken_gjelder, avsluttet")
+                .in_("sak_nr", cited_nrs)
+                .order("sak_nr")
+                .execute()
+            )
+            cites = cases_result.data or []
+            # Add cases not in DB (older cases we don't have)
+            found = {c["sak_nr"] for c in cites}
+            for nr in sorted(cited_nrs):
+                if nr not in found:
+                    cites.append({"sak_nr": nr})
+
+        # Cases that cite this case (from_sak_nr has FK, can use join)
+        cited_by_result = (
+            self.client.table("kofa_case_references")
+            .select(
+                "from_sak_nr, "
+                "kofa_cases!kofa_case_references_from_sak_nr_fkey("
+                "innklaget, avgjoerelse, saken_gjelder, avsluttet)"
+            )
+            .eq("to_sak_nr", sak_nr)
+            .order("from_sak_nr", desc=True)
+            .execute()
+        )
+        # Flatten: merge from_sak_nr with joined case info, dedup
+        seen = set()
+        cited_by = []
+        for r in cited_by_result.data or []:
+            nr = r["from_sak_nr"]
+            if nr in seen:
+                continue
+            seen.add(nr)
+            case_info = r.get("kofa_cases", {}) or {}
+            cited_by.append({"sak_nr": nr, **case_info})
+
+        return {
+            "sak_nr": sak_nr,
+            "cites": cites,
+            "cited_by": cited_by,
+        }
+
+    def most_cited_cases(self, limit: int = 20) -> list[dict]:
+        """
+        Find the most frequently cited KOFA cases.
+
+        Uses a raw SQL query via RPC since PostgREST doesn't support
+        GROUP BY with COUNT easily.
+        """
+        result = self.client.rpc(
+            "kofa_most_cited",
+            {"max_results": limit},
+        ).execute()
+        return result.data or []
+
     # =========================================================================
     # Status
     # =========================================================================

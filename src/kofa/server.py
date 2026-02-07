@@ -28,6 +28,9 @@ SERVER_INSTRUCTIONS = """
 # KOFA - Klagenemnda for offentlige anskaffelser
 
 Tilgang til ~5000 avgjørelser fra KOFA (Klagenemnda for offentlige anskaffelser).
+KOFA behandler klager på brudd på anskaffelsesregelverket (lov og forskrift om
+offentlige anskaffelser). Avgjørelsene er enten rådgivende uttalelser eller
+gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 
 ## Verktøy
 
@@ -37,7 +40,55 @@ Tilgang til ~5000 avgjørelser fra KOFA (Klagenemnda for offentlige anskaffelser
 | `hent_sak(sak_nr)` | Hent en spesifikk sak med alle detaljer |
 | `siste_saker(limit?, sakstype?, avgjoerelse?, innklaget?)` | Siste avgjørelser med filtre |
 | `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf |
+| `relaterte_saker(sak_nr)` | Kryssreferanser: saker denne saken siterer og saker som siterer denne |
+| `mest_siterte(limit?)` | De mest siterte/prinsipielle KOFA-sakene |
 | `statistikk(aar?, gruppering?)` | Aggregert statistikk |
+
+## Velg riktig verktøy
+
+| Brukersituasjon | Bruk | Hvorfor |
+|-----------------|------|---------|
+| Spør om en bestemt lovparagraf | `finn_praksis(lov, paragraf)` | Direkte oppslag i referansetabeller |
+| Spør om et tema/problemstilling | `sok("tildelingskriterier")` | FTS i metadata og sammendrag |
+| Kjenner saksnummer | `hent_sak("2023/1099")` | Direkte oppslag |
+| Vil se trender/oversikt | `statistikk()` | Aggregert data |
+| Spør om en bestemt kommune/virksomhet | `sok("Bergen kommune")` eller `siste_saker(innklaget="Bergen")` | Navnesøk |
+| Leser en sak og vil se kontekst | `relaterte_saker("2023/1099")` | Finner saker den bygger på + saker som bygger på den |
+| Vil se prinsipielle avgjørelser | `mest_siterte(limit=10)` | De viktigste/mest refererte sakene |
+
+**Kjerneforskjell mellom `sok` og `finn_praksis`:**
+- `sok` søker i sakens metadata (parter, tema, sammendrag)
+- `finn_praksis` søker i **lovhenvisninger ekstrahert fra avgjørelsesteksten** (f.eks. "alle saker som drøfter FOA § 8-3")
+
+## Anbefalt arbeidsflyt
+
+1. **Finn relevant praksis** → `finn_praksis(lov, paragraf)` eller `sok(tema)`
+2. **Hent detaljer** → `hent_sak(sak_nr)` for å lese sammendrag og se utfall
+3. **Se kontekst** → `relaterte_saker(sak_nr)` for å se hva saken bygger på og hvem som bygger videre
+4. **Slå opp lovhjemmel** → Bruk Paragraf MCP (`lov("anskaffelsesforskriften", "8-3")`) for å se selve lovteksten
+5. **Tilby videre utforskning** → Se under
+
+## VIKTIG: Tilby videre utforskning
+
+**ALLTID** etter å ha besvart et KOFA-spørsmål, tilby brukeren mer:
+
+```
+---
+**Vil du utforske videre?**
+- Se flere saker om [samme paragraf/tema]?
+- Slå opp lovteksten i [paragraf X]? (via Paragraf MCP)
+- Se saker med motsatt utfall?
+```
+
+**Hvorfor dette er kritisk:**
+- KOFA-praksis er nyansert — utfallet avhenger av faktum i den enkelte sak
+- Brukere trenger ofte flere saker for å se mønsteret
+- Lovtekst + KOFA-praksis sammen gir mye bedre svar enn hver for seg
+
+**Eksempel:** Bruker spør "Kan man avvise et tilbud som mangler en ESPD?"
+1. `finn_praksis(lov="anskaffelsesforskriften", paragraf="24-2")` → finner avvisningssaker
+2. `hent_sak("2023/XXX")` → leser sammendrag og utfall
+3. Du presenterer funn og avslutter med: "Vil du se lovteksten i FOA § 24-2, eller flere saker om avvisning?"
 
 ## Søketips
 
@@ -45,7 +96,6 @@ Tilgang til ~5000 avgjørelser fra KOFA (Klagenemnda for offentlige anskaffelser
 - Søk på tema: `sok("rammeavtale")`
 - Søk på regelverk: `sok("anskaffelsesforskriften del III")`
 - Eksakt frase: `sok('"ulovlig direkte anskaffelse"')`
-- Saksnummer: `hent_sak("2023/1099")`
 
 ## Filtre for siste_saker
 
@@ -53,12 +103,29 @@ Tilgang til ~5000 avgjørelser fra KOFA (Klagenemnda for offentlige anskaffelser
 - **avgjoerelse**: "Brudd på regelverket", "Ikke brudd", "Avvist"
 - **innklaget**: Navn på innklaget virksomhet (delvis match)
 
-## Finn praksis (lovhenvisninger)
+## finn_praksis — lovhenvisninger
 
-- `finn_praksis(lov="anskaffelsesforskriften", paragraf="2-4")` → saker som refererer til foa § 2-4
-- `finn_praksis(lov="anskaffelsesloven", paragraf="4")` → saker som refererer til loa § 4
-- `finn_praksis(lov="forvaltningsloven")` → alle saker som refererer til forvaltningsloven
-- Dekker saker fra 2020+
+Basert på 3200+ lovhenvisninger ekstrahert fra avgjørelsestekst (2020+).
+
+**Støttede lovnavn og aliaser:**
+
+| Lov | Aliaser | Antall refs |
+|-----|---------|-------------|
+| anskaffelsesforskriften | `forskriften`, `foa` | ~620 |
+| anskaffelsesloven | `loven`, `loa` | ~620 |
+| klagenemndsforskriften | | ~1670 |
+| forsyningsforskriften | | ~180 |
+| forvaltningsloven | | ~100 |
+| offentleglova | `offentlighetsloven` | ~30 |
+| konkurranseloven | | ~2 |
+
+**Eksempler:**
+- `finn_praksis(lov="anskaffelsesforskriften", paragraf="8-3")` → kvalifikasjonskrav
+- `finn_praksis(lov="foa", paragraf="24-2")` → avvisning av tilbud
+- `finn_praksis(lov="loa", paragraf="4")` → grunnleggende prinsipper
+- `finn_praksis(lov="forvaltningsloven")` → alle saker som nevner forvaltningsloven
+
+**Merk:** Dekker kun saker fra 2020+ (gjeldende anskaffelseslov/forskrift fra 2016).
 
 ## Statistikk
 
@@ -66,11 +133,23 @@ Tilgang til ~5000 avgjørelser fra KOFA (Klagenemnda for offentlige anskaffelser
 - `statistikk(gruppering="sakstype")` → fordeling av sakstyper
 - `statistikk(aar=2024)` → statistikk for et bestemt år
 
-## Tips
+## Samspill med Paragraf MCP
 
-- Bruk `sok()` for å finne relevante saker
-- Bruk `hent_sak()` for å se alle detaljer inkl. PDF-lenke
-- Kombiner med Paragraf MCP for å slå opp lovhjemler som KOFA refererer til
+KOFA MCP og Paragraf MCP utfyller hverandre:
+
+| Spørsmål | KOFA | Paragraf |
+|----------|------|----------|
+| "Hva sier FOA § 8-3?" | | `lov("anskaffelsesforskriften", "8-3")` |
+| "Hvordan tolkes FOA § 8-3 i praksis?" | `finn_praksis(lov="foa", paragraf="8-3")` | |
+| "Kan man stille krav om lokal tilknytning?" | `sok("lokal tilknytning")` | `sok("tildelingskriterier")` |
+
+**Beste praksis:** Kombiner lovtekst (Paragraf) med KOFA-praksis for fullstendige svar.
+
+## Begrensninger
+
+- **Kun metadata for eldre saker:** Saker før 2020 har kun parter/tema/utfall, ikke lovhenvisninger
+- **Ikke rettsavgjørelser:** KOFA er forvaltningsorgan, ikke domstol — avgjørelsene er ikke bindende rettspraksis
+- **Sammendrag, ikke fulltekst:** `sok` og `siste_saker` returnerer sammendrag. Fulltekst er tilgjengelig via PDF-lenke i `hent_sak`
 """
 
 
@@ -197,6 +276,45 @@ class MCPServer:
                         },
                     },
                     "required": ["lov"],
+                },
+            },
+            {
+                "name": "relaterte_saker",
+                "title": "Relaterte KOFA-saker",
+                "description": (
+                    "Finn saker relatert til en gitt KOFA-sak via kryssreferanser. "
+                    "Viser både saker denne saken refererer til, og saker som siterer denne. "
+                    "Eks: relaterte_saker(sak_nr='2017/147')"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "sak_nr": {
+                            "type": "string",
+                            "description": "Saksnummer (f.eks. '2023/1099')",
+                        },
+                    },
+                    "required": ["sak_nr"],
+                },
+            },
+            {
+                "name": "mest_siterte",
+                "title": "Mest siterte KOFA-saker",
+                "description": (
+                    "Finn de mest siterte KOFA-sakene. "
+                    "Viser prinsipielle avgjørelser som andre saker oftest refererer til. "
+                    "Basert på kryssreferanser i avgjørelsestekst (2020+)."
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maks antall resultater (standard: 20)",
+                            "default": 20,
+                        },
+                    },
+                    "required": [],
                 },
             },
             {
@@ -350,6 +468,14 @@ class MCPServer:
                 content = self.service.finn_praksis(
                     lov=arguments.get("lov", ""),
                     paragraf=arguments.get("paragraf"),
+                    limit=arguments.get("limit", 20),
+                )
+            elif tool_name == "relaterte_saker":
+                content = self.service.related_cases(
+                    sak_nr=arguments.get("sak_nr", ""),
+                )
+            elif tool_name == "mest_siterte":
+                content = self.service.most_cited(
                     limit=arguments.get("limit", 20),
                 )
             elif tool_name == "statistikk":

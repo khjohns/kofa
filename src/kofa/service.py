@@ -152,6 +152,85 @@ class KofaService:
 
         return "\n".join(lines)
 
+    def related_cases(self, sak_nr: str) -> str:
+        """Find cases related to a given case via cross-references."""
+        data = self.backend.find_related_cases(sak_nr)
+
+        cites = data.get("cites", [])
+        cited_by = data.get("cited_by", [])
+
+        if not cites and not cited_by:
+            return f"Ingen kryssreferanser funnet for sak {sak_nr}."
+
+        lines = [f"## Relaterte saker: {sak_nr}\n"]
+
+        if cites:
+            lines.append(f"### Saken refererer til ({len(cites)} saker)\n")
+            for c in cites:
+                lines.append(self._format_ref_line(c))
+            lines.append("")
+
+        if cited_by:
+            lines.append(f"### Sitert av ({len(cited_by)} saker)\n")
+            for c in cited_by:
+                lines.append(self._format_ref_line(c))
+            lines.append("")
+
+        return "\n".join(lines)
+
+    def most_cited(self, limit: int = 20) -> str:
+        """Find the most frequently cited KOFA cases."""
+        results = self.backend.most_cited_cases(limit)
+
+        if not results:
+            return "Ingen siteringsdata tilgjengelig."
+
+        lines = ["## Mest siterte KOFA-saker\n"]
+        lines.append(f"Basert på kryssreferanser i avgjørelsestekst (2020+).\n")
+
+        for r in results:
+            sak_nr = r.get("sak_nr", "?")
+            count = r.get("cited_count", 0)
+            innklaget = r.get("innklaget", "")
+            avgjoerelse = r.get("avgjoerelse", "")
+            saken_gjelder = r.get("saken_gjelder", "")
+
+            parts = [f"- **{sak_nr}** — sitert {count} ganger"]
+            details = []
+            if innklaget:
+                details.append(innklaget)
+            if avgjoerelse:
+                details.append(avgjoerelse)
+            if details:
+                parts[0] += f" ({', '.join(details)})"
+            if saken_gjelder:
+                parts.append(f"  *{saken_gjelder}*")
+
+            lines.append("\n".join(parts))
+
+        return "\n".join(lines)
+
+    @staticmethod
+    def _format_ref_line(case: dict) -> str:
+        """Format a cross-referenced case as a compact line."""
+        sak_nr = case.get("sak_nr", "?")
+        innklaget = case.get("innklaget", "")
+        avgjoerelse = case.get("avgjoerelse", "")
+        saken_gjelder = case.get("saken_gjelder", "")
+
+        parts = [f"- **{sak_nr}**"]
+        details = []
+        if innklaget:
+            details.append(innklaget)
+        if avgjoerelse:
+            details.append(avgjoerelse)
+        if details:
+            parts[0] += f" — {', '.join(details)}"
+        if saken_gjelder:
+            parts.append(f"  *{saken_gjelder}*")
+
+        return "\n".join(parts)
+
     def sync(
         self,
         scrape: bool = False,
