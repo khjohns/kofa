@@ -101,6 +101,34 @@ def _classify_reference_type(canonical_name: str) -> str:
     return "lov"
 
 
+# LOA (anskaffelsesloven 2016) only has simple section numbers (§ 1 through § 18).
+# A compound section like § 24-8 is always FOA, even if the source text says "loven"/"LOA".
+_LOA_MAX_SIMPLE_SECTION = 18
+
+
+def _correct_lov_forskrift(law_name: str, section: str) -> tuple[str, str]:
+    """Correct misattributed LOA→FOA references based on section number.
+
+    KOFA occasionally writes "anskaffelsesloven § 24-8" when they mean
+    "anskaffelsesforskriften § 24-8". LOA (2016) only has §§ 1-18,
+    so any compound section (with dash) is almost certainly FOA.
+    """
+    if law_name != "anskaffelsesloven":
+        return law_name, _classify_reference_type(law_name)
+    # Check for compound section number (e.g. "24-8", "5-4 (4)")
+    section_base = section.split()[0] if section else ""
+    if "-" in section_base:
+        return "anskaffelsesforskriften", "forskrift"
+    # Also catch simple sections above LOA's range
+    try:
+        num = int(section_base)
+        if num > _LOA_MAX_SIMPLE_SECTION:
+            return "anskaffelsesforskriften", "forskrift"
+    except ValueError:
+        pass
+    return law_name, _classify_reference_type(law_name)
+
+
 def _normalize_law_name(name: str) -> str | None:
     """Normalize a law name to its canonical form. Returns None if unknown."""
     key = name.lower().strip()
@@ -310,89 +338,51 @@ class ReferenceExtractor:
         refs: list[LawReference] = []
         seen: set[tuple[str, str]] = set()  # (law_name, section) dedup
 
-        # Pattern 1: Named law references
-        for m in _NAMED_LAW_RE.finditer(text):
-            raw_name = m.group(1)
-            section = m.group(2)
-            subsection = (m.group(3) or "").strip()
-            canonical = _normalize_law_name(raw_name)
-            if not canonical:
-                continue
+        # Helper to build and append a LawReference with dedup
+        def _add_ref(canonical: str, section: str, subsection: str, match) -> None:
             full_section = section + (" " + subsection if subsection else "")
-            key = (canonical, _normalize_section(full_section))
+            normalized = _normalize_section(full_section)
+            # Correct LOA→FOA when section number is clearly a forskrift section
+            canonical, ref_type = _correct_lov_forskrift(canonical, normalized)
+            key = (canonical, normalized)
             if key in seen:
-                continue
+                return
             seen.add(key)
             refs.append(LawReference(
                 law_name=canonical,
-                section=_normalize_section(full_section),
-                raw_text=m.group(0).strip(),
-                reference_type=_classify_reference_type(canonical),
-                position=m.start(),
+                section=normalized,
+                raw_text=match.group(0).strip(),
+                reference_type=ref_type,
+                position=match.start(),
             ))
+
+        # Pattern 1: Named law references
+        for m in _NAMED_LAW_RE.finditer(text):
+            canonical = _normalize_law_name(m.group(1))
+            if not canonical:
+                continue
+            _add_ref(canonical, m.group(2), (m.group(3) or "").strip(), m)
 
         # Pattern 1b: Abbreviation references (FOA §, LOA §)
         for m in _ABBREV_LAW_RE.finditer(text):
-            abbrev = m.group(1)
-            section = m.group(2)
-            subsection = (m.group(3) or "").strip()
-            canonical = _normalize_law_name(abbrev)
+            canonical = _normalize_law_name(m.group(1))
             if not canonical:
                 continue
-            full_section = section + (" " + subsection if subsection else "")
-            key = (canonical, _normalize_section(full_section))
-            if key in seen:
-                continue
-            seen.add(key)
-            refs.append(LawReference(
-                law_name=canonical,
-                section=_normalize_section(full_section),
-                raw_text=m.group(0).strip(),
-                reference_type=_classify_reference_type(canonical),
-                position=m.start(),
-            ))
+            _add_ref(canonical, m.group(2), (m.group(3) or "").strip(), m)
 
         # Pattern 1c: Abbreviation WITHOUT § (e.g. "FOA 7-9 (2)")
         for m in _ABBREV_NO_SIGN_RE.finditer(text):
-            abbrev = m.group(1)
-            section = m.group(2)
-            subsection = (m.group(3) or "").strip()
-            canonical = _normalize_law_name(abbrev)
+            canonical = _normalize_law_name(m.group(1))
             if not canonical:
                 continue
-            full_section = section + (" " + subsection if subsection else "")
-            key = (canonical, _normalize_section(full_section))
-            if key in seen:
-                continue
-            seen.add(key)
-            refs.append(LawReference(
-                law_name=canonical,
-                section=_normalize_section(full_section),
-                raw_text=m.group(0).strip(),
-                reference_type=_classify_reference_type(canonical),
-                position=m.start(),
-            ))
+            _add_ref(canonical, m.group(2), (m.group(3) or "").strip(), m)
 
         # Pattern 2: Descriptive "lov/forskrift om ..." references
         for m in _DESCRIPTIVE_LAW_RE.finditer(text):
-            desc_name = m.group(1).strip()
-            section = m.group(2)
-            subsection = (m.group(3) or "").strip()
-            canonical = _normalize_law_name(desc_name)
+            canonical = _normalize_law_name(m.group(1).strip())
             if not canonical:
                 continue
-            full_section = section + (" " + subsection if subsection else "")
-            key = (canonical, _normalize_section(full_section))
-            if key in seen:
-                continue
-            seen.add(key)
-            refs.append(LawReference(
-                law_name=canonical,
-                section=_normalize_section(full_section),
-                raw_text=m.group(0).strip(),
-                reference_type=_classify_reference_type(canonical),
-                position=m.start(),
-            ))
+            _add_ref(canonical, m.group(2), (m.group(3) or "").strip(), m)
 
         return refs
 
