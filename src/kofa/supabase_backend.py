@@ -83,7 +83,7 @@ class KofaSupabaseBackend:
         if innklaget:
             query = query.ilike("innklaget", f"%{innklaget}%")
 
-        query = query.order("avsluttet", desc=True, nulls_last=True).limit(limit)
+        query = query.order("avsluttet", desc=True).limit(limit)
         result = query.execute()
         return result.data or []
 
@@ -216,6 +216,12 @@ class KofaSupabaseBackend:
 
                     if modified and (not latest_modified or modified > latest_modified):
                         latest_modified = modified
+
+                # Deduplicate batch (WP API sometimes returns same sak_nr twice)
+                seen = {}
+                for case_row in batch:
+                    seen[case_row["sak_nr"]] = case_row
+                batch = list(seen.values())
 
                 if batch:
                     try:
