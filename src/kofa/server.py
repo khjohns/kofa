@@ -38,6 +38,7 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 |---------|------|
 | `sok(query, limit?)` | Fulltekstsøk i KOFA-saker |
 | `hent_sak(sak_nr)` | Hent en spesifikk sak med alle detaljer |
+| `hent_avgjoerelse(sak_nr, seksjon?)` | Hent avgjørelsestekst (innledning, bakgrunn, anførsler, vurdering, konklusjon) |
 | `siste_saker(limit?, sakstype?, avgjoerelse?, innklaget?)` | Siste avgjørelser med filtre |
 | `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf (2017+) |
 | `relaterte_saker(sak_nr)` | Kryssreferanser: saker denne saken siterer og saker som siterer denne |
@@ -53,6 +54,8 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | Spør om en bestemt lovparagraf | `finn_praksis(lov, paragraf)` | Direkte oppslag i referansetabeller |
 | Spør om et tema/problemstilling | `sok("tildelingskriterier")` | FTS i metadata og sammendrag |
 | Kjenner saksnummer | `hent_sak("2023/1099")` | Direkte oppslag |
+| Vil lese avgjørelsens begrunnelse | `hent_avgjoerelse("2023/1099", seksjon="vurdering")` | Full vurderingstekst |
+| Vil se faktum i en sak | `hent_avgjoerelse("2023/1099", seksjon="bakgrunn")` | Sakens bakgrunn |
 | Vil se trender/oversikt | `statistikk()` | Aggregert data |
 | Spør om en bestemt kommune/virksomhet | `sok("Bergen kommune")` eller `siste_saker(innklaget="Bergen")` | Navnesøk |
 | Leser en sak og vil se kontekst | `relaterte_saker("2023/1099")` | Finner saker den bygger på + saker som bygger på den |
@@ -68,9 +71,10 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 
 1. **Finn relevant praksis** → `finn_praksis(lov, paragraf)` eller `sok(tema)`
 2. **Hent detaljer** → `hent_sak(sak_nr)` for å lese sammendrag og se utfall
-3. **Se kontekst** → `relaterte_saker(sak_nr)` for å se hva saken bygger på og hvem som bygger videre
-4. **Slå opp lovhjemmel** → Bruk Paragraf MCP (`lov("anskaffelsesforskriften", "8-3")`) for å se selve lovteksten
-5. **Tilby videre utforskning** → Se under
+3. **Les avgjørelsen** → `hent_avgjoerelse(sak_nr)` for innholdsfortegnelse, deretter `hent_avgjoerelse(sak_nr, seksjon="vurdering")` for begrunnelsen
+4. **Se kontekst** → `relaterte_saker(sak_nr)` for å se hva saken bygger på og hvem som bygger videre
+5. **Slå opp lovhjemmel** → Bruk Paragraf MCP (`lov("anskaffelsesforskriften", "8-3")`) for å se selve lovteksten
+6. **Tilby videre utforskning** → Se under
 
 ## VIKTIG: Tilby videre utforskning
 
@@ -155,7 +159,8 @@ KOFA MCP og Paragraf MCP utfyller hverandre:
 
 - **Kun metadata for eldre saker:** Saker før 2017 har kun parter/tema/utfall, ikke lovhenvisninger
 - **Ikke rettsavgjørelser:** KOFA er forvaltningsorgan, ikke domstol — avgjørelsene er ikke bindende rettspraksis
-- **Sammendrag, ikke fulltekst:** `sok` og `siste_saker` returnerer sammendrag. Fulltekst er tilgjengelig via PDF-lenke i `hent_sak`
+- **Avgjørelsestekst:** `hent_avgjoerelse` gir tilgang til fulltekst for ~2000 saker (2017+). Eldre saker har kun sammendrag
+- **Seksjoner i avgjørelsestekst:** `innledning`, `bakgrunn` (faktum), `anfoersler` (partenes argumenter), `vurdering` (nemndas begrunnelse), `konklusjon`
 """
 
 
@@ -211,6 +216,35 @@ class MCPServer:
                         "sak_nr": {
                             "type": "string",
                             "description": "Saksnummer (f.eks. '2023/1099')",
+                        },
+                    },
+                    "required": ["sak_nr"],
+                },
+            },
+            {
+                "name": "hent_avgjoerelse",
+                "title": "Hent avgjørelsestekst",
+                "description": (
+                    "Hent full avgjørelsestekst fra en KOFA-sak. "
+                    "Uten seksjon: viser innholdsfortegnelse med avsnittantall per seksjon. "
+                    "Med seksjon: returnerer alle avsnitt i den seksjonen. "
+                    "Gyldige seksjoner: 'innledning', 'bakgrunn', 'anfoersler', 'vurdering', 'konklusjon'. "
+                    "Eks: hent_avgjoerelse(sak_nr='2023/1099', seksjon='vurdering')"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "sak_nr": {
+                            "type": "string",
+                            "description": "Saksnummer (f.eks. '2023/1099')",
+                        },
+                        "seksjon": {
+                            "type": "string",
+                            "description": (
+                                "Filtrer på seksjon: 'innledning', 'bakgrunn', "
+                                "'anfoersler', 'vurdering', 'konklusjon'. "
+                                "Utelat for innholdsfortegnelse."
+                            ),
                         },
                     },
                     "required": ["sak_nr"],
@@ -505,6 +539,11 @@ class MCPServer:
                 )
             elif tool_name == "hent_sak":
                 content = self.service.get_case(arguments.get("sak_nr", ""))
+            elif tool_name == "hent_avgjoerelse":
+                content = self.service.get_decision_text(
+                    sak_nr=arguments.get("sak_nr", ""),
+                    section=arguments.get("seksjon"),
+                )
             elif tool_name == "siste_saker":
                 content = self.service.recent_cases(
                     limit=arguments.get("limit", 20),

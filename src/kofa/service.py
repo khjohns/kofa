@@ -43,6 +43,26 @@ class KofaService:
 
         return self._format_case_detail(case)
 
+    def get_decision_text(self, sak_nr: str, section: str | None = None) -> str:
+        """Get decision text for a case, optionally filtered by section."""
+        case = self.backend.get_case(sak_nr)
+        if not case:
+            return f"Fant ikke sak: {sak_nr}"
+
+        paragraphs = self.backend.get_decision_text(sak_nr, section)
+        if not paragraphs:
+            if section:
+                return f"Ingen avgjørelsestekst i seksjon '{section}' for sak {sak_nr}."
+            return (
+                f"Ingen avgjørelsestekst tilgjengelig for sak {sak_nr}. "
+                f"Bruk PDF-lenken fra hent_sak() for å lese avgjørelsen."
+            )
+
+        if section:
+            return self._format_decision_section(sak_nr, section, paragraphs)
+        else:
+            return self._format_decision_toc(sak_nr, paragraphs)
+
     def recent_cases(
         self,
         limit: int = 20,
@@ -470,5 +490,77 @@ Kjør `sync()` for å laste ned saker fra KOFA."""
         page_url = case.get("page_url")
         if page_url:
             lines.append(f"**Les mer:** {page_url}")
+
+        return "\n".join(lines)
+
+    @staticmethod
+    def _format_decision_toc(sak_nr: str, paragraphs: list[dict]) -> str:
+        """Format decision text as a table of contents with section stats."""
+        # Group by section
+        sections: dict[str, list[dict]] = {}
+        for p in paragraphs:
+            sec = p.get("section", "ukjent") or "ukjent"
+            sections.setdefault(sec, []).append(p)
+
+        total_chars = sum(len(p.get("text", "")) for p in paragraphs)
+        total_tokens = total_chars // 4  # rough estimate
+
+        lines = [f"## Avgjørelsestekst: {sak_nr}\n"]
+        lines.append(f"**Totalt:** {len(paragraphs)} avsnitt (~{total_tokens:,} tokens)\n")
+
+        # Display in logical order
+        section_order = ["innledning", "bakgrunn", "anfoersler", "vurdering", "konklusjon", "raw"]
+        ordered = [s for s in section_order if s in sections]
+        for s in sections:
+            if s not in ordered:
+                ordered.append(s)
+
+        section_labels = {
+            "innledning": "Innledning",
+            "bakgrunn": "Bakgrunn (faktum)",
+            "anfoersler": "Partenes anførsler",
+            "vurdering": "Klagenemndas vurdering",
+            "konklusjon": "Konklusjon",
+            "raw": "Ustrukturert tekst",
+            "ukjent": "Ukjent seksjon",
+        }
+
+        for sec in ordered:
+            paras = sections[sec]
+            chars = sum(len(p.get("text", "")) for p in paras)
+            tokens = chars // 4
+            label = section_labels.get(sec, sec)
+            lines.append(f"- **{label}:** {len(paras)} avsnitt (~{tokens:,} tokens)")
+
+        lines.append("")
+        lines.append(
+            "Bruk `hent_avgjoerelse(sak_nr, seksjon='vurdering')` "
+            "for å lese en bestemt seksjon."
+        )
+
+        return "\n".join(lines)
+
+    @staticmethod
+    def _format_decision_section(
+        sak_nr: str, section: str, paragraphs: list[dict]
+    ) -> str:
+        """Format decision text paragraphs for a specific section."""
+        section_labels = {
+            "innledning": "Innledning",
+            "bakgrunn": "Bakgrunn (faktum)",
+            "anfoersler": "Partenes anførsler",
+            "vurdering": "Klagenemndas vurdering",
+            "konklusjon": "Konklusjon",
+            "raw": "Ustrukturert tekst",
+        }
+        label = section_labels.get(section, section)
+
+        lines = [f"## {label}: {sak_nr}\n"]
+        lines.append(f"{len(paragraphs)} avsnitt:\n")
+
+        for p in paragraphs:
+            num = p.get("paragraph_number", "?")
+            text = p.get("text", "")
+            lines.append(f"**({num})** {text}\n")
 
         return "\n".join(lines)

@@ -1076,6 +1076,22 @@ class KofaSupabaseBackend:
         )
         return result.data or []
 
+    @with_retry()
+    def get_decision_text(
+        self, sak_nr: str, section: str | None = None
+    ) -> list[dict]:
+        """Get decision text paragraphs, optionally filtered by section."""
+        query = (
+            self.client.table("kofa_decision_text")
+            .select("paragraph_number, section, text")
+            .eq("sak_nr", sak_nr)
+        )
+        if section:
+            query = query.eq("section", section)
+        query = query.order("paragraph_number").limit(500)
+        result = query.execute()
+        return result.data or []
+
     def _build_lovdata_doc_id_map(self) -> dict[str, str]:
         """Build mapping from canonical law names to lovdata_documents.dok_id.
 
