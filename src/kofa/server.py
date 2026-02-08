@@ -45,6 +45,8 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | `mest_siterte(limit?)` | De mest siterte/prinsipielle KOFA-sakene |
 | `eu_praksis(eu_case_id, limit?)` | Finn KOFA-saker som refererer til en bestemt EU-dom |
 | `mest_siterte_eu(limit?)` | De mest siterte EU-dommene i KOFA |
+| `sok_avgjoerelse(query, seksjon?, limit?)` | Fulltekstsøk i avgjørelsesteksten (ikke metadata) |
+| `semantisk_sok_kofa(query, seksjon?, limit?)` | Semantisk søk med AI-embeddings i avgjørelsestekst |
 | `statistikk(aar?, gruppering?)` | Aggregert statistikk |
 
 ## Velg riktig verktøy
@@ -57,14 +59,18 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | Vil lese avgjørelsens begrunnelse | `hent_avgjoerelse("2023/1099", seksjon="vurdering")` | Full vurderingstekst |
 | Vil se faktum i en sak | `hent_avgjoerelse("2023/1099", seksjon="bakgrunn")` | Sakens bakgrunn |
 | Vil se trender/oversikt | `statistikk()` | Aggregert data |
+| Søker etter spesifikke ord/fraser i avgjørelser | `sok_avgjoerelse("vesentlig avvik")` | FTS direkte i avgjørelsestekst |
+| Søker etter konsepter/synonymer i avgjørelser | `semantisk_sok_kofa("ulovlig direkte anskaffelse")` | AI-basert søk med embeddings |
 | Spør om en bestemt kommune/virksomhet | `sok("Bergen kommune")` eller `siste_saker(innklaget="Bergen")` | Navnesøk |
 | Leser en sak og vil se kontekst | `relaterte_saker("2023/1099")` | Finner saker den bygger på + saker som bygger på den |
 | Vil se prinsipielle avgjørelser | `mest_siterte(limit=10)` | De viktigste/mest refererte sakene |
 | Spør om en EU-dom | `eu_praksis(eu_case_id="C-19/00")` | KOFA-saker som anvender EU-dommen |
 | Vil se viktigste EU-dommer | `mest_siterte_eu(limit=10)` | De mest refererte EU-dommene i KOFA |
 
-**Kjerneforskjell mellom `sok` og `finn_praksis`:**
+**Kjerneforskjell mellom søkeverktøyene:**
 - `sok` søker i sakens metadata (parter, tema, sammendrag)
+- `sok_avgjoerelse` søker med eksakte ord/fraser direkte i avgjørelsesteksten
+- `semantisk_sok_kofa` bruker AI-embeddings for å finne relaterte avsnitt selv om ordene ikke matcher eksakt
 - `finn_praksis` søker i **lovhenvisninger ekstrahert fra avgjørelsesteksten** (f.eks. "alle saker som drøfter FOA § 8-3")
 
 ## Anbefalt arbeidsflyt
@@ -248,6 +254,80 @@ class MCPServer:
                         },
                     },
                     "required": ["sak_nr"],
+                },
+            },
+            {
+                "name": "sok_avgjoerelse",
+                "title": "Fulltekstsøk i avgjørelsestekst",
+                "description": (
+                    "Fulltekstsøk direkte i KOFA-avgjørelsesteksten (ikke bare metadata). "
+                    "Finner eksakte ord/fraser i vurderinger, bakgrunn, anførsler. "
+                    "Bruk dette for presise søk etter juridiske termer. "
+                    "Eks: 'vesentlig avvik', 'avvisningsplikt', 'tildelingsevaluering'"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": (
+                                "Søketekst. Støtter websearch-syntaks: "
+                                "\"eksakt frase\", OR, -ekskluder"
+                            ),
+                        },
+                        "seksjon": {
+                            "type": "string",
+                            "description": (
+                                "Filtrer på seksjon: 'innledning', 'bakgrunn', "
+                                "'anfoersler', 'vurdering', 'konklusjon'. "
+                                "Utelat for alle seksjoner."
+                            ),
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maks antall resultater (standard: 20)",
+                            "default": 20,
+                        },
+                    },
+                    "required": ["query"],
+                },
+            },
+            {
+                "name": "semantisk_sok_kofa",
+                "title": "Semantisk søk i KOFA-avgjørelser",
+                "description": (
+                    "Semantisk søk med AI-embeddings i KOFA-avgjørelsestekst. "
+                    "Finner relaterte avsnitt selv om ordene ikke matcher eksakt. "
+                    "Bruk dette for naturlig språk og konseptuelle spørsmål. "
+                    "Eks: 'ulovlig direkte anskaffelse uten kunngjøring', "
+                    "'erstatning for tapt fortjeneste', 'krav til dokumentasjon av erfaring'"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": (
+                                "Søketekst i naturlig språk. "
+                                "Eks: 'kan en tilbyder avvises for manglende ESPD', "
+                                "'konsekvenser av ulovlig direkte anskaffelse'"
+                            ),
+                        },
+                        "seksjon": {
+                            "type": "string",
+                            "description": (
+                                "Filtrer på seksjon: 'innledning', 'bakgrunn', "
+                                "'anfoersler', 'vurdering', 'konklusjon'. "
+                                "Utelat for alle seksjoner."
+                            ),
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maks antall resultater (standard: 10)",
+                            "default": 10,
+                        },
+                    },
+                    "required": ["query"],
                 },
             },
             {
@@ -543,6 +623,18 @@ class MCPServer:
                 content = self.service.get_decision_text(
                     sak_nr=arguments.get("sak_nr", ""),
                     section=arguments.get("seksjon"),
+                )
+            elif tool_name == "sok_avgjoerelse":
+                content = self.service.search_decision_text(
+                    query=arguments.get("query", ""),
+                    section=arguments.get("seksjon"),
+                    limit=arguments.get("limit", 20),
+                )
+            elif tool_name == "semantisk_sok_kofa":
+                content = self.service.semantic_search(
+                    query=arguments.get("query", ""),
+                    section=arguments.get("seksjon"),
+                    limit=arguments.get("limit", 10),
                 )
             elif tool_name == "siste_saker":
                 content = self.service.recent_cases(

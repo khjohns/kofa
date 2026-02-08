@@ -63,6 +63,87 @@ class KofaService:
         else:
             return self._format_decision_toc(sak_nr, paragraphs)
 
+    def search_decision_text(
+        self,
+        query: str,
+        section: str | None = None,
+        limit: int = 20,
+    ) -> str:
+        """Full-text search in decision text paragraphs."""
+        results = self.backend.search_decision_text(query, section, limit)
+
+        if not results:
+            section_label = f" (seksjon: {section})" if section else ""
+            return f"Ingen treff i avgjørelsestekst for: {query}{section_label}"
+
+        lines = [f"## Søk i avgjørelsestekst: {query}\n"]
+        if section:
+            lines.append(f"*Filtrert på seksjon: {section}*\n")
+        lines.append(f"Fant {len(results)} treff:\n")
+
+        for r in results:
+            sak_nr = r.get("sak_nr", "?")
+            sec = r.get("section", "")
+            para_nr = r.get("paragraph_number", "?")
+            text = r.get("text", "")
+            rank = r.get("rank", 0)
+            innklaget = r.get("innklaget", "")
+            avgjoerelse = r.get("avgjoerelse", "")
+
+            snippet = text[:300] + "..." if len(text) > 300 else text
+            parts = [f"### {sak_nr} — {sec} ({para_nr})"]
+            if innklaget:
+                parts.append(f"**Innklaget:** {innklaget}")
+            if avgjoerelse:
+                parts.append(f"**Avgjoerelse:** {avgjoerelse}")
+            parts.append(f"*Rank: {rank:.3f}*")
+            parts.append(f"\n{snippet}\n")
+            lines.append("\n".join(parts))
+
+        return "\n".join(lines)
+
+    def semantic_search(
+        self,
+        query: str,
+        section: str | None = None,
+        limit: int = 10,
+    ) -> str:
+        """Semantic (hybrid vector + FTS) search in decision text."""
+        try:
+            from kofa.vector_search import KofaVectorSearch
+
+            vs = KofaVectorSearch()
+            results = vs.search(query, limit=limit, section=section)
+        except Exception as e:
+            logger.warning(f"Semantic search failed, falling back to FTS: {e}")
+            return self.search_decision_text(query, section, limit)
+
+        if not results:
+            section_label = f" (seksjon: {section})" if section else ""
+            return f"Ingen treff for semantisk søk: {query}{section_label}"
+
+        lines = [f"## Semantisk søk: {query}\n"]
+        if section:
+            lines.append(f"*Filtrert på seksjon: {section}*\n")
+        lines.append(f"Fant {len(results)} treff:\n")
+
+        for r in results:
+            snippet = r.text[:300] + "..." if len(r.text) > 300 else r.text
+            parts = [f"### {r.sak_nr} — {r.section} ({r.paragraph_number})"]
+            if r.innklaget:
+                parts.append(f"**Innklaget:** {r.innklaget}")
+            if r.avgjoerelse:
+                parts.append(f"**Avgjoerelse:** {r.avgjoerelse}")
+            parts.append(
+                f"*Score: {r.combined_score:.3f} "
+                f"(vektor: {r.similarity:.3f}, FTS: {r.fts_rank:.3f})*"
+            )
+            parts.append(f"\n{snippet}\n")
+            parts.append(f"-> `hent_avgjoerelse(\"{r.sak_nr}\", \"{r.section}\")`\n")
+            lines.append("\n".join(parts))
+
+        return "\n".join(lines)
+
     def recent_cases(
         self,
         limit: int = 20,

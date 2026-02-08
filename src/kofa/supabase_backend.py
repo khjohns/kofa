@@ -1339,6 +1339,28 @@ class KofaSupabaseBackend:
         return result.data or []
 
     # =========================================================================
+    # Decision text search (FTS)
+    # =========================================================================
+
+    @with_retry()
+    def search_decision_text(
+        self,
+        query: str,
+        section: str | None = None,
+        limit: int = 20,
+    ) -> list[dict]:
+        """Full-text search on decision text paragraphs via RPC."""
+        result = self.client.rpc(
+            "search_kofa_decision_text",
+            {
+                "search_query": query,
+                "section_filter": section,
+                "max_results": limit,
+            },
+        ).execute()
+        return result.data or []
+
+    # =========================================================================
     # Status
     # =========================================================================
 

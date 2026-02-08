@@ -28,7 +28,8 @@ dependencies = [
 supabase = ["supabase>=2.0.0", "postgrest>=0.16.0"]
 http = ["flask>=3.0.0", "gunicorn>=21.0.0"]
 pdf = ["pymupdf>=1.24.0"]
-all = ["kofa[supabase,http,pdf]"]
+embeddings = ["google-genai>=1.0.0"]
+all = ["kofa[supabase,http,pdf,embeddings]"]
 dev = [
     "pytest>=8.0.0",
     "ruff>=0.4.0",

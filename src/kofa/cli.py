@@ -14,6 +14,7 @@ Usage:
 import argparse
 import json
 import logging
+import os
 import sys
 
 
@@ -59,6 +60,11 @@ def cmd_serve(args):
 
 def cmd_sync(args):
     """Sync KOFA data."""
+    if args.embeddings:
+        # Delegate to embedding script
+        cmd_embed(args)
+        return
+
     from kofa.service import KofaService
 
     service = KofaService()
@@ -75,6 +81,28 @@ def cmd_sync(args):
         refresh_pending=args.refresh_pending,
     )
     print(result)
+
+
+def cmd_embed(args):
+    """Generate embeddings for decision text."""
+    import subprocess
+
+    script = os.path.join(os.path.dirname(__file__), "..", "..", "scripts", "embed_kofa.py")
+    script = os.path.normpath(script)
+
+    cmd = [sys.executable, script]
+    if args.dry_run:
+        cmd.append("--dry-run")
+    if args.force:
+        cmd.append("--force")
+    if args.limit:
+        cmd.extend(["--limit", str(args.limit)])
+    if args.max_time:
+        cmd.extend(["--max-time", str(args.max_time)])
+    if hasattr(args, "workers") and args.workers:
+        cmd.extend(["--workers", str(args.workers)])
+
+    subprocess.run(cmd)
 
 
 def cmd_status(args):
@@ -112,6 +140,9 @@ def main():
     sync_parser.add_argument("--delay", type=float, default=1.0, help="Delay between scrape requests (seconds)")
     sync_parser.add_argument("--max-errors", type=int, default=20, help="Stop after N consecutive errors")
     sync_parser.add_argument("--refresh-pending", action="store_true", help="Re-scrape cases with no decision yet")
+    sync_parser.add_argument("--embeddings", action="store_true", help="Generate embeddings for decision text")
+    sync_parser.add_argument("--dry-run", action="store_true", help="Show what would be done (with --embeddings)")
+    sync_parser.add_argument("--workers", type=int, default=1, help="Parallel workers for embedding (default: 1)")
 
     # status
     subparsers.add_parser("status", help="Show sync status")
