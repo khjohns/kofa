@@ -77,3 +77,7 @@ Prosjektnavn: `unified-timeline` (delt med paragraf og andre Catenda-prosjekter)
 - MCP-verktøy: Norske navn (sok, hent_sak, finn_praksis) med norske beskrivelser
 - SQL-migrasjoner: Kjøres via Supabase MCP `apply_migration`, ikke lokale filer
 - Referansekode: `../paragraf/` har tilsvarende arkitektur for Lovdata — bruk som mal
+
+## Vedlikehold av denne filen
+
+Vurder om CLAUDE.md bør oppdateres når du gjør endringer som påvirker prosjektstruktur, arkitektur, konvensjoner eller arbeidsflyt. Foreslå oppdatering for brukeren ved behov.
