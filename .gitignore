@@ -19,6 +19,9 @@ venv/
 .env
 .env.local
 
+# Claude Code
+CLAUDE.md
+
 # OS
 .DS_Store
 Thumbs.db
