@@ -204,11 +204,21 @@ class PdfExtractor:
 
         for section_name, keywords in SECTION_KEYWORDS.items():
             for keyword in keywords:
-                # Look for keyword as a standalone heading or inline marker
-                pattern = re.compile(
-                    rf"(?:^|\n)\s*{re.escape(keyword)}\s*:?\s*(?:\n|$)",
-                    re.IGNORECASE,
-                )
+                # Single-word keywords (e.g. "bakgrunn", "anførsler") require
+                # a colon to distinguish real section headings from the same
+                # word appearing mid-sentence at a PDF line break.
+                # Multi-word keywords (e.g. "klagenemndas vurdering") are
+                # specific enough to match without colon.
+                if " " in keyword:
+                    pattern = re.compile(
+                        rf"(?:^|\n)\s*{re.escape(keyword)}\s*:?\s*(?:\n|$)",
+                        re.IGNORECASE,
+                    )
+                else:
+                    pattern = re.compile(
+                        rf"(?:^|\n)\s*{re.escape(keyword)}\s*:\s*(?:\n|$)",
+                        re.IGNORECASE,
+                    )
                 for m in pattern.finditer(full_text):
                     section_positions.append((m.start(), section_name))
 
