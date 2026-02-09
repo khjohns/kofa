@@ -5,11 +5,10 @@ Implements the Model Context Protocol (MCP) JSON-RPC interface
 for exposing KOFA decision lookup tools to AI assistants.
 """
 
+import logging
 from typing import Any
 
 from kofa.service import KofaService
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -196,7 +195,7 @@ class MCPServer:
                         "query": {
                             "type": "string",
                             "description": (
-                                "Søketekst. Støtter: OR, \"frase\". "
+                                'Søketekst. Støtter: OR, "frase". '
                                 "Eks: 'rammeavtale', 'tildelingskriterier'"
                             ),
                         },
@@ -213,8 +212,7 @@ class MCPServer:
                 "name": "hent_sak",
                 "title": "Hent KOFA-sak",
                 "description": (
-                    "Hent en spesifikk KOFA-sak med alle detaljer. "
-                    "Bruk saksnummer som '2023/1099'."
+                    "Hent en spesifikk KOFA-sak med alle detaljer. Bruk saksnummer som '2023/1099'."
                 ),
                 "inputSchema": {
                     "type": "object",
@@ -272,7 +270,7 @@ class MCPServer:
                             "type": "string",
                             "description": (
                                 "Søketekst. Støtter websearch-syntaks: "
-                                "\"eksakt frase\", OR, -ekskluder"
+                                '"eksakt frase", OR, -ekskluder'
                             ),
                         },
                         "seksjon": {
@@ -348,8 +346,7 @@ class MCPServer:
                         "sakstype": {
                             "type": "string",
                             "description": (
-                                "Filtrer på sakstype: "
-                                "'Rådgivende sak', 'Gebyrsak', etc."
+                                "Filtrer på sakstype: 'Rådgivende sak', 'Gebyrsak', etc."
                             ),
                         },
                         "avgjoerelse": {
@@ -496,10 +493,7 @@ class MCPServer:
                         },
                         "gruppering": {
                             "type": "string",
-                            "description": (
-                                "Felt å gruppere på: "
-                                "'avgjoerelse', 'sakstype'"
-                            ),
+                            "description": ("Felt å gruppere på: 'avgjoerelse', 'sakstype'"),
                             "default": "avgjoerelse",
                         },
                     },
@@ -683,9 +677,7 @@ class MCPServer:
                 content = f"Ukjent verktøy: {tool_name}"
                 logger.warning(f"Unknown tool requested: {tool_name}")
 
-            return {
-                "content": [{"type": "text", "text": content}]
-            }
+            return {"content": [{"type": "text", "text": content}]}
 
         except Exception as e:
             logger.exception(f"Tool execution error: {e}")

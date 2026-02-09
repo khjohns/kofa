@@ -166,7 +166,7 @@ class KofaScraper:
         for dl in soup.find_all("dl"):
             dts = dl.find_all("dt")
             dds = dl.find_all("dd")
-            for dt, dd in zip(dts, dds):
+            for dt, dd in zip(dts, dds, strict=False):
                 label = _normalize_label(dt.get_text(strip=True))
                 field_name = LABEL_MAP.get(label)
                 if field_name and not getattr(meta, field_name):
@@ -183,9 +183,7 @@ class KofaScraper:
                     if field_name and not getattr(meta, field_name):
                         setattr(meta, field_name, cells[1].get_text(strip=True))
 
-    def _extract_pdf_link(
-        self, soup: BeautifulSoup, meta: CaseMetadata, base_url: str
-    ) -> None:
+    def _extract_pdf_link(self, soup: BeautifulSoup, meta: CaseMetadata, base_url: str) -> None:
         """Find PDF link in the page."""
         for a in soup.find_all("a", href=True):
             href = a["href"]

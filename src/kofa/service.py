@@ -139,7 +139,7 @@ class KofaService:
                 f"(vektor: {r.similarity:.3f}, FTS: {r.fts_rank:.3f})*"
             )
             parts.append(f"\n{snippet}\n")
-            parts.append(f"-> `hent_avgjoerelse(\"{r.sak_nr}\", \"{r.section}\")`\n")
+            parts.append(f'-> `hent_avgjoerelse("{r.sak_nr}", "{r.section}")`\n')
             lines.append("\n".join(parts))
 
         return "\n".join(lines)
@@ -290,7 +290,7 @@ class KofaService:
             return "Ingen siteringsdata tilgjengelig."
 
         lines = ["## Mest siterte KOFA-saker\n"]
-        lines.append(f"Basert på kryssreferanser i avgjørelsestekst (2020+).\n")
+        lines.append("Basert på kryssreferanser i avgjørelsestekst (2020+).\n")
 
         for r in results:
             sak_nr = r.get("sak_nr", "?")
@@ -416,7 +416,7 @@ class KofaService:
         # WP API sync (skip if only doing PDF or reference extraction)
         if not pdf and not references:
             wp_stats = self.backend.sync_from_wp_api(force=force, verbose=verbose)
-            lines.append(f"### WordPress API")
+            lines.append("### WordPress API")
             lines.append(f"- Hentet **{wp_stats['upserted']}** saker fra {wp_stats['pages']} sider")
             if wp_stats["errors"]:
                 lines.append(f"- {wp_stats['errors']} feil")
@@ -432,7 +432,7 @@ class KofaService:
                 force=force,
                 refresh_pending=refresh_pending,
             )
-            lines.append(f"\n### HTML-skraping")
+            lines.append("\n### HTML-skraping")
             lines.append(f"- Beriket **{html_stats['scraped']}** saker med metadata")
             if html_stats["errors"]:
                 lines.append(f"- {html_stats['errors']} feil")
@@ -451,8 +451,10 @@ class KofaService:
                 verbose=verbose,
                 force=force,
             )
-            lines.append(f"\n### PDF-ekstraksjon")
-            lines.append(f"- Ekstrahert **{pdf_stats['extracted']}** avgjørelser ({pdf_stats['total_paragraphs']} avsnitt)")
+            lines.append("\n### PDF-ekstraksjon")
+            lines.append(
+                f"- Ekstrahert **{pdf_stats['extracted']}** avgjørelser ({pdf_stats['total_paragraphs']} avsnitt)"
+            )
             if pdf_stats["errors"]:
                 lines.append(f"- {pdf_stats['errors']} feil")
             if pdf_stats["skipped"]:
@@ -467,7 +469,7 @@ class KofaService:
                 verbose=verbose,
                 force=force,
             )
-            lines.append(f"\n### Referanse-ekstraksjon")
+            lines.append("\n### Referanse-ekstraksjon")
             lines.append(
                 f"- Prosessert **{ref_stats['cases_processed']}** saker "
                 f"({ref_stats['law_refs']} lovhenvisninger, {ref_stats['case_refs']} sakskryssreferanser, "
@@ -615,16 +617,13 @@ Kjør `sync()` for å laste ned saker fra KOFA."""
 
         lines.append("")
         lines.append(
-            "Bruk `hent_avgjoerelse(sak_nr, seksjon='vurdering')` "
-            "for å lese en bestemt seksjon."
+            "Bruk `hent_avgjoerelse(sak_nr, seksjon='vurdering')` for å lese en bestemt seksjon."
         )
 
         return "\n".join(lines)
 
     @staticmethod
-    def _format_decision_section(
-        sak_nr: str, section: str, paragraphs: list[dict]
-    ) -> str:
+    def _format_decision_section(sak_nr: str, section: str, paragraphs: list[dict]) -> str:
         """Format decision text paragraphs for a specific section."""
         section_labels = {
             "innledning": "Innledning",

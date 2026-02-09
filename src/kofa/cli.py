@@ -20,11 +20,12 @@ import sys
 
 def cmd_serve(args):
     """Start MCP server (stdio or HTTP)."""
-    from kofa import MCPServer, KofaService
+    from kofa import KofaService, MCPServer
 
     if args.http:
         try:
             from flask import Flask
+
             from kofa.web import create_mcp_blueprint
         except ImportError:
             print("Flask not installed. Run: pip install kofa[http]", file=sys.stderr)
@@ -133,16 +134,34 @@ def main():
     sync_parser = subparsers.add_parser("sync", help="Sync data from KOFA")
     sync_parser.add_argument("--scrape", action="store_true", help="Also scrape HTML metadata")
     sync_parser.add_argument("--pdf", action="store_true", help="Extract text from decision PDFs")
-    sync_parser.add_argument("--references", action="store_true", help="Extract law/case references from decision text (2020+ cases)")
+    sync_parser.add_argument(
+        "--references",
+        action="store_true",
+        help="Extract law/case references from decision text (2020+ cases)",
+    )
     sync_parser.add_argument("--force", "-f", action="store_true", help="Force full re-sync")
     sync_parser.add_argument("--limit", type=int, default=None, help="Max cases to scrape")
-    sync_parser.add_argument("--max-time", type=int, default=0, help="Stop after N minutes (0=unlimited)")
-    sync_parser.add_argument("--delay", type=float, default=1.0, help="Delay between scrape requests (seconds)")
-    sync_parser.add_argument("--max-errors", type=int, default=20, help="Stop after N consecutive errors")
-    sync_parser.add_argument("--refresh-pending", action="store_true", help="Re-scrape cases with no decision yet")
-    sync_parser.add_argument("--embeddings", action="store_true", help="Generate embeddings for decision text")
-    sync_parser.add_argument("--dry-run", action="store_true", help="Show what would be done (with --embeddings)")
-    sync_parser.add_argument("--workers", type=int, default=1, help="Parallel workers for embedding (default: 1)")
+    sync_parser.add_argument(
+        "--max-time", type=int, default=0, help="Stop after N minutes (0=unlimited)"
+    )
+    sync_parser.add_argument(
+        "--delay", type=float, default=1.0, help="Delay between scrape requests (seconds)"
+    )
+    sync_parser.add_argument(
+        "--max-errors", type=int, default=20, help="Stop after N consecutive errors"
+    )
+    sync_parser.add_argument(
+        "--refresh-pending", action="store_true", help="Re-scrape cases with no decision yet"
+    )
+    sync_parser.add_argument(
+        "--embeddings", action="store_true", help="Generate embeddings for decision text"
+    )
+    sync_parser.add_argument(
+        "--dry-run", action="store_true", help="Show what would be done (with --embeddings)"
+    )
+    sync_parser.add_argument(
+        "--workers", type=int, default=1, help="Parallel workers for embedding (default: 1)"
+    )
 
     # status
     subparsers.add_parser("status", help="Show sync status")

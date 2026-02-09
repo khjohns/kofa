@@ -11,7 +11,7 @@ def create_mcp_blueprint():
     """Create and return Flask MCP blueprint."""
     from flask import Blueprint, Response, jsonify, request
 
-    from kofa import MCPServer, KofaService
+    from kofa import KofaService, MCPServer
 
     mcp_bp = Blueprint("kofa_mcp", __name__)
 

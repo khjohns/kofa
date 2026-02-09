@@ -10,13 +10,13 @@ import logging
 import re
 import signal
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import httpx
 from bs4 import BeautifulSoup
 
 from kofa._supabase_utils import get_shared_client, with_retry
-from kofa.scraper import KofaScraper, CaseMetadata
+from kofa.scraper import CaseMetadata, KofaScraper
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +34,7 @@ def _log(msg: str):
     """Print with timestamp (for CLI sync scripts)."""
     ts = datetime.now().strftime("%H:%M:%S")
     print(f"[{ts}] {msg}")
+
 
 # WordPress REST API base
 WP_API_BASE = "https://www.klagenemndssekretariatet.no/wp-json/wp/v2"
@@ -53,7 +54,9 @@ def _strip_html(text: str) -> str:
     if not text:
         return ""
     clean = HTML_TAG_RE.sub("", text)
-    return BeautifulSoup(clean, "html.parser").get_text(strip=True) if "&" in clean else clean.strip()
+    return (
+        BeautifulSoup(clean, "html.parser").get_text(strip=True) if "&" in clean else clean.strip()
+    )
 
 
 class KofaSupabaseBackend:
@@ -69,13 +72,7 @@ class KofaSupabaseBackend:
     @with_retry()
     def get_case(self, sak_nr: str) -> dict | None:
         """Get a single case by sak_nr."""
-        result = (
-            self.client.table("kofa_cases")
-            .select("*")
-            .eq("sak_nr", sak_nr)
-            .limit(1)
-            .execute()
-        )
+        result = self.client.table("kofa_cases").select("*").eq("sak_nr", sak_nr).limit(1).execute()
         return result.data[0] if result.data else None
 
     @with_retry()
@@ -125,12 +122,7 @@ class KofaSupabaseBackend:
     @with_retry()
     def get_case_count(self) -> int:
         """Get total number of cases."""
-        result = (
-            self.client.table("kofa_cases")
-            .select("*", count="exact")
-            .limit(0)
-            .execute()
-        )
+        result = self.client.table("kofa_cases").select("*", count="exact").limit(0).execute()
         return result.count or 0
 
     # =========================================================================
@@ -142,20 +134,13 @@ class KofaSupabaseBackend:
         """Bulk upsert cases from WP API data."""
         if not cases:
             return 0
-        self.client.table("kofa_cases").upsert(
-            cases, on_conflict="sak_nr"
-        ).execute()
+        self.client.table("kofa_cases").upsert(cases, on_conflict="sak_nr").execute()
         return len(cases)
 
     @with_retry()
     def update_case_metadata(self, sak_nr: str, metadata: dict) -> bool:
         """Update a case with scraped HTML metadata."""
-        result = (
-            self.client.table("kofa_cases")
-            .update(metadata)
-            .eq("sak_nr", sak_nr)
-            .execute()
-        )
+        result = self.client.table("kofa_cases").update(metadata).eq("sak_nr", sak_nr).execute()
         return bool(result.data)
 
     # =========================================================================
@@ -196,7 +181,8 @@ class KofaSupabaseBackend:
 
         # First request to get total count
         with httpx.Client(
-            timeout=30.0, follow_redirects=True,
+            timeout=30.0,
+            follow_redirects=True,
             headers={"User-Agent": "kofa-mcp/0.1.0"},
         ) as client:
             page = 1
@@ -291,7 +277,9 @@ class KofaSupabaseBackend:
                 elapsed = time.time() - start_time
                 rate = stats["total"] / (elapsed / 60) if elapsed > 0 else 0
                 total_pages = int(resp.headers.get("X-WP-TotalPages", "1"))
-                log(f"Page {page}/{total_pages} - {stats['upserted']} upserted ({rate:.0f} items/min)")
+                log(
+                    f"Page {page}/{total_pages} - {stats['upserted']} upserted ({rate:.0f} items/min)"
+                )
 
                 if page >= total_pages:
                     break
@@ -301,7 +289,7 @@ class KofaSupabaseBackend:
 
         # Update sync cursor
         if stats["upserted"] > 0:
-            now = datetime.now(timezone.utc).isoformat()
+            now = datetime.now(UTC).isoformat()
             self._update_sync_cursor("wp_api", now, stats["upserted"])
 
         elapsed = time.time() - start_time
@@ -395,12 +383,14 @@ class KofaSupabaseBackend:
                 log("No cases need scraping")
                 return stats
 
-            log(f"Found {total} cases to scrape (delay={delay}s, max_time={max_time or 'unlimited'}min)")
+            log(
+                f"Found {total} cases to scrape (delay={delay}s, max_time={max_time or 'unlimited'}min)"
+            )
             if max_time:
                 log(f"Will stop after {max_time} minutes")
 
             with KofaScraper() as scraper:
-                for i, case in enumerate(cases):
+                for _i, case in enumerate(cases):
                     # --- Check stop conditions ---
                     if _shutdown_requested:
                         stats["stopped_reason"] = "interrupted"
@@ -432,7 +422,7 @@ class KofaSupabaseBackend:
                         try:
                             meta = scraper.extract_metadata(url)
                             update = self._metadata_to_update(meta)
-                            update["scraped_at"] = datetime.now(timezone.utc).isoformat()
+                            update["scraped_at"] = datetime.now(UTC).isoformat()
                             self.update_case_metadata(sak_nr, update)
                             stats["scraped"] += 1
                             consecutive_errors = 0
@@ -441,7 +431,9 @@ class KofaSupabaseBackend:
                         except httpx.TimeoutException:
                             if attempt < 2:
                                 wait = 2 ** (attempt + 1)
-                                logger.warning(f"Timeout scraping {sak_nr}, retry {attempt + 1}/3 in {wait}s")
+                                logger.warning(
+                                    f"Timeout scraping {sak_nr}, retry {attempt + 1}/3 in {wait}s"
+                                )
                                 time.sleep(wait)
                             else:
                                 logger.warning(f"Timeout scraping {sak_nr} after 3 attempts")
@@ -451,9 +443,12 @@ class KofaSupabaseBackend:
                             status_code = e.response.status_code
                             if status_code == 404:
                                 # Page doesn't exist, mark as scraped to skip next time
-                                self.update_case_metadata(sak_nr, {
-                                    "scraped_at": datetime.now(timezone.utc).isoformat(),
-                                })
+                                self.update_case_metadata(
+                                    sak_nr,
+                                    {
+                                        "scraped_at": datetime.now(UTC).isoformat(),
+                                    },
+                                )
                                 stats["skipped"] += 1
                                 consecutive_errors = 0
                                 success = True
@@ -501,7 +496,9 @@ class KofaSupabaseBackend:
         rate = processed / (elapsed / 60) if elapsed > 0 else 0
         remaining = total - processed
 
-        status_label = "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        status_label = (
+            "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        )
         log(f"{status_label} in {elapsed / 60:.1f} min")
         log(f"Scraped: {stats['scraped']}, Errors: {stats['errors']}, Skipped: {stats['skipped']}")
         log(f"Rate: {rate:.0f}/min avg")
@@ -512,7 +509,7 @@ class KofaSupabaseBackend:
         if stats["scraped"] > 0:
             self._update_sync_cursor(
                 "html_scrape",
-                datetime.now(timezone.utc).isoformat(),
+                datetime.now(UTC).isoformat(),
                 stats["scraped"],
             )
 
@@ -624,11 +621,13 @@ class KofaSupabaseBackend:
                 log("No PDFs need extraction")
                 return stats
 
-            log(f"Found {total} PDFs to extract (delay={delay}s, max_time={max_time or 'unlimited'}min)")
+            log(
+                f"Found {total} PDFs to extract (delay={delay}s, max_time={max_time or 'unlimited'}min)"
+            )
 
             extractor = PdfExtractor()
 
-            for i, case in enumerate(cases):
+            for _i, case in enumerate(cases):
                 if _shutdown_requested:
                     stats["stopped_reason"] = "interrupted"
                     log("Shutdown requested...")
@@ -731,15 +730,19 @@ class KofaSupabaseBackend:
         processed = stats["extracted"] + stats["errors"] + stats["skipped"]
         rate = processed / (elapsed / 60) if elapsed > 0 else 0
 
-        status_label = "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        status_label = (
+            "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        )
         log(f"{status_label} in {elapsed / 60:.1f} min")
-        log(f"Extracted: {stats['extracted']}, Errors: {stats['errors']}, Skipped: {stats['skipped']}")
+        log(
+            f"Extracted: {stats['extracted']}, Errors: {stats['errors']}, Skipped: {stats['skipped']}"
+        )
         log(f"Total paragraphs: {stats['total_paragraphs']}, Rate: {rate:.0f}/min avg")
 
         if stats["extracted"] > 0:
             self._update_sync_cursor(
                 "pdf_extract",
-                datetime.now(timezone.utc).isoformat(),
+                datetime.now(UTC).isoformat(),
                 stats["extracted"],
             )
 
@@ -748,9 +751,7 @@ class KofaSupabaseBackend:
     def _store_decision_text(self, decision) -> None:
         """Store extracted decision text in kofa_decision_text table."""
         # Delete existing rows for this case (in case of re-extraction)
-        self.client.table("kofa_decision_text").delete().eq(
-            "sak_nr", decision.sak_nr
-        ).execute()
+        self.client.table("kofa_decision_text").delete().eq("sak_nr", decision.sak_nr).execute()
 
         # Build rows from paragraphs (use sequential index as paragraph_number
         # since PDF numbering can restart per section and produce duplicates)
@@ -769,13 +770,15 @@ class KofaSupabaseBackend:
 
         # If no paragraphs but we have raw text, store a single row
         if not rows and decision.raw_text:
-            rows.append({
-                "sak_nr": decision.sak_nr,
-                "paragraph_number": 0,
-                "section": "raw",
-                "text": "",
-                "raw_full_text": decision.raw_text,
-            })
+            rows.append(
+                {
+                    "sak_nr": decision.sak_nr,
+                    "paragraph_number": 0,
+                    "section": "raw",
+                    "text": "",
+                    "raw_full_text": decision.raw_text,
+                }
+            )
 
         # Batch insert (PostgREST handles up to ~1000 rows)
         if rows:
@@ -783,9 +786,11 @@ class KofaSupabaseBackend:
 
     def _mark_pdf_extracted(self, sak_nr: str) -> None:
         """Mark a case as having had its PDF extracted."""
-        self.client.table("kofa_cases").update({
-            "pdf_extracted_at": datetime.now(timezone.utc).isoformat(),
-        }).eq("sak_nr", sak_nr).execute()
+        self.client.table("kofa_cases").update(
+            {
+                "pdf_extracted_at": datetime.now(UTC).isoformat(),
+            }
+        ).eq("sak_nr", sak_nr).execute()
 
     # =========================================================================
     # Sync metadata (cursors)
@@ -815,7 +820,7 @@ class KofaSupabaseBackend:
                     "source": source,
                     "cursor_value": cursor,
                     "last_count": count,
-                    "synced_at": datetime.now(timezone.utc).isoformat(),
+                    "synced_at": datetime.now(UTC).isoformat(),
                 },
                 on_conflict="source",
             ).execute()
@@ -923,36 +928,42 @@ class KofaSupabaseBackend:
 
                         # Attach paragraph number and context
                         for ref in law_refs:
-                            all_law_refs.append({
-                                "sak_nr": sak_nr,
-                                "paragraph_number": para_num,
-                                "reference_type": ref.reference_type,
-                                "law_name": ref.law_name,
-                                "law_section": ref.section,
-                                "raw_text": ref.raw_text,
-                                "lovdata_doc_id": _resolve_doc_id(ref.law_name),
-                                "regulation_version": reg_version,
-                                "context": text[:300],
-                            })
+                            all_law_refs.append(
+                                {
+                                    "sak_nr": sak_nr,
+                                    "paragraph_number": para_num,
+                                    "reference_type": ref.reference_type,
+                                    "law_name": ref.law_name,
+                                    "law_section": ref.section,
+                                    "raw_text": ref.raw_text,
+                                    "lovdata_doc_id": _resolve_doc_id(ref.law_name),
+                                    "regulation_version": reg_version,
+                                    "context": text[:300],
+                                }
+                            )
 
                         for ref in case_refs:
                             if ref.sak_nr == sak_nr:
                                 continue  # Skip self-references
-                            all_case_refs.append({
-                                "from_sak_nr": sak_nr,
-                                "to_sak_nr": ref.sak_nr,
-                                "paragraph_number": para_num,
-                                "context": text[:300],
-                            })
+                            all_case_refs.append(
+                                {
+                                    "from_sak_nr": sak_nr,
+                                    "to_sak_nr": ref.sak_nr,
+                                    "paragraph_number": para_num,
+                                    "context": text[:300],
+                                }
+                            )
 
                         for ref in eu_refs:
-                            all_eu_refs.append({
-                                "sak_nr": sak_nr,
-                                "eu_case_id": ref.case_id,
-                                "eu_case_name": ref.case_name or None,
-                                "paragraph_number": para_num,
-                                "context": text[:300],
-                            })
+                            all_eu_refs.append(
+                                {
+                                    "sak_nr": sak_nr,
+                                    "eu_case_id": ref.case_id,
+                                    "eu_case_name": ref.case_name or None,
+                                    "paragraph_number": para_num,
+                                    "context": text[:300],
+                                }
+                            )
 
                     # Deduplicate within case
                     all_law_refs = self._deduplicate_law_refs(all_law_refs)
@@ -987,7 +998,9 @@ class KofaSupabaseBackend:
             signal.signal(signal.SIGTERM, prev_sigterm)
 
         elapsed = time.time() - start_time
-        status_label = "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        status_label = (
+            "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        )
         log(f"{status_label} in {elapsed:.1f}s")
         log(
             f"Processed: {stats['cases_processed']}, "
@@ -998,7 +1011,7 @@ class KofaSupabaseBackend:
         if stats["cases_processed"] > 0:
             self._update_sync_cursor(
                 "references",
-                datetime.now(timezone.utc).isoformat(),
+                datetime.now(UTC).isoformat(),
                 stats["cases_processed"],
             )
 
@@ -1077,9 +1090,7 @@ class KofaSupabaseBackend:
         return result.data or []
 
     @with_retry()
-    def get_decision_text(
-        self, sak_nr: str, section: str | None = None
-    ) -> list[dict]:
+    def get_decision_text(self, sak_nr: str, section: str | None = None) -> list[dict]:
         """Get decision text paragraphs, optionally filtered by section."""
         query = (
             self.client.table("kofa_decision_text")
@@ -1180,15 +1191,9 @@ class KofaSupabaseBackend:
         """Store extracted references in database."""
         if force:
             # Delete existing references for this case
-            self.client.table("kofa_law_references").delete().eq(
-                "sak_nr", sak_nr
-            ).execute()
-            self.client.table("kofa_case_references").delete().eq(
-                "from_sak_nr", sak_nr
-            ).execute()
-            self.client.table("kofa_eu_references").delete().eq(
-                "sak_nr", sak_nr
-            ).execute()
+            self.client.table("kofa_law_references").delete().eq("sak_nr", sak_nr).execute()
+            self.client.table("kofa_case_references").delete().eq("from_sak_nr", sak_nr).execute()
+            self.client.table("kofa_eu_references").delete().eq("sak_nr", sak_nr).execute()
 
         if law_refs:
             self.client.table("kofa_law_references").insert(law_refs).execute()

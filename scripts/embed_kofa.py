@@ -13,15 +13,15 @@ Recommended for Supabase free/micro tier:
     python scripts/embed_kofa.py --workers 1 --max-time 25
 """
 
+import argparse
+import hashlib
+import math
 import os
 import sys
-import math
-import hashlib
-import argparse
-import time
 import threading
-from datetime import datetime
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime
 
 # Add src to path for kofa imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
@@ -181,10 +181,8 @@ def process_batch(batch_texts: list[str], batch_ids: list[str]) -> int:
         return 0
 
     updates = []
-    for para_id, embedding, text in zip(batch_ids, embeddings, batch_texts):
-        updates.append(
-            {"id": para_id, "embedding": embedding, "content_hash": content_hash(text)}
-        )
+    for para_id, embedding, text in zip(batch_ids, embeddings, batch_texts, strict=False):
+        updates.append({"id": para_id, "embedding": embedding, "content_hash": content_hash(text)})
 
     return update_embeddings(supabase, updates)
 
@@ -208,7 +206,9 @@ Examples:
     parser.add_argument("--limit", type=int, help="Max paragraphs to process")
     parser.add_argument("--workers", type=int, default=1, help="Parallel workers (default: 1)")
     parser.add_argument("--delay", type=float, default=0, help="Delay between batches (seconds)")
-    parser.add_argument("--max-time", type=int, default=0, help="Stop after N minutes (0=unlimited)")
+    parser.add_argument(
+        "--max-time", type=int, default=0, help="Stop after N minutes (0=unlimited)"
+    )
     parser.add_argument("--force", action="store_true", help="Re-embed all (ignore content_hash)")
     args = parser.parse_args()
 
@@ -315,7 +315,7 @@ Examples:
     rate = total_processed / (elapsed / 60) if elapsed > 0 else 0
 
     print("")
-    log(f"{'STOPPED' if stopped_early else 'DONE'} in {elapsed/60:.1f} minutes")
+    log(f"{'STOPPED' if stopped_early else 'DONE'} in {elapsed / 60:.1f} minutes")
     log(f"Processed: {total_processed:,} paragraphs ({rate:.0f}/min avg)")
     if stopped_early:
         remaining = len(all_items) - total_processed

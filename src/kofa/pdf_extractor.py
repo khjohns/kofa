@@ -130,7 +130,7 @@ class PdfExtractor:
         # Extract conclusion
         konklusjon_match = KONKLUSJON_RE.search(body_text)
         if konklusjon_match:
-            result.conclusion = body_text[konklusjon_match.end():].strip()
+            result.conclusion = body_text[konklusjon_match.end() :].strip()
 
         # Split into numbered paragraphs
         paragraphs = self._parse_paragraphs(body_text)
@@ -195,9 +195,7 @@ class PdfExtractor:
         return paragraphs
 
     @staticmethod
-    def _assign_sections(
-        paragraphs: list[DecisionParagraph], full_text: str
-    ) -> None:
+    def _assign_sections(paragraphs: list[DecisionParagraph], full_text: str) -> None:
         """Assign section labels to paragraphs based on section headings in text."""
         # Find section boundaries by searching for keywords in the full text
         section_positions: list[tuple[int, str]] = []

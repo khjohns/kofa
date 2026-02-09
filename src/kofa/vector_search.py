@@ -5,14 +5,13 @@ Combines semantic vector search with PostgreSQL full-text search
 for best results on both natural language and legal terminology.
 """
 
-import os
-import math
 import logging
+import math
+import os
 from dataclasses import dataclass
 from functools import lru_cache
 
 from kofa._supabase_utils import get_shared_client, with_retry
-
 
 logger = logging.getLogger(__name__)
 

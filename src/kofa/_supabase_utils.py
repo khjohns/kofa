@@ -169,9 +169,7 @@ def with_retry(
                             raise classified from e
                         backoff = min(_base * (2**attempt), _max_backoff)
                         if RETRY_JITTER:
-                            backoff = max(
-                                0, backoff + backoff * 0.25 * (2 * random.random() - 1)
-                            )
+                            backoff = max(0, backoff + backoff * 0.25 * (2 * random.random() - 1))
                         time.sleep(backoff)
                     else:
                         raise classified from e

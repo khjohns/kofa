@@ -21,18 +21,18 @@ from dataclasses import dataclass
 class LawReference:
     """A reference to a law or regulation section."""
 
-    law_name: str          # Normalized name (e.g. "anskaffelsesforskriften")
-    section: str           # Section number (e.g. "2-4", "12")
-    raw_text: str          # Original matched text
-    reference_type: str    # "lov" or "forskrift"
-    position: int          # Character position in text
+    law_name: str  # Normalized name (e.g. "anskaffelsesforskriften")
+    section: str  # Section number (e.g. "2-4", "12")
+    raw_text: str  # Original matched text
+    reference_type: str  # "lov" or "forskrift"
+    position: int  # Character position in text
 
 
 @dataclass
 class CaseReference:
     """A reference to another KOFA case."""
 
-    sak_nr: str            # e.g. "2019/491"
+    sak_nr: str  # e.g. "2019/491"
     raw_text: str
     position: int
 
@@ -41,8 +41,8 @@ class CaseReference:
 class EUCaseReference:
     """A reference to an EU Court of Justice case."""
 
-    case_id: str           # e.g. "C-19/00"
-    case_name: str         # e.g. "SIAC Construction" (may be empty)
+    case_id: str  # e.g. "C-19/00"
+    case_name: str  # e.g. "SIAC Construction" (may be empty)
     raw_text: str
     position: int
 
@@ -66,8 +66,8 @@ LAW_ALIASES: dict[str, str] = {
     "anskaffingsforskrifta": "anskaffelsesforskriften",
     # Other laws commonly referenced in KOFA decisions
     "klagenemndsforskriften": "klagenemndsforskriften",
-    "klagenemndforskriften": "klagenemndsforskriften",   # Common typo (missing s)
-    "klagenemnsforskriften": "klagenemndsforskriften",   # Common typo (ns vs nds)
+    "klagenemndforskriften": "klagenemndsforskriften",  # Common typo (missing s)
+    "klagenemnsforskriften": "klagenemndsforskriften",  # Common typo (ns vs nds)
     "forsyningsforskriften": "forsyningsforskriften",
     "konsesjonskontraktforskriften": "konsesjonskontraktforskriften",
     "konkurranseloven": "konkurranseloven",
@@ -153,9 +153,7 @@ def _normalize_section(section: str) -> str:
 
 
 # Trailing connector words that should be stripped from EU case names
-_TRAILING_CONNECTOR_RE = re.compile(
-    r"\s+(?:og|mot|v\.|et|und|gegen)\s*$"
-)
+_TRAILING_CONNECTOR_RE = re.compile(r"\s+(?:og|mot|v\.|et|und|gegen)\s*$")
 
 
 def _clean_eu_case_name(name: str) -> str:
@@ -183,40 +181,40 @@ def _clean_eu_case_name(name: str) -> str:
 # Matches: "anskaffelsesloven § 12", "forskriften § 20-8 (1) bokstav b"
 _NAMED_LAW_RE = re.compile(
     r"([\wæøåÆØÅ-]+(?:loven|lova|forskriften|forskrifta))"  # law name
-    r"\s+§§?\s*"                                              # § or §§
-    r"([\d]+(?:-[\d]+)?)"                                     # section number
+    r"\s+§§?\s*"  # § or §§
+    r"([\d]+(?:-[\d]+)?)"  # section number
     r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
-    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",                # optional subsection
+    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
     re.IGNORECASE,
 )
 
 # Pattern 1b: Abbreviation + § (e.g. "FOA § 8-3", "LOA § 4")
 _ABBREV_LAW_RE = re.compile(
-    r"\b(FOA|LOA|foa|loa)"                                        # abbreviation
-    r"\s+§§?\s*"                                                   # §
-    r"([\d]+(?:-[\d]+)?)"                                          # section number
+    r"\b(FOA|LOA|foa|loa)"  # abbreviation
+    r"\s+§§?\s*"  # §
+    r"([\d]+(?:-[\d]+)?)"  # section number
     r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
-    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",                     # optional subsection
+    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
 )
 
 # Pattern 1c: Abbreviation WITHOUT § (e.g. "FOA 7-9 (2)")
 # Requires dash in section number to avoid matching years like "FOA 2016"
 _ABBREV_NO_SIGN_RE = re.compile(
-    r"\b(FOA|LOA|foa|loa)"                                        # abbreviation
-    r"\s+"                                                         # space (no §)
-    r"(\d+-\d+)"                                                   # section with dash (required)
+    r"\b(FOA|LOA|foa|loa)"  # abbreviation
+    r"\s+"  # space (no §)
+    r"(\d+-\d+)"  # section with dash (required)
     r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
-    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",                     # optional subsection
+    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
 )
 
 # Pattern 2: "lov/forskrift om <name> § <section>"
 _DESCRIPTIVE_LAW_RE = re.compile(
-    r"(?:lov|forskrift)\s+om\s+"                              # "lov om" / "forskrift om"
-    r"([\wæøåÆØÅ\s]+?)"                                      # descriptive name
-    r"\s+§§?\s*"                                              # §
-    r"([\d]+(?:-[\d]+)?)"                                     # section number
+    r"(?:lov|forskrift)\s+om\s+"  # "lov om" / "forskrift om"
+    r"([\wæøåÆØÅ\s]+?)"  # descriptive name
+    r"\s+§§?\s*"  # §
+    r"([\d]+(?:-[\d]+)?)"  # section number
     r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
-    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",                # optional subsection
+    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
     re.IGNORECASE,
 )
 
@@ -232,14 +230,14 @@ _CASE_REF_RE = re.compile(
 # Matches: "C-19/00 SIAC Construction", "C-368/10 (Max Havelaar)", "C-213/13"
 # Name follows either in parentheses or as capitalized words with connectors
 _EU_CASE_RE = re.compile(
-    r"(C-\d+/\d+)"                                          # case number
+    r"(C-\d+/\d+)"  # case number
     r"(?:"
-    r"\s+\(([^)]+)\)"                                        # name in parens: (Max Havelaar)
+    r"\s+\(([^)]+)\)"  # name in parens: (Max Havelaar)
     r"|"
-    r"\s+((?:[A-ZÆØÅ][\wæøåÆØÅ\x27\u2019\u00B4-]*"         # first capitalized word
-    r"(?:\s+(?:[A-ZÆØÅ][\wæøåÆØÅ\x27\u2019\u00B4-]*"       # more capitalized words
-    r"|mot|v\.|dell|della|del|di|und|gegen|et|og))*"         # or connectors
-    r"))(?=[\s,.\)\];:]|avsnitt|premiss|$)"                  # boundary
+    r"\s+((?:[A-ZÆØÅ][\wæøåÆØÅ\x27\u2019\u00B4-]*"  # first capitalized word
+    r"(?:\s+(?:[A-ZÆØÅ][\wæøåÆØÅ\x27\u2019\u00B4-]*"  # more capitalized words
+    r"|mot|v\.|dell|della|del|di|und|gegen|et|og))*"  # or connectors
+    r"))(?=[\s,.\)\];:]|avsnitt|premiss|$)"  # boundary
     r")?",
 )
 
@@ -251,8 +249,8 @@ _EU_CASE_RE = re.compile(
 _OLD_REGULATION_PATTERNS = [
     re.compile(r"lov om offentlige anskaffelser av 16\.?\s*juli 1999", re.IGNORECASE),
     re.compile(r"forskrift om offentlige anskaffelser av 7\.?\s*april 2006", re.IGNORECASE),
-    re.compile(r"1999\s*nr\.?\s*69"),       # LOA 1999 nr. 69
-    re.compile(r"2006\s*nr\.?\s*402"),       # FOA 2006 nr. 402
+    re.compile(r"1999\s*nr\.?\s*69"),  # LOA 1999 nr. 69
+    re.compile(r"2006\s*nr\.?\s*402"),  # FOA 2006 nr. 402
     re.compile(r"den tidligere anskaffelsesloven", re.IGNORECASE),
     re.compile(r"den tidligere anskaffelsesforskriften", re.IGNORECASE),
     re.compile(r"dagjeldende\s+(forskrift|lov)\s+om\s+offentlige", re.IGNORECASE),
@@ -262,8 +260,8 @@ _OLD_REGULATION_PATTERNS = [
 _NEW_REGULATION_PATTERNS = [
     re.compile(r"lov om offentlige anskaffelser av 17\.?\s*juni 2016", re.IGNORECASE),
     re.compile(r"forskrift om offentlige anskaffelser av 12\.?\s*august 2016", re.IGNORECASE),
-    re.compile(r"2016\s*nr\.?\s*73"),        # LOA 2016 nr. 73
-    re.compile(r"2016\s*nr\.?\s*974"),       # FOA 2016 nr. 974
+    re.compile(r"2016\s*nr\.?\s*73"),  # LOA 2016 nr. 73
+    re.compile(r"2016\s*nr\.?\s*974"),  # FOA 2016 nr. 974
 ]
 
 
@@ -304,7 +302,7 @@ def detect_regulation_version(paragraphs: list[str], sak_nr: str = "") -> str:
 
     # Decision logic
     if has_new:
-        return "new"       # Explicit new, or both (new takes precedence)
+        return "new"  # Explicit new, or both (new takes precedence)
     if has_old:
         # "den tidligere" / "dagjeldende" in cases from 2018+ is historical
         # context, not old-law application. Only trust old-only signals for
@@ -316,7 +314,7 @@ def detect_regulation_version(paragraphs: list[str], sak_nr: str = "") -> str:
                     return "new"
             except (ValueError, IndexError):
                 pass
-        return "old"       # Only old patterns found (transition-era case)
+        return "old"  # Only old patterns found (transition-era case)
 
     # Fallback: use case number year
     if sak_nr:
@@ -353,13 +351,15 @@ class ReferenceExtractor:
             if key in seen:
                 return
             seen.add(key)
-            refs.append(LawReference(
-                law_name=canonical,
-                section=normalized,
-                raw_text=match.group(0).strip(),
-                reference_type=ref_type,
-                position=match.start(),
-            ))
+            refs.append(
+                LawReference(
+                    law_name=canonical,
+                    section=normalized,
+                    raw_text=match.group(0).strip(),
+                    reference_type=ref_type,
+                    position=match.start(),
+                )
+            )
 
         # Pattern 1: Named law references
         for m in _NAMED_LAW_RE.finditer(text):
@@ -401,11 +401,13 @@ class ReferenceExtractor:
             if sak_nr in seen:
                 continue
             seen.add(sak_nr)
-            refs.append(CaseReference(
-                sak_nr=sak_nr,
-                raw_text=m.group(0).strip(),
-                position=m.start(),
-            ))
+            refs.append(
+                CaseReference(
+                    sak_nr=sak_nr,
+                    raw_text=m.group(0).strip(),
+                    position=m.start(),
+                )
+            )
 
         return refs
 
@@ -421,12 +423,14 @@ class ReferenceExtractor:
             seen.add(case_id)
             # Name is in group 2 (parens) or group 3 (direct)
             case_name = _clean_eu_case_name(m.group(2) or m.group(3) or "")
-            refs.append(EUCaseReference(
-                case_id=case_id,
-                case_name=case_name,
-                raw_text=m.group(0).strip(),
-                position=m.start(),
-            ))
+            refs.append(
+                EUCaseReference(
+                    case_id=case_id,
+                    case_name=case_name,
+                    raw_text=m.group(0).strip(),
+                    position=m.start(),
+                )
+            )
 
         return refs
 
