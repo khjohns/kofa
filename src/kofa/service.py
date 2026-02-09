@@ -290,7 +290,7 @@ class KofaService:
             return "Ingen siteringsdata tilgjengelig."
 
         lines = ["## Mest siterte KOFA-saker\n"]
-        lines.append("Basert på kryssreferanser i avgjørelsestekst (2020+).\n")
+        lines.append("Basert på kryssreferanser i avgjørelsestekst.\n")
 
         for r in results:
             sak_nr = r.get("sak_nr", "?")
@@ -483,7 +483,7 @@ class KofaService:
         return "\n".join(lines)
 
     def get_status(self) -> str:
-        """Get sync status."""
+        """Get sync status with pipeline coverage."""
         status = self.backend.get_sync_status()
 
         if not status or status.get("cases", 0) == 0:
@@ -493,10 +493,42 @@ class KofaService:
 
 Kjør `sync()` for å laste ned saker fra KOFA."""
 
+        total = status.get("cases", 0)
         lines = ["## KOFA Status\n"]
-        lines.append(f"- **Totalt saker:** {status.get('cases', 0)}")
+        lines.append(f"- **Totalt saker:** {total}")
         lines.append(f"- **Beriket (med metadata):** {status.get('enriched', 0)}")
 
+        # Pipeline coverage
+        pipeline = status.get("pipeline")
+        if pipeline:
+            lines.append("\n### Pipeline-dekning\n")
+            lines.append("| Steg | Saker | Av total | % |")
+            lines.append("|------|------:|--------:|---:|")
+
+            steps = [
+                ("PDF-URL", pipeline.get("have_pdf_url", 0)),
+                ("PDF-tekst ekstrahert", pipeline.get("have_text", 0)),
+                ("Seksjonsinndelt", pipeline.get("sectioned", 0)),
+                ("Lovhenvisninger", pipeline.get("law_ref_cases", 0)),
+                ("Sakskryssreferanser", pipeline.get("case_ref_cases", 0)),
+                ("EU-referanser", pipeline.get("eu_ref_cases", 0)),
+            ]
+            for label, count in steps:
+                pct = round(100 * count / total) if total > 0 else 0
+                lines.append(f"| {label} | {count:,} | {total:,} | {pct}% |")
+
+            raw_only = pipeline.get("raw_only", 0)
+            if raw_only > 0:
+                lines.append(f"\n- **Raw-only (uten seksjonering):** {raw_only}")
+
+            paragraphs = pipeline.get("total_paragraphs", 0)
+            embeddings = pipeline.get("embeddings", 0)
+            if paragraphs > 0:
+                emb_pct = round(100 * embeddings / paragraphs) if paragraphs > 0 else 0
+                lines.append(f"- **Avsnitt (non-raw):** {paragraphs:,}")
+                lines.append(f"- **Embeddings:** {embeddings:,} ({emb_pct}%)")
+
+        # Sync cursors
         for key, val in status.items():
             if key.startswith("sync_") and isinstance(val, dict):
                 source = key.replace("sync_", "")

@@ -137,7 +137,7 @@ def main():
     sync_parser.add_argument(
         "--references",
         action="store_true",
-        help="Extract law/case references from decision text (2020+ cases)",
+        help="Extract law/case references from decision text",
     )
     sync_parser.add_argument("--force", "-f", action="store_true", help="Force full re-sync")
     sync_parser.add_argument("--limit", type=int, default=None, help="Max cases to scrape")

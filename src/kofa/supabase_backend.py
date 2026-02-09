@@ -838,7 +838,7 @@ class KofaSupabaseBackend:
         force: bool = False,
     ) -> dict:
         """
-        Extract law and case references from decision text (2017+ cases).
+        Extract law and case references from decision text.
 
         Reads paragraphs from kofa_decision_text, runs regex extraction,
         deduplicates, detects regulation version (old/new), resolves
@@ -874,7 +874,7 @@ class KofaSupabaseBackend:
         log = _log if verbose else lambda msg: logger.info(msg)
 
         try:
-            # Find 2020+ cases with extracted text
+            # Find cases with extracted text
             cases = self._find_cases_needing_references(force)
 
             if limit:
@@ -1018,8 +1018,8 @@ class KofaSupabaseBackend:
         return stats
 
     def _find_cases_needing_references(self, force: bool) -> list[str]:
-        """Find 2017+ cases with decision text that need reference extraction."""
-        # Get all cases with decision text from 2017+
+        """Find cases with decision text that need reference extraction."""
+        # Get all cases with decision text
         cases_with_text: list[str] = []
         page_size = 1000
         offset = 0
@@ -1027,7 +1027,6 @@ class KofaSupabaseBackend:
             result = (
                 self.client.table("kofa_decision_text")
                 .select("sak_nr")
-                .gte("sak_nr", "2017/")
                 .range(offset, offset + page_size - 1)
                 .execute()
             )
@@ -1370,7 +1369,7 @@ class KofaSupabaseBackend:
     # =========================================================================
 
     def get_sync_status(self) -> dict:
-        """Get sync status information."""
+        """Get sync status information including pipeline coverage."""
         status = {}
 
         # Case count
@@ -1393,6 +1392,12 @@ class KofaSupabaseBackend:
         except Exception:
             status["enriched"] = 0
 
+        # Pipeline coverage counts
+        try:
+            status["pipeline"] = self._get_pipeline_stats()
+        except Exception as e:
+            logger.debug(f"Could not fetch pipeline stats: {e}")
+
         # Sync cursors
         try:
             result = self.client.table("kofa_sync_meta").select("*").execute()
@@ -1406,3 +1411,51 @@ class KofaSupabaseBackend:
             pass
 
         return status
+
+    def _get_pipeline_stats(self) -> dict:
+        """Get pipeline coverage counts for status display."""
+
+        def _exact_count(table: str, not_null_col: str | None = None, neq: tuple | None = None):
+            q = self.client.table(table).select("*", count="exact").limit(0)
+            if not_null_col:
+                q = q.not_.is_(not_null_col, "null")
+            if neq:
+                q = q.neq(neq[0], neq[1])
+            return q.execute().count or 0
+
+        def _distinct_count(table: str, col: str = "sak_nr", neq: tuple | None = None) -> int:
+            unique: set[str] = set()
+            page_size = 1000
+            offset = 0
+            while True:
+                q = self.client.table(table).select(col)
+                if neq:
+                    q = q.neq(neq[0], neq[1])
+                result = q.range(offset, offset + page_size - 1).execute()
+                batch = result.data or []
+                unique.update(r[col] for r in batch)
+                if len(batch) < page_size:
+                    break
+                offset += page_size
+            return len(unique)
+
+        have_pdf_url = _exact_count("kofa_cases", not_null_col="pdf_url")
+        have_text = _distinct_count("kofa_decision_text")
+        sectioned = _distinct_count("kofa_decision_text", neq=("section", "raw"))
+        law_ref_cases = _distinct_count("kofa_law_references")
+        case_ref_cases = _distinct_count("kofa_case_references", col="from_sak_nr")
+        eu_ref_cases = _distinct_count("kofa_eu_references")
+        total_paragraphs = _exact_count("kofa_decision_text", neq=("section", "raw"))
+        embeddings = _exact_count("kofa_decision_text", not_null_col="embedding")
+
+        return {
+            "have_pdf_url": have_pdf_url,
+            "have_text": have_text,
+            "sectioned": sectioned,
+            "raw_only": have_text - sectioned,
+            "law_ref_cases": law_ref_cases,
+            "case_ref_cases": case_ref_cases,
+            "eu_ref_cases": eu_ref_cases,
+            "embeddings": embeddings,
+            "total_paragraphs": total_paragraphs,
+        }

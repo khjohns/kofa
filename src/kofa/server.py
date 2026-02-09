@@ -39,7 +39,7 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | `hent_sak(sak_nr)` | Hent en spesifikk sak med alle detaljer |
 | `hent_avgjoerelse(sak_nr, seksjon?)` | Hent avgjørelsestekst (innledning, bakgrunn, anførsler, vurdering, konklusjon) |
 | `siste_saker(limit?, sakstype?, avgjoerelse?, innklaget?)` | Siste avgjørelser med filtre |
-| `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf (2017+) |
+| `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf |
 | `relaterte_saker(sak_nr)` | Kryssreferanser: saker denne saken siterer og saker som siterer denne |
 | `mest_siterte(limit?)` | De mest siterte/prinsipielle KOFA-sakene |
 | `eu_praksis(eu_case_id, limit?)` | Finn KOFA-saker som refererer til en bestemt EU-dom |
@@ -118,7 +118,7 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 
 ## finn_praksis — lovhenvisninger
 
-Basert på lovhenvisninger ekstrahert fra avgjørelsestekst (2017+).
+Basert på lovhenvisninger ekstrahert fra avgjørelsestekst.
 Hvert resultat er merket med reguleringsversjon: ny (2016-forskriften) eller gammel (pre-2017).
 
 **Støttede lovnavn og aliaser:**
@@ -162,9 +162,9 @@ KOFA MCP og Paragraf MCP utfyller hverandre:
 
 ## Begrensninger
 
-- **Kun metadata for eldre saker:** Saker før 2017 har kun parter/tema/utfall, ikke lovhenvisninger
+- **Kun metadata for saker uten PDF-tekst:** ~920 saker (trukne, pågående, eldre uten PDF) har kun parter/tema/utfall, ikke lovhenvisninger
 - **Ikke rettsavgjørelser:** KOFA er forvaltningsorgan, ikke domstol — avgjørelsene er ikke bindende rettspraksis
-- **Avgjørelsestekst:** `hent_avgjoerelse` gir tilgang til fulltekst for ~2000 saker (2017+). Eldre saker har kun sammendrag
+- **Avgjørelsestekst:** `hent_avgjoerelse` gir tilgang til fulltekst for ~3700 saker. Saker uten PDF har kun sammendrag
 - **Seksjoner i avgjørelsestekst:** `innledning`, `bakgrunn` (faktum), `anfoersler` (partenes argumenter), `vurdering` (nemndas begrunnelse), `konklusjon`
 """
 
