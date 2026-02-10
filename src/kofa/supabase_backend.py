@@ -1210,6 +1210,11 @@ class KofaSupabaseBackend:
         "kofa_cases(innklaget, avgjoerelse, saken_gjelder, avsluttet)"
     )
 
+    @staticmethod
+    def _section_filter(query, section: str):
+        """Filter law_section by prefix: '16-10' matches '16-10', '16-10 (1)', etc."""
+        return query.or_(f"law_section.eq.{section},law_section.like.{section} %")
+
     @with_retry()
     def find_by_law_reference(
         self,
@@ -1235,7 +1240,7 @@ class KofaSupabaseBackend:
         )
 
         if section:
-            query = query.eq("law_section", section)
+            query = self._section_filter(query, section)
 
         query = query.order("sak_nr", desc=True).limit(limit)
         result = query.execute()
@@ -1262,13 +1267,11 @@ class KofaSupabaseBackend:
         # Step 1: Get sak_nr sets per section, then intersect
         sak_nr_sets = []
         for section in sections:
-            result = (
-                self.client.table("kofa_law_references")
-                .select("sak_nr")
-                .eq("law_name", law_name)
-                .eq("law_section", section)
-                .execute()
+            query = self._section_filter(
+                self.client.table("kofa_law_references").select("sak_nr").eq("law_name", law_name),
+                section,
             )
+            result = query.execute()
             sak_nrs = {r["sak_nr"] for r in (result.data or [])}
             sak_nr_sets.append(sak_nrs)
 
@@ -1282,11 +1285,13 @@ class KofaSupabaseBackend:
 
         # Step 2: Fetch full details for matching cases (limit on unique cases)
         matching_list = sorted(matching, reverse=True)[:limit]
+        # Build OR filter for all section prefixes
+        section_clauses = ",".join(f"law_section.eq.{s},law_section.like.{s} %" for s in sections)
         result = (
             self.client.table("kofa_law_references")
             .select(self._LAW_REF_SELECT)
             .eq("law_name", law_name)
-            .in_("law_section", sections)
+            .or_(section_clauses)
             .in_("sak_nr", matching_list)
             .order("sak_nr", desc=True)
             .execute()
@@ -1295,12 +1300,14 @@ class KofaSupabaseBackend:
 
     @with_retry()
     def count_cases_by_section(self, law_name: str, section: str) -> int:
-        """Count distinct cases citing a specific law section."""
+        """Count references citing a law section (prefix match)."""
         result = (
-            self.client.table("kofa_law_references")
-            .select("sak_nr", count="exact")
-            .eq("law_name", law_name)
-            .eq("law_section", section)
+            self._section_filter(
+                self.client.table("kofa_law_references")
+                .select("sak_nr", count="exact")
+                .eq("law_name", law_name),
+                section,
+            )
             .limit(0)
             .execute()
         )
