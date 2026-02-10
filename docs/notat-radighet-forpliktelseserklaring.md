@@ -90,6 +90,22 @@ Når oppdragsgiver ikke har stilt eksplisitt dokumentasjonskrav for rådighet i 
 
 Et ordinært kjøp fra en leverandør (traktor) er ikke det samme som å «støtte seg på» virksomhetens kapasitet (avsnitt 41). §§ 16-10 (2) og 17-1 (6) gjelder bare når leverandøren støtter seg på en annen virksomhet for å oppfylle kvalifikasjonskrav.
 
+#### Sak 2017/67 — Veibelysning (Osram/Trondheim) — økonomisk støtte med kontekst
+
+**Faktum:** Valgte leverandør (Osram AS, nyetablert etter oppdeling) støttet seg på morselskapet Osram GmbH for økonomisk kvalifikasjon. Forpliktelseserklæring ble ettersendt etter forespørsel via § 21-4 (gammel forskrift). Erklæringen var generisk: «nødvendige ressurser til disposisjon [...] i det omfang som er nødvendig for å oppfylle hovedleverandørens kontraktsforpliktelser». Ingen spesifisering av økonomiske bidrag.
+
+**Nemndas vurdering:** Nemnda tolket erklæringen i sammenheng med tilbudet, der valgte leverandør hadde forespeilet «tilgang på likviditet til enhver tid» og «betalingsgarantier på vegne av OSRAM AS» fra morselskapet (avsnitt 62). Innklagedes forespørsel om utfylling spesifiserte eksplisitt at det gjaldt «økonomisk soliditet» (avsnitt 63). Nemnda fant at skjønnsutøvelsen ikke kunne underkjennes (avsnitt 69).
+
+**Rettssetning:** En generisk forpliktelseserklæring kan godtas for økonomisk støtte der tilbudet gir kontekst som klargjør hva støtten omfatter. Kontrasterer med 2021/603 der tilbudet ikke ga slik kontekst.
+
+#### Sak 2025/1673 — Beredskapsvaskeri — eksisterende avtaler som rådighetsbevis
+
+**Faktum:** Valgte leverandør støttet seg på underleverandører for beredskapsfunksjon. Det var levert forpliktelseserklæringer, og beredskapsavtaler inngått i 2018 og 2021 — altså lenge før den aktuelle anskaffelsen — ble ettersendt.
+
+**Nemndas vurdering:** Beredskapsavtalene viste at underleverandørene var forpliktet til å levere vaskeritjenester. At avtalene var gamle var «ikke av betydning, ettersom avtalene fremdeles er gjeldende og dermed forplikter underleverandørene». Oppsigelsesfristen på 3 måneder innebar ikke at det manglet rådighet. Generell formulering i forpliktelseserklæring tilsa, «i sammenheng med de ettersendte beredskapsavtalene», at det forelå rådighet (avsnitt 64).
+
+**Rettssetning:** Eksisterende, eldre avtaler er tilstrekkelig rådighetsbevis — det kreves ikke ny/spesifikk avtale for den konkrete anskaffelsen. Alminnelige oppsigelsesfrister rokker ikke ved rådigheten. Bekrefter LH-2024-10855 om fravær av formkrav.
+
 #### Sak 2021/603 — Reisebyrå (Sykehusinnkjøp) — leverandørbytte, § 28-1
 
 **Faktum:** Rammeavtaler overdratt til ny leverandør etter konkurs. Ny leverandør hadde negativ egenkapital (-4,5 MNOK), men støttet seg på G Travel Tvete AS via forpliktelseserklæring. Det var ikke levert ESPD — saken gjaldt leverandørbytte etter § 28-1, ikke ordinær tilbudskonkurranse.
@@ -121,6 +137,16 @@ Hvis begge vilkår er oppfylt, formaliserer forpliktelseserklæringen et eksiste
 - 2022/31 avsnitt 32: «Ettersendingen forutsetter at det fremgikk av den opprinnelige besvarelsen at valgte leverandør mente å støtte seg på ressursene [...] og at [virksomheten] mente å avgi støtte.»
 - 2024/1959 avsnitt 39: «Det må fremgå av tilbudet at klager har ment å støtte seg på den aktuelle ressursen, og at underleverandøren har ment å avgi slik støtte», med referanse til LH-2024-10855 og LE-2022-19926.
 
+**Lagmannsrettsbekreftelser:** To-partstesten er bekreftet av lagmannsrettene. I LE-2021-130025 formulerer Eidsivating lagmannsrett at «ettersendelse av forpliktelseserklæringer forutsetter at det fremgår av tilbudet at tilbyderen mente å støtte seg på de oppgitte støttende virksomhetene, samt at disse virksomhetene mente å avgi støtte», med henvisning til KOFA-2020-254 avsnitt 31. LE-2022-19926 bekrefter det underliggende skillet mellom ettersendelse av dokumentasjon for noe som allerede var oppfylt ved tilbudsfrist, og etterfølgende oppfyllelse av selve kravet — og slutter seg til KOFAs stornemndsavgjørelse i sak 2020/515.
+
+**Negativt eksempel fra rettspraksis (LE-2021-130025 — Stange ungdomsskole):** Ecosør AS hadde oppført underleverandører i tilbudet basert på mottatte pristilbud, men hadde *ikke* krysset av i ESPD for at selskapet støttet seg på andre virksomheter. Underleverandørene visste ikke at de var oppført, og daglig leder forklarte at de pleide å «sitte stille i båten» til kontrakt var signert. Tingretten (som lagmannsretten sluttet seg til) konkluderte med at pristilbudene «viser hverken at Ecosør mente å støtte seg på de aktuelle ressursene eller at de aktuelle ressursene mente å avgi støtte». Ettersendelse av forpliktelseserklæring var en *forbedring* av tilbudet.
+
+**Prismessig konkurransefordel:** LE-2021-130025 dokumenterer også at å utsette forpliktelseserklæring kan gi en prismessig fordel: leverandøren beholder forhandlingsrom overfor underleverandører og kan presse pris. Ankemotpartens representant (Martin M Bakken AS) forklarte at deres tilbudspris ville vært lavere om de også hadde fått utsette forpliktelseserklæringen.
+
+**Oppdragsgiver kan begrense ettersendelsesadgangen.** I LE-2021-130025 hadde oppdragsgiver gjennom svar på spørsmål i konkurransegrunnlaget fastsatt at forpliktelseserklæring «skal vedlegges tilbudet» uten adgang til ettersendelse. Lagmannsretten tillegger dette vekt og konstaterer at kommunen dermed hadde «begrenset sin adgang til å be om ettersending».
+
+**Kvantitativ begrensning i ettersendelsesadgangen.** I LH-2024-10855 åpner Hålogaland lagmannsrett eksplisitt for at det kan finnes en *kvantitativ* grense — dvs. at omfanget av ettersendingen i seg selv kan være problematisk ut fra likebehandlingsprinsippet (anskaffelsesloven § 4), uavhengig av om det materielt er en forbedring. Retten konkluderte med at omfanget i den konkrete saken ikke overskred grensen, men holdt døren åpen prinsipielt. Denne dimensjonen er uavhengig av to-partstesten, som er en kvalitativ test.
+
 ### 4.3 Hva utgjør «holdepunkt» i tilbudet?
 
 Praksis viser at nemnda godtar ulike typer holdepunkter:
@@ -132,6 +158,10 @@ Praksis viser at nemnda godtar ulike typer holdepunkter:
 | Sentrale godkjenninger (offentlig tilgjengelig) | 2024/1255 | Tillatt ettersendelse |
 | Navngitte underleverandører med løyvenumre | 2021/592 | Tillatt ettersendelse |
 | Referanseprosjekter i tilbudet | 2024/1757 | Tillatt avklaring |
+| Tilbudskontekst (likviditetstilgang, betalingsgaranti) + generisk erklæring | 2017/67 | Tillatt — kontekst kompenserer |
+| Eksisterende beredskapsavtaler + forpliktelseserklæring | 2025/1673 | Tillatt — eldre avtaler er nok |
+| Underleverandører oppført basert på pristilbud, ukjent for dem | LE-2021-130025 | **Ikke tillatt** — forbedring |
+| Konsortium-presentasjon uten ESPD/erklæring fra selskapene | 2019/468 | **Ikke tillatt** |
 | Virksomheten ikke nevnt i tilbudet | 2023/473 | **Ikke tillatt** |
 
 Fellesnevneren er at det må foreligge en objektivt etterprøvbar indikasjon på støtteforholdet i det opprinnelige tilbudet.
@@ -140,21 +170,23 @@ Fellesnevneren er at det må foreligge en objektivt etterprøvbar indikasjon på
 
 Basert på sakene må tre ting eksistere ved tilbudsfrist, men de befinner seg på ulike nivåer:
 
-**1. Rådigheten (det faktiske forholdet) — må eksistere.** Leverandøren må faktisk råde over ressursene. Hvis rådigheten ikke eksisterte ved tilbudsfrist, ville ettersendelse av forpliktelseserklæring innebære en «forbedring» av tilbudet (§ 23-5 (2)).
+**1. Rådigheten (det faktiske forholdet) — må eksistere, men uten formkrav.** Leverandøren må faktisk råde over ressursene. Hvis rådigheten ikke eksisterte ved tilbudsfrist, ville ettersendelse av forpliktelseserklæring innebære en «forbedring» av tilbudet (§ 23-5 (2)). I LH-2024-10855 fastslår Hålogaland lagmannsrett at det «ikke stilles formkrav til hvordan rådighet etableres, for eksempel gjennom krav til at det er inngått bindende avtaler eller liknende», med henvisning til C-234/14 avsnitt 28 og C-403/21 avsnitt 73–74. Rådighet er altså et materielt, ikke formelt vilkår. Lagmannsretten presiserer videre at forpliktelseserklæringen «ikke [er] et krav for å etablere faktisk rådighet, men kun en måte å dokumentere rådighet på».
 
 **2. Holdepunkter i tilbudet — må foreligge.** Det må fremgå av tilbudet at leverandøren mente å støtte seg på virksomheten, og at virksomheten mente å avgi støtte. ESPD er ett slikt holdepunkt.
 
 **3. Dokumentasjonen av rådigheten (forpliktelseserklæring) — kan ettersendes.** Det er nettopp dette sakene tillater.
 
-### 4.5 Den åpne spenningen: ESPD som presumpsjon for rådighet
+**Tilleggspoeng: Tidspunkt for avtaleinngåelse er irrelevant.** 2025/1673 viser at beredskapsavtaler inngått i 2018 og 2021 — lenge før den aktuelle anskaffelsen — er tilstrekkelig rådighetsbevis. Det avgjørende er at avtalen er gjeldende ved tilbudsfrist, ikke når den ble inngått. Alminnelige oppsigelsesfrister (her: 3 måneder) rokker ikke ved rådigheten. Dette er konsistent med LH-2024-10855s fravær av formkrav: det er det materielle forholdet som teller.
 
-Her identifiserer vi et gap i praksis. ESPD beviser ikke at rådighet faktisk eksisterte — det er en egenerklæring som dokumenterer *intensjon om støtte*, ikke *rådighet over nødvendige ressurser*.
+### 4.5 ESPD som presumpsjon for rådighet — testet i LH-2024-10855
 
-Når forpliktelseserklæringen signeres etter tilbudsfrist, oppstår spørsmålet: formaliserer den en rådighet som allerede eksisterte, eller etablerer den en ny rådighet?
+ESPD beviser ikke at rådighet faktisk eksisterte — det er en egenerklæring som dokumenterer *intensjon om støtte*, ikke *rådighet over nødvendige ressurser*. Når forpliktelseserklæringen signeres etter tilbudsfrist, oppstår spørsmålet: formaliserer den en rådighet som allerede eksisterte, eller etablerer den en ny rådighet?
 
 Nemnda behandler dette pragmatisk. I 2022/31 avsnitt 40 konstaterer nemnda at ESPD viste at selskapet «mente å avgi sin støtte», og at forpliktelseserklæringen «supplerer» dette. Nemnda undersøker ikke om det faktisk forelå en bindende forpliktelse ved tilbudsfrist. Det er altså en **presumpsjon** — nemnda legger til grunn at ESPD indikerer at rådigheten eksisterte, uten å teste dette eksplisitt.
 
-Denne presumpsjonen er ikke direkte utfordret i noen av de analyserte sakene. Det er grunn til å anta at den kan utfordres, særlig der det er holdepunkter for at støtteforholdet ble etablert *etter* tilbudsfrist.
+**Presumpsjonen er utfordret — og bestått — i LH-2024-10855 (stadfestet av Høyesterett i HR-2025-1098-A).** Consto AS bestred at NCC hadde reell rådighet over Fundamentering AS (FAS) ved tilbudsfrist, til tross for levert ESPD. Lagmannsretten vurderte rådigheten konkret og selvstendig, og fant at den eksisterte basert på fire elementer: (1) ESPD fra FAS, (2) tilbudet fra FAS til NCC (avtalerettslig forpliktelse), (3) FAS' kunnskap om at de ville bli oppgitt i tilbudet, og (4) en signert, men ikke oversendt, forpliktelseserklæring. Retten konstaterte at tilbudet «isolert sett i tilstrekkelig grad dokumenterte at NCC hadde rådighet over Fundamentering AS». Lagmannsretten bemerket videre at det «sjeldent vil være tilfelle at det foreløpige dokumentasjonskravet er oppfylt, men at det likevel ikke foreligger reell rådighet» — det teoretiske gapet mellom ESPD og rådighet anerkjennes altså, men anses som sjeldent i praksis.
+
+Presumpsjonen bestod altså fordi det forelå flere indikasjoner på faktisk rådighet *utover* ESPD. Dommen avklarer ikke hva resultatet ville blitt der ESPD var eneste holdepunkt og det forelå indikasjoner på at rådigheten *ikke* eksisterte. FAS hadde dessuten et kapasitetsforbehold i sitt tilbud («basert på at vi har ledig kapasitet»), men lagmannsretten tolket dette som en presisering av at tidsplan måtte diskuteres, ikke at FAS ansvarsfritt kunne ha trukket seg. Standardforbehold av denne typen rokker altså ikke ved rådigheten.
 
 ### 4.6 Betydningen av type kvalifikasjonskrav
 
@@ -162,14 +194,14 @@ Sak 2021/603 avdekker en viktig distinksjon mellom ulike typer kvalifikasjonskra
 
 **Teknisk/faglig kvalifikasjon (erfaring, kompetanse):** Spørsmålet er typisk binært — har støttende virksomhet relevant erfaring? ESPD identifiserer virksomheten, forpliktelseserklæring bekrefter forpliktelsen, og referanseprosjekter dokumenterer erfaringen. Innholdsmessig spesifisering utover dette er ikke påkrevd. Praksis godtar ESPD + ettersendt forpliktelseserklæring for denne typen krav (2022/31, 2023/473, 2024/1959).
 
-**Økonomisk/finansiell kvalifikasjon (egenkapital, omsetning):** Oppdragsgiver trenger å vite *hvor mye* som stilles til disposisjon for å vurdere om gapet mellom leverandørens egen kapasitet og kravet dekkes. En generisk forpliktelseserklæring som bare krysser av for «økonomisk og finansiell soliditet» er utilstrekkelig — den må spesifisere beløp eller omfang (2021/603 avsnitt 49).
+**Økonomisk/finansiell kvalifikasjon (egenkapital, omsetning):** Oppdragsgiver trenger å vite *hvor mye* som stilles til disposisjon for å vurdere om gapet mellom leverandørens egen kapasitet og kravet dekkes. En generisk forpliktelseserklæring som bare krysser av for «økonomisk og finansiell soliditet» er utilstrekkelig — den må spesifisere beløp eller omfang (2021/603 avsnitt 49). **Men:** 2017/67 viser at kontekst i tilbudet kan kompensere for generisk formulering. Der tilbudet forespeilet «tilgang på likviditet» og «betalingsgarantier» fra morselskapet, ble en generisk erklæring om «nødvendige ressurser til disposisjon» godtatt. Forskjellen fra 2021/603 er at tilbudet i den saken ikke ga slik kontekst — det var bare en avkrysning i forpliktelseserklæringen uten underbyggende opplysninger i tilbudet.
 
 | Type kvalifikasjonskrav | Hva oppdragsgiver trenger | ESPD + generisk forpliktelseserklæring tilstrekkelig? |
 |---|---|---|
 | Teknisk/faglig (erfaring, kompetanse) | Identifikasjon + bevis for relevant erfaring | Ja |
-| Økonomisk/finansiell (egenkapital, omsetning) | Kvantifisering av ressurser til disposisjon | Nei — må spesifisere beløp/omfang |
+| Økonomisk/finansiell (egenkapital, omsetning) | Kvantifisering av ressurser til disposisjon | Nei — med mindre tilbudet gir kontekst (2017/67 vs. 2021/603) |
 
-Denne distinksjonen er ikke utledet av § 16-10s ordlyd, som ikke skiller mellom kvalifikasjonstyper, men følger av sakens natur: vurdering av økonomisk kapasitet krever tallstørrelser, mens vurdering av teknisk erfaring typisk krever identifikasjon av virksomhet og referanser.
+Denne distinksjonen er ikke utledet av § 16-10s ordlyd, som ikke skiller mellom kvalifikasjonstyper, men følger av sakens natur: vurdering av økonomisk kapasitet krever tallstørrelser, mens vurdering av teknisk erfaring typisk krever identifikasjon av virksomhet og referanser. 2017/67 nyanserer imidlertid bildet: det avgjørende er ikke om erklæringen isolert sett er spesifikk nok, men om oppdragsgiver *samlet sett* — erklæring og tilbud lest i sammenheng — har tilstrekkelig grunnlag for å vurdere oppfyllelse.
 
 ### 4.7 Personellressurser — to nivåer
 
@@ -215,23 +247,25 @@ Leverandøren trenger ikke fremlegge forpliktelseserklæring ved tilbudsfrist. D
 Ettersendelse er ikke tillatt der:
 - Støttende virksomhet ikke er identifisert i tilbudet overhodet (2023/473, jf. C-387/14 *Esaprojekt*)
 - Forpliktelseserklæringen er for generell til at oppdragsgiver kan vurdere om kvalifikasjonskravet oppfylles (2021/603) — særlig relevant for økonomiske kvalifikasjonskrav
+- Oppdragsgiver har begrenset ettersendelsesadgangen i konkurransegrunnlaget, f.eks. ved å kreve at forpliktelseserklæring «skal vedlegges tilbudet» (LE-2021-130025)
 
 ### 5.3 Praktisk vs. logisk rettstilstand for kvantitative krav
 
 Gjeldende nemndspraksis godtar ESPD + ettersendt forpliktelseserklæring for personellstøtte uten å problematisere spesifiseringen av omfanget. En oppdragsgiver som aksepterer dette for kvantitative bemanningskrav handler i tråd med praksis. Men logisk er det vanskelig å begrunne forskjellen fra 2021/603: en generisk forpliktelseserklæring som sier «vi stiller våre ressurser til disposisjon» gir ikke bedre grunnlag for å vurdere oppfyllelse av «minimum 20 malere» enn en generisk erklæring om «økonomisk soliditet» ga for å vurdere oppfyllelse av krav om positiv egenkapital. Distinksjonen i praksis skyldes at alle personellsakene har vært kvalitative — det kvantitative scenariet er rett og slett ikke testet. Dette er et punkt som kan utfordres i en fremtidig sak.
 
-### 5.4 Åpent spørsmål: Rådighet ved tilbudsfrist
+### 5.4 Rådighet ved tilbudsfrist
 
-Praksis bygger på en uuttalt presumpsjon: at holdepunkter i tilbudet (typisk ESPD) indikerer at rådigheten faktisk eksisterte ved tilbudsfrist. Denne presumpsjonen er ikke direkte utfordret i sakene som er analysert. ESPD dokumenterer intensjon om støtte, ikke rådighet over «nødvendige ressurser». Forskjellen er reell, men nemnda har ikke hatt anledning til å ta stilling til et scenario der presumpsjonen bestrides — for eksempel der det kan påvises at støtteforholdet ble etablert etter tilbudsfrist.
+Rådighet er et materielt vilkår uten formkrav (LH-2024-10855, stadfestet i HR-2025-1098-A, jf. C-234/14 og C-403/21). Det kreves ikke bindende avtale — men rådigheten må faktisk eksistere ved tilbudsfrist. ESPD indikerer at rådigheten eksisterte, og denne presumpsjonen er testet og bestått i LH-2024-10855, der Consto bestred NCCs rådighet over Fundamentering AS. Lagmannsretten vurderte rådigheten konkret basert på ESPD, tilbud, kunnskap og signert forpliktelseserklæring — og fant den etablert. Retten bemerket at det «sjeldent» vil forekomme at det foreløpige dokumentasjonskravet er oppfylt uten at reell rådighet foreligger. Dommen avklarer ikke det rene scenariet der ESPD er eneste holdepunkt og det foreligger indikasjoner på at rådigheten *ikke* eksisterte.
 
 Rettstilstanden kan oppsummeres slik:
 
 | Spørsmål | Svar fra praksis |
 |---|---|
 | Må rådighet *eksistere* ved tilbudsfrist? | Ja — § 23-5 (2), ellers er det forbedring |
+| Stilles det formkrav til rådigheten? | Nei — ingen krav om bindende avtale (LH-2024-10855, C-234/14, C-403/21) |
 | Må rådighet *dokumenteres* ved tilbudsfrist? | Nei — forpliktelseserklæring kan ettersendes |
-| Er ESPD holdepunkt for at rådighet eksisterte? | Nemnda behandler det slik — presumpsjon, ikke bevis |
-| Kan presumpsjonen utfordres? | Trolig ja — særlig der det er grunn til å tro at støtteforholdet ble etablert etter tilbudsfrist |
+| Er ESPD holdepunkt for at rådighet eksisterte? | Ja — presumpsjon testet og bestått i LH-2024-10855 / HR-2025-1098-A |
+| Kan presumpsjonen utfordres? | Trolig ja — der det kan påvises at støtteforholdet ble etablert etter tilbudsfrist, og det ikke foreligger andre holdepunkter |
 
 ## 6. Del II-anskaffelser — særregler
 
@@ -261,10 +295,13 @@ Rettstilstanden kan oppsummeres slik:
 | 2023/192 | Del III | Teknisk/faglig (erfaring) | ESPD + rollebeskrivelse i konsernstruktur | ESPD + organisasjonsbeskrivelse = holdepunkt |
 | 2021/1911 | Del III | Kapasitet (antall personell + maskinpark) | Beskrivelse av disponibelt personell/maskiner | Skjønnsmessig, men kvantitativ vurdering |
 | 2021/2067 | Del III | Teknisk/faglig (erfaring) + økonomisk | ESPD fra underleverandør + kredittvurdering | Ettersendelse tillatt; § 16-10 (5) arbeidsfordeling |
+| 2017/67 | Del III | Økonomisk (soliditet) | Tilbudskontekst (likviditet, betalingsgaranti) + generisk erklæring | Ettersendelse tillatt — kontekst kompenserer |
+| 2025/1673 | Del III | Teknisk/faglig (beredskap) | Forpliktelseserklæring + eksisterende beredskapsavtaler | Tillatt — eldre avtaler er nok |
 
 ## 8. Rettskilder
 
 ### KOFA-avgjørelser
+- Sak 2017/67 (veibelysning, Osram/Trondheim)
 - Sak 2017/171 (bro Fv. 505, Rogaland)
 - Sak 2019/408 (veglysarbeid, Kongsvinger)
 - Sak 2021/119 (IT-kompetanseteam, Statens vegvesen)
@@ -284,20 +321,28 @@ Rettstilstanden kan oppsummeres slik:
 - Sak 2024/1959 (solcelleanlegg, Alver)
 - Sak 2025/0894 (tekniske rådgivertjenester, GKI)
 - Sak 2025/1084 (totalentreprise, Lærdal)
-- Sak 2020/515 (referert i 2024/1255)
+- Sak 2025/1673 (beredskapsvaskeri)
+- Sak 2017/75 (rørleggerservice — dialogadgang og kvalifikasjonskrav, referert i LE-2022-19926)
+- Sak 2020/254 (to-partstesten, referert i LE-2021-130025)
+- Sak 2020/515 (stornemndsavgjørelse — skillet mellom ettersendelse og oppfyllelse, referert i 2024/1255 og LE-2022-19926)
 - Sak 2016/167 (referert i 2024/1255 og 2022/924)
+
+### Høyesterett
+- HR-2025-1098-A — stadfester LH-2024-10855 (rådighet, ettersendelse, Hammerfest Ren Havn)
 
 ### EU-domstolen
 - C-387/14 *Esaprojekt* — grensen for introduksjon av nye støttende virksomheter
+- C-234/14 — ingen formkrav til etablering av rådighet (avsnitt 28)
+- C-403/21 — ingen formkrav til etablering av rådighet (avsnitt 73–74)
 - C-95/10 *Strong Segurança* — § 16-10 kan ikke anvendes analogisk på del II
 - C-314/01 *ARGE* — krav om reell rådighet over ressurser (premiss 44)
 - C-176/98 *Holst Italia* — rettslig tilknytning irrelevant for rådighet
 
 ### Lagmannsrettene
-- LH-2024-10855 — holdepunkter for støtteforhold
-- LE-2022-19926 — holdepunkter for støtteforhold
-- LE-2021-130025 — to-partstesten for ettersendelse
-- LB-2017-156250 — «erfaring fra arbeid av samme art og vanskelighetsgrad»
+- LH-2024-10855 — rådighet som materielt vilkår uten formkrav; presumpsjonen testet; kvantitativ ettersendelsesgrense (stadfestet i HR-2025-1098-A)
+- LE-2022-19926 — skillet mellom ettersendelse av dokumentasjon og etterfølgende oppfyllelse; KOFAs rettskildevekt
+- LE-2021-130025 — negativt eksempel på to-partstesten; oppdragsgiver kan begrense ettersendelsesadgang; prismessig fordel
+- LB-2017-156250 — tolkningsprinsipper for kvalifikasjonskrav
 - LB-2014-58107 — § 16-10 ikke analogisk anvendelig på del II
 
 ### Juridisk litteratur
@@ -312,7 +357,7 @@ Følgende problemstillinger er ikke fullt dekket av dette notatet og bør kartle
 
 1. **Kvantitative bemanningskrav + § 16-10:** Søk etter saker der kvalifikasjonskravet stiller et spesifikt antall fagarbeidere/ansatte/årsverk, og leverandøren støtter seg på annen virksomhet. Spørsmålet er om spesifiseringskravet fra 2021/603 (økonomisk kapasitet) gjelder tilsvarende for kvantitative personellkrav. Ingen saker i databasen behandler denne kombinasjonen direkte.
 
-2. **Presumpsjonen om rådighet fra ESPD:** Søk i kategori B/C-saker etter tilfeller der presumpsjonen er eksplisitt utfordret — dvs. der noen har anført at rådigheten ikke eksisterte ved tilbudsfrist, til tross for levert ESPD.
+2. **Presumpsjonen om rådighet fra ESPD:** Presumpsjonen er testet og bestått i LH-2024-10855, men der forelå flere holdepunkter utover ESPD. Søk etter saker der ESPD er *eneste* holdepunkt og rådigheten bestrides — dvs. det rene scenariet der presumpsjonen virkelig settes på prøve.
 
 3. **Kvalitativ gjennomgang av kategori C-saker:** 82 saker nevner «forpliktelseserklæring» uten § 16-10 i referansetabellen. Noen av disse kan inneholde relevante nyanser.
 
