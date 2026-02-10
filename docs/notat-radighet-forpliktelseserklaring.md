@@ -1,0 +1,315 @@
+# Rettslig notat: Dokumentasjon av rådighet over støttende virksomhets ressurser
+
+**Dato:** 2026-02-10
+**Rettsområde:** Offentlige anskaffelser — FOA del III
+**Bestemmelser:** Anskaffelsesforskriften §§ 16-10, 17-1, 23-5
+
+## 1. Problemstilling
+
+Når en leverandør støtter seg på en annen virksomhets kapasitet for å oppfylle kvalifikasjonskrav, skal han «dokumentere at han råder over de nødvendige ressursene, for eksempel ved å fremlegge en forpliktelseserklæring fra disse virksomhetene», jf. anskaffelsesforskriften § 16-10 (2).
+
+Spørsmålet er:
+
+1. Er ESPD (egenerklæringsskjema, jf. § 17-1 (6)) fra den støttende virksomheten tilstrekkelig til å dokumentere rådighet, eller må forpliktelseserklæring foreligge ved tilbudsfrist?
+2. Kan forpliktelseserklæring ettersendes etter tilbudsfrist, og i så fall — på hvilke vilkår?
+3. Må rådigheten faktisk ha eksistert ved tilbudsfrist, eller er det tilstrekkelig at den etableres i etterkant?
+
+## 2. Rettslig rammeverk
+
+### 2.1 Støtte fra andre virksomheter — § 16-10
+
+§ 16-10 (1) gir leverandøren adgang til å støtte seg på andre virksomheters kapasitet for å oppfylle kvalifikasjonskrav, uansett rettslig tilknytning.
+
+§ 16-10 (2) stiller krav om at leverandøren «dokumentere[r] at han råder over de nødvendige ressursene». Forpliktelseserklæring er gitt som eksempel, men ordlyden er ikke uttømmende («for eksempel»).
+
+§ 16-10 (3) pålegger oppdragsgiver en kontrollplikt: han skal kontrollere at den støttende virksomheten oppfyller *de relevante* kvalifikasjonskravene og at det ikke foreligger avvisningsgrunner.
+
+### 2.2 ESPD som foreløpig dokumentasjon — § 17-1
+
+§ 17-1 (2) fastslår at ESPD er «foreløpig dokumentasjon» for at leverandøren oppfyller kvalifikasjonskravene.
+
+§ 17-1 (5) bestemmer at oppdragsgiver skal kreve «oppdaterte dokumentasjonsbevis» fra valgte leverandør før tildeling.
+
+§ 17-1 (6) krever at «virksomheter som leverandøren støtter seg på» leverer separat ESPD, som bekrefter at det ikke foreligger avvisningsgrunner og at virksomheten oppfyller de relevante kvalifikasjonskravene.
+
+### 2.3 Ettersending — § 23-5
+
+§ 23-5 (1) gir oppdragsgiver adgang til å be om ettersending, supplering, avklaring og utfylling av mottatte opplysninger og dokumentasjon.
+
+§ 23-5 (2) setter grensen: ettersendelsen skal ikke medføre at tilbudet *forbedres*.
+
+## 3. KOFA-praksis
+
+Notatet bygger på analyse av ni KOFA-avgjørelser som behandler forholdet mellom ESPD, forpliktelseserklæring og rådighet under § 16-10.
+
+### 3.1 Kategori A: § 16-10 + § 17-1 + forpliktelseserklæring
+
+#### Sak 2022/31 — Hammerfest Ren Havn (Kystverket)
+
+**Faktum:** Valgte leverandør støttet seg på Fundamentering AS for teknisk/faglig kvalifikasjon (erfaring). Fundamentering AS hadde levert ESPD med tilbudet. Forpliktelseserklæring og referanseprosjekter ble ettersendt etter tilbudsfrist.
+
+**Nemndas vurdering:** Ettersendelse av forpliktelseserklæring forutsetter at det fremgikk av tilbudet at (1) leverandøren mente å støtte seg på ressursene, og (2) at virksomheten mente å avgi støtte (avsnitt 32). ESPD fra Fundamentering AS var det sentrale holdepunktet — det tilsa at selskapet mente å avgi støtte (avsnitt 36, 40). Nemnda konstaterte at forpliktelseserklæringen «utgjør ikke en endring av tilbudet, men supplerer den informasjonen som allerede fremgikk der» (avsnitt 40).
+
+**Rettssetning:** Levert ESPD fra støttende virksomhet er et sterkt holdepunkt for at støtteforholdet eksisterer, og åpner for ettersendelse av forpliktelseserklæring via § 23-5.
+
+#### Sak 2023/473 — Barneskole (Kvinnherad)
+
+**Faktum:** Valgte leverandør støttet seg opprinnelig på Norconsult, Sweco og Teca (ESPD levert). Etter tildeling viste det seg at det også var behov for støtte fra ANKO, TK Elevator og Jørgensen — som ikke var nevnt i tilbudet.
+
+**Nemndas vurdering:** For de tre opprinnelige underleverandørene (med ESPD): forpliktelseserklæring kunne ettersendes, jf. § 23-5 og sak 2022/31 (avsnitt 35). For de tre nye selskapene (uten ESPD, ikke nevnt i tilbudet): ettersendelse ikke tillatt — dette er å introdusere en ny støttende virksomhet, i strid med C-387/14 *Esaprojekt* (avsnitt 46–49). Nemnda uttaler at «det ikke kunne være tale om en tillatt presisering eller korrigering dersom leverandøren støtter seg på et nytt selskap. Dette ville tvert imot være en vesentlig endring av kvalifikasjonssøknaden (identiteten til leverandøren)» (avsnitt 46–47). Resultat: avvisningsplikt (avsnitt 50).
+
+**Rettssetning:** Skillet er skarpt: virksomheter identifisert i tilbudet (f.eks. med ESPD) kan suppleres med forpliktelseserklæring. Virksomheter ikke nevnt i tilbudet kan ikke introduseres etter tilbudsfrist.
+
+#### Sak 2021/592 — Pasienttransport (Helse Bergen)
+
+**Faktum:** Drosjeformidler hadde listet løyvenumre i prisskjema, men leverte verken ESPD eller forpliktelseserklæring for underleverandørene (løyvehaverne).
+
+**Nemndas vurdering:** Forpliktelseserklæring ble ettersendt etter tildeling — tillatt fordi det fremgikk av tilbudet (løyvenumre i prisskjema) at leverandøren mente å støtte seg på disse, og at de mente å avgi støtte (avsnitt 55–57). Manglende ESPD for underleverandør utgjorde regelbrudd mot § 17-1 (6), men var ikke nødvendigvis avvisningsgrunn (avsnitt 68).
+
+**Rettssetning:** ESPD er ikke eneste mulige holdepunkt. Tilknytningen kan fremgå av tilbudet på andre måter (her: løyvenumre).
+
+### 3.2 Kategori B: Utfyllende praksis
+
+#### Sak 2024/1959 — Solcelleanlegg (Alver) — del II
+
+CV-er og sertifiseringer fra underleverandør var tilstrekkelig holdepunkt for støtteforholdet — dokumentene var «på et slikt detaljnivå at valgte leverandør må ha innhentet dokumentene fra underleverandøren» (avsnitt 40). For del II vurderes ettersendelse etter § 9-3 (dialog), ikke § 23-5 (avsnitt 38). Nemnda viste til lagmannsrettspraksis i LH-2024-10855 og LE-2022-19926.
+
+#### Sak 2024/1757 — Veivedlikehold (Innlandet) — del III
+
+Underleverandør hadde levert referanseprosjekter med tilbudet. Avklaring av disse var tillatt etter § 23-5 (avsnitt 62–63). § 16-10 (3) krever bare at støttende virksomhet oppfyller «de relevante kvalifikasjonskravene» — ikke alle kravene (avsnitt 46–47).
+
+#### Sak 2024/1255 — Totalentreprise (Valdres) — del II
+
+Sentrale godkjenninger (offentlig tilgjengelig) ga «objektive holdepunkter» for at leverandøren mente å støtte seg på morselskapet (avsnitt 36). Feilutfylt forpliktelseserklæring der underleverandørens navn sto i feil felt ble godtatt som «ren feilskrift» (avsnitt 42).
+
+#### Sak 2022/924 — Vannbehandlingsanlegg (Sokndal) — del II
+
+Når oppdragsgiver ikke har stilt eksplisitt dokumentasjonskrav for rådighet i konkurransegrunnlaget, kan det ikke kreves forpliktelseserklæring i del II-anskaffelser (avsnitt 55). § 16-10 kan ikke anvendes analogisk på del II, jf. LB-2014-58107 og EU-domstolens C-95/10 (*Strong Segurança*) (avsnitt 52).
+
+#### Sak 2023/993 — Vintervedlikehold — del III
+
+Et ordinært kjøp fra en leverandør (traktor) er ikke det samme som å «støtte seg på» virksomhetens kapasitet (avsnitt 41). §§ 16-10 (2) og 17-1 (6) gjelder bare når leverandøren støtter seg på en annen virksomhet for å oppfylle kvalifikasjonskrav.
+
+#### Sak 2021/603 — Reisebyrå (Sykehusinnkjøp) — leverandørbytte, § 28-1
+
+**Faktum:** Rammeavtaler overdratt til ny leverandør etter konkurs. Ny leverandør hadde negativ egenkapital (-4,5 MNOK), men støttet seg på G Travel Tvete AS via forpliktelseserklæring. Det var ikke levert ESPD — saken gjaldt leverandørbytte etter § 28-1, ikke ordinær tilbudskonkurranse.
+
+**Nemndas vurdering:** Forpliktelseserklæringen var for generell — bare krysset av for «økonomisk og finansiell soliditet» uten å spesifisere hvilke ressurser som ble stilt til disposisjon. Oppdragsgiver hadde dermed «ikke grunnlag for å vurdere hvilke ressurser G Travel Tvete AS har forpliktet seg til å stille til disposisjon» (avsnitt 49). Resultat: kvalifikasjonskrav ikke oppfylt, ulovlig direkte anskaffelse, gebyr på 294 643 kr.
+
+**Rettssetning:** Forpliktelseserklæring i seg selv er ikke nok — den må være tilstrekkelig spesifikk for at oppdragsgiver kan vurdere om kvalifikasjonskravet faktisk oppfylles.
+
+## 4. Rettslig analyse
+
+### 4.1 Totrinns dokumentasjonssystem
+
+Forskriften opererer med et totrinns dokumentasjonssystem:
+
+**Trinn 1 — Tilbudstidspunktet:** ESPD er «foreløpig dokumentasjon» (§ 17-1 (2)). Leverandøren egenerklærer at han oppfyller kvalifikasjonskravene. Støttende virksomhet leverer separat ESPD (§ 17-1 (6)). ESPD dokumenterer intensjon om støtte, men sier ingenting om omfanget av rådigheten eller hvilke konkrete ressurser som stilles til disposisjon.
+
+**Trinn 2 — Før tildeling:** Oppdragsgiver krever «oppdaterte dokumentasjonsbevis» (§ 17-1 (5)). Forpliktelseserklæring dokumenterer at og hva leverandøren råder over.
+
+### 4.2 To-partstesten for ettersendelse
+
+Gjennomgående i praksis stiller nemnda to kumulative vilkår for at forpliktelseserklæring kan ettersendes etter tilbudsfrist:
+
+1. Fremgikk det av tilbudet at leverandøren **mente å støtte seg på** den aktuelle virksomhetens ressurser?
+2. Fremgikk det av tilbudet at virksomheten **mente å avgi støtte**?
+
+Hvis begge vilkår er oppfylt, formaliserer forpliktelseserklæringen et eksisterende støtteforhold, og utgjør ikke en «forbedring» av tilbudet (§ 23-5 (2)). Hvis ikke, introduseres en ny støttende virksomhet — en «vesentlig endring av kvalifikasjonssøknaden» (2023/473 avsnitt 46–47, jf. C-387/14 *Esaprojekt*).
+
+**Sentrale formuleringer:**
+- 2022/31 avsnitt 32: «Ettersendingen forutsetter at det fremgikk av den opprinnelige besvarelsen at valgte leverandør mente å støtte seg på ressursene [...] og at [virksomheten] mente å avgi støtte.»
+- 2024/1959 avsnitt 39: «Det må fremgå av tilbudet at klager har ment å støtte seg på den aktuelle ressursen, og at underleverandøren har ment å avgi slik støtte», med referanse til LH-2024-10855 og LE-2022-19926.
+
+### 4.3 Hva utgjør «holdepunkt» i tilbudet?
+
+Praksis viser at nemnda godtar ulike typer holdepunkter:
+
+| Holdepunkt i tilbudet | Sak | Resultat |
+|---|---|---|
+| ESPD fra støttende virksomhet | 2022/31, 2023/473 | Tillatt ettersendelse |
+| CV-er og sertifiseringer innhentet fra underleverandør | 2024/1959 | Tillatt ettersendelse |
+| Sentrale godkjenninger (offentlig tilgjengelig) | 2024/1255 | Tillatt ettersendelse |
+| Navngitte underleverandører med løyvenumre | 2021/592 | Tillatt ettersendelse |
+| Referanseprosjekter i tilbudet | 2024/1757 | Tillatt avklaring |
+| Virksomheten ikke nevnt i tilbudet | 2023/473 | **Ikke tillatt** |
+
+Fellesnevneren er at det må foreligge en objektivt etterprøvbar indikasjon på støtteforholdet i det opprinnelige tilbudet.
+
+### 4.4 Rådighet vs. dokumentasjon: tidspunktet
+
+Basert på sakene må tre ting eksistere ved tilbudsfrist, men de befinner seg på ulike nivåer:
+
+**1. Rådigheten (det faktiske forholdet) — må eksistere.** Leverandøren må faktisk råde over ressursene. Hvis rådigheten ikke eksisterte ved tilbudsfrist, ville ettersendelse av forpliktelseserklæring innebære en «forbedring» av tilbudet (§ 23-5 (2)).
+
+**2. Holdepunkter i tilbudet — må foreligge.** Det må fremgå av tilbudet at leverandøren mente å støtte seg på virksomheten, og at virksomheten mente å avgi støtte. ESPD er ett slikt holdepunkt.
+
+**3. Dokumentasjonen av rådigheten (forpliktelseserklæring) — kan ettersendes.** Det er nettopp dette sakene tillater.
+
+### 4.5 Den åpne spenningen: ESPD som presumpsjon for rådighet
+
+Her identifiserer vi et gap i praksis. ESPD beviser ikke at rådighet faktisk eksisterte — det er en egenerklæring som dokumenterer *intensjon om støtte*, ikke *rådighet over nødvendige ressurser*.
+
+Når forpliktelseserklæringen signeres etter tilbudsfrist, oppstår spørsmålet: formaliserer den en rådighet som allerede eksisterte, eller etablerer den en ny rådighet?
+
+Nemnda behandler dette pragmatisk. I 2022/31 avsnitt 40 konstaterer nemnda at ESPD viste at selskapet «mente å avgi sin støtte», og at forpliktelseserklæringen «supplerer» dette. Nemnda undersøker ikke om det faktisk forelå en bindende forpliktelse ved tilbudsfrist. Det er altså en **presumpsjon** — nemnda legger til grunn at ESPD indikerer at rådigheten eksisterte, uten å teste dette eksplisitt.
+
+Denne presumpsjonen er ikke direkte utfordret i noen av de analyserte sakene. Det er grunn til å anta at den kan utfordres, særlig der det er holdepunkter for at støtteforholdet ble etablert *etter* tilbudsfrist.
+
+### 4.6 Betydningen av type kvalifikasjonskrav
+
+Sak 2021/603 avdekker en viktig distinksjon mellom ulike typer kvalifikasjonskrav:
+
+**Teknisk/faglig kvalifikasjon (erfaring, kompetanse):** Spørsmålet er typisk binært — har støttende virksomhet relevant erfaring? ESPD identifiserer virksomheten, forpliktelseserklæring bekrefter forpliktelsen, og referanseprosjekter dokumenterer erfaringen. Innholdsmessig spesifisering utover dette er ikke påkrevd. Praksis godtar ESPD + ettersendt forpliktelseserklæring for denne typen krav (2022/31, 2023/473, 2024/1959).
+
+**Økonomisk/finansiell kvalifikasjon (egenkapital, omsetning):** Oppdragsgiver trenger å vite *hvor mye* som stilles til disposisjon for å vurdere om gapet mellom leverandørens egen kapasitet og kravet dekkes. En generisk forpliktelseserklæring som bare krysser av for «økonomisk og finansiell soliditet» er utilstrekkelig — den må spesifisere beløp eller omfang (2021/603 avsnitt 49).
+
+| Type kvalifikasjonskrav | Hva oppdragsgiver trenger | ESPD + generisk forpliktelseserklæring tilstrekkelig? |
+|---|---|---|
+| Teknisk/faglig (erfaring, kompetanse) | Identifikasjon + bevis for relevant erfaring | Ja |
+| Økonomisk/finansiell (egenkapital, omsetning) | Kvantifisering av ressurser til disposisjon | Nei — må spesifisere beløp/omfang |
+
+Denne distinksjonen er ikke utledet av § 16-10s ordlyd, som ikke skiller mellom kvalifikasjonstyper, men følger av sakens natur: vurdering av økonomisk kapasitet krever tallstørrelser, mens vurdering av teknisk erfaring typisk krever identifikasjon av virksomhet og referanser.
+
+### 4.7 Personellressurser — to nivåer
+
+Ytterligere analyse av saker som kombinerer § 16-10 med bemanning og personell viser et gjennomgående skille:
+
+**Nøkkelpersonell — navngitte personer med CV:** For nøkkelpersonell er standarden navngitte personer med kompetansebevis. I 2017/171 spesifiserte forpliktelseserklæringen fra DOKA Norge AS «supervisor med erfaring ILM — ref vedlagt CV» med navngitt person (Carsten Poppe). I 2019/408 ble to navngitte elektrikere hos Minel dokumentert med CV og kursbevis — men avvist fordi kompetansen ikke matchet kravet (lysplanlegger/LED vs. generell elektroinstallasjon). I 2021/1408 avsnitt 57 godtok nemnda at en Ekom-installatør ikke var ansatt ennå ved tilbudsfrist, men hadde signert ansettelseskontrakt — «det sentrale må være at leverandørene har sannsynliggjort at kontrakten er tilstrekkelig bemannet ved gjennomføringen av arbeidene».
+
+**Generell arbeidsstyrke — type/rolle, ikke antall:** For generell kapasitet beskrives ressursene etter type og organisatorisk tilknytning, ikke etter antall. I 2021/2068 var holdepunktet «ressursene fra eierne i Norvei» med beskrivelse av organisering for vintervedlikehold. I 2023/192 ble daglig leder, driftsleder og «de faste renovatørene» beskrevet etter rolle, med redegjørelse for at disse var ansatt i morselskapet Renovasjonen IKS.
+
+**Selskapsrettslig kontroll reduserer dokumentasjonskravet:** 2021/2068 avsnitt 59: «den selskapsrettslige kontrollen leverandøren har overfor de eksterne ressursene, er av betydning for hvilke dokumentasjonskrav som stilles. Der det er klart at leverandøren selv har selskapsrettslig kontroll, vil det ikke være behov for å sende inn ytterligere dokumentasjon.» Tilsvarende i 2023/192 avsnitt 35 med henvisning til Dragsten, *Anskaffelsesloven med forskrift, Kommentarutgave*, s. 621.
+
+**§ 16-10 (5) — utføringskravet:** Når støtten gjelder «krav til utdanning og faglige kvalifikasjoner» eller «relevant faglig erfaring», skal den støttende virksomheten utføre tjenestene eller arbeidene som krever slike kvalifikasjoner. I 2021/2067 avsnitt 45 inneholdt forpliktelseserklæringen en beskrivelse av arbeidsfordelingen, som tilfredsstilte dette kravet.
+
+**Rammeavtaler — minimumsnivå, ikke navngitte personer:** For rammeavtaler aksepteres forpliktelse til et minimumsnivå for utdanning og erfaring, uten at konkrete personer navngis. 2025/0894 avsnitt 34: «De konkrete oppdragene leverandørene skulle utføre underveis i rammeavtaleperioden var ikke kjent, og det verken skulle eller kunne tilbys bestemt personell.» CV-er sjekkes først ved avrop.
+
+### 4.8 Binære vs. kvantitative kvalifikasjonskrav — en uavklart distinksjon
+
+Analysen av sakene avdekker at den egentlige distinksjonen ikke er mellom ressurstyper (personell vs. økonomi), men mellom **kravtyper**:
+
+**Binære/kvalitative krav** — har virksomheten denne kompetansen? Svar: ja eller nei. Eksempler: «erfaring fra tilsvarende prosjekter», «lysplanlegger med LED-erfaring», «kredittvurdering OK». Her fungerer ESPD + generisk forpliktelseserklæring, fordi oppdragsgiver kan vurdere oppfyllelse uten å kjenne omfanget av ressursoverføringen.
+
+**Kvantitative krav** — *hvor mye* kapasitet stilles til disposisjon? Eksempler: «positiv egenkapital» når leverandøren har -4,5 MNOK (2021/603), «minimum 20 malere», «omsetning på minst 100 MNOK». Her er ESPD utilstrekkelig fordi oppdragsgiver ikke kan vurdere om gapet mellom leverandørens egen kapasitet og kravet faktisk dekkes. Det gjelder også der terskelen er skjønnsmessig snarere enn et fast tall — som «nødvendig kapasitet» dokumentert ved «beskrivelse av antall personell» (2021/1911 avsnitt 23). Selv om oppdragsgiver har skjønn til å fastlegge terskelen, er den underliggende vurderingen kvantitativ: oppdragsgiver må kunne si «leverandøren disponerer x ressurser, og virksomheten han støtter seg på avgir y ressurser — etter vårt innkjøpsfaglige skjønn er x+y tilstrekkelig». Uten å kjenne y kan ikke skjønnet utøves forsvarlig.
+
+Denne distinksjonen innebærer at spesifiseringskravet logisk sett bør følge kravets art, uavhengig av om ressursen er økonomisk eller personell:
+
+| Kravtype | Ressurstype | ESPD + generisk forpliktelse tilstrekkelig? |
+|---|---|---|
+| Binært (kompetanse, erfaring, kredittvurdering) | Personell eller økonomi | Ja |
+| Kvantitativt (x antall fagarbeidere, x MNOK omsetning) | Personell eller økonomi | Nei — omfanget av forpliktelsen må spesifiseres |
+
+**Eksempel:** Et kvalifikasjonskrav om «minimum 20 malere og 20 murere» der leverandøren selv har 10 av hver. Han har fått ESPD fra en virksomhet med 10 malere og en virksomhet med 30 murere. ESPD sier ingenting om *hvor mange* av virksomhetens malere/murere som stilles til disposisjon. For maler-virksomheten (10 av 10): avgir den alle sine ressurser? For murer-virksomheten (30 totalt, leverandøren trenger 10): avgir den 10, 20 eller alle 30? Oppdragsgiver kan ikke vurdere om gapet er dekket uten denne informasjonen — strukturelt identisk med den økonomiske situasjonen i 2021/603.
+
+**Praksis har ikke behandlet dette.** Søk i KOFA-databasen gir ingen saker som kombinerer kvantitative bemanningskrav (type «minimum x ansatte/fagarbeidere») med § 16-10-støtte der spesifiseringen av forpliktelsen er omtvistet. Det finnes heller ingen saker som kombinerer § 16-10 med spesifiserte beløp for økonomisk støtte (2021/603 gjaldt leverandørbytte etter § 28-1, ikke ordinær konkurranse). Distinksjonen mellom binære og kvantitative krav er derfor en analytisk konstruksjon basert på den logiske strukturen i 2021/603, ikke et uttalt prinsipp i nemndspraksis.
+
+## 5. Konklusjoner
+
+### 5.1 Hovedregel
+
+Leverandøren trenger ikke fremlegge forpliktelseserklæring ved tilbudsfrist. Det er tilstrekkelig at tilbudet inneholder holdepunkter for at (1) leverandøren mente å støtte seg på virksomheten, og (2) at virksomheten mente å avgi støtte. ESPD fra støttende virksomhet er et sterkt holdepunkt. Forpliktelseserklæring kan deretter ettersendes via § 23-5 (del III) eller innhentes gjennom dialog etter § 9-3 (del II).
+
+### 5.2 Grenser
+
+Ettersendelse er ikke tillatt der:
+- Støttende virksomhet ikke er identifisert i tilbudet overhodet (2023/473, jf. C-387/14 *Esaprojekt*)
+- Forpliktelseserklæringen er for generell til at oppdragsgiver kan vurdere om kvalifikasjonskravet oppfylles (2021/603) — særlig relevant for økonomiske kvalifikasjonskrav
+
+### 5.3 Åpent spørsmål: Rådighet ved tilbudsfrist
+
+Praksis bygger på en uuttalt presumpsjon: at holdepunkter i tilbudet (typisk ESPD) indikerer at rådigheten faktisk eksisterte ved tilbudsfrist. Denne presumpsjonen er ikke direkte utfordret i sakene som er analysert. ESPD dokumenterer intensjon om støtte, ikke rådighet over «nødvendige ressurser». Forskjellen er reell, men nemnda har ikke hatt anledning til å ta stilling til et scenario der presumpsjonen bestrides — for eksempel der det kan påvises at støtteforholdet ble etablert etter tilbudsfrist.
+
+Rettstilstanden kan oppsummeres slik:
+
+| Spørsmål | Svar fra praksis |
+|---|---|
+| Må rådighet *eksistere* ved tilbudsfrist? | Ja — § 23-5 (2), ellers er det forbedring |
+| Må rådighet *dokumenteres* ved tilbudsfrist? | Nei — forpliktelseserklæring kan ettersendes |
+| Er ESPD holdepunkt for at rådighet eksisterte? | Nemnda behandler det slik — presumpsjon, ikke bevis |
+| Kan presumpsjonen utfordres? | Trolig ja — særlig der det er grunn til å tro at støtteforholdet ble etablert etter tilbudsfrist |
+
+## 6. Del II-anskaffelser — særregler
+
+§ 16-10 gjelder ikke direkte i del II. Langvarig KOFA-praksis gir likevel leverandøren tilsvarende adgang til å støtte seg på andre virksomheter (2024/1959 avsnitt 34). Men:
+
+- Oppdragsgiver kan ikke kreve forpliktelseserklæring med mindre det er stilt eksplisitt dokumentasjonskrav i konkurransegrunnlaget (2022/924 avsnitt 55, jf. LB-2014-58107 og C-95/10 *Strong Segurança*)
+- Ettersendelse vurderes etter § 9-3 (dialog), ikke § 23-5 (2024/1959 avsnitt 38)
+- Terskelen for holdepunkter kan være lavere — sentrale godkjenninger (2024/1255), CV-er og sertifiseringer (2024/1959) godtas som tilstrekkelige
+
+## 7. Oversikt over analyserte avgjørelser
+
+| Sak | Type | Kvalifikasjonskrav | Holdepunkt i tilbudet | Resultat |
+|---|---|---|---|---|
+| 2022/31 | Del III | Teknisk/faglig (erfaring) | ESPD fra støttende virksomhet | Ettersendelse tillatt |
+| 2023/473 | Del III | Teknisk/faglig | ESPD (3 virksomheter) + fravær (3 nye) | Tillatt for identifiserte; avvisning for nye |
+| 2021/592 | Del III | Teknisk/faglig | Løyvenumre i prisskjema | Ettersendelse tillatt |
+| 2024/1959 | Del II | Teknisk/faglig (kompetanse) | CV-er og sertifiseringer | Ettersendelse tillatt |
+| 2024/1757 | Del III | Teknisk/faglig (erfaring) | Referanseprosjekter | Avklaring tillatt |
+| 2024/1255 | Del II | Teknisk/faglig | Sentrale godkjenninger | Ettersendelse tillatt |
+| 2023/993 | Del III | (ikke støtte) | — | Avgrensning: ordinært kjøp ≠ støtte |
+| 2022/924 | Del II | Teknisk/faglig | Navngivelse + referanser | Ikke krav om forpliktelseserklæring |
+| 2021/603 | § 28-1 | Økonomisk (egenkapital) | Forpliktelseserklæring (for generell) | Utilstrekkelig — gebyr |
+| 2017/171 | Del III | Teknisk/faglig (bro, skyvemetode) | Forpliktelseserklæring med navngitt supervisor + CV | Ettersendelse tillatt |
+| 2019/408 | Del II | Teknisk/faglig (lysplanlegger) | Navngitte nøkkelpersoner med CV | **Avvist** — kompetanse matchet ikke kravet |
+| 2021/1408 | Del III | Gjennomføringsevne (bemanning) | CV + signert ansettelseskontrakt | OK — sannsynliggjort tilstrekkelig bemanning |
+| 2021/2068 | Del III | Teknisk/faglig (erfaring) | Eierskapsstruktur + organisasjonsbeskrivelse | Selskapsrettslig kontroll = rådighet |
+| 2023/192 | Del III | Teknisk/faglig (erfaring) | ESPD + rollebeskrivelse i konsernstruktur | ESPD + organisasjonsbeskrivelse = holdepunkt |
+| 2021/1911 | Del III | Kapasitet (antall personell + maskinpark) | Beskrivelse av disponibelt personell/maskiner | Skjønnsmessig, men kvantitativ vurdering |
+| 2021/2067 | Del III | Teknisk/faglig (erfaring) + økonomisk | ESPD fra underleverandør + kredittvurdering | Ettersendelse tillatt; § 16-10 (5) arbeidsfordeling |
+
+## 8. Rettskilder
+
+### KOFA-avgjørelser
+- Sak 2017/171 (bro Fv. 505, Rogaland)
+- Sak 2019/408 (veglysarbeid, Kongsvinger)
+- Sak 2021/119 (IT-kompetanseteam, Statens vegvesen)
+- Sak 2021/592 (pasienttransport, Helse Bergen)
+- Sak 2021/603 (reisebyrå, Sykehusinnkjøp)
+- Sak 2021/1408 (tunneloppgradering, Nordland)
+- Sak 2021/1911 (veidrift, kapasitetskrav)
+- Sak 2021/2067 (brannbiler, Alver)
+- Sak 2021/2068 (veidrift, Vestfold/Telemark)
+- Sak 2022/31 (Hammerfest Ren Havn, Kystverket)
+- Sak 2022/924 (vannbehandlingsanlegg, Sokndal)
+- Sak 2023/192 (avfallsinnsamling, Hå/Time/Klepp/Sola)
+- Sak 2023/473 (barneskole, Kvinnherad)
+- Sak 2023/993 (vintervedlikehold)
+- Sak 2024/1255 (totalentreprise, Valdres)
+- Sak 2024/1757 (veivedlikehold, Innlandet)
+- Sak 2024/1959 (solcelleanlegg, Alver)
+- Sak 2025/0894 (tekniske rådgivertjenester, GKI)
+- Sak 2025/1084 (totalentreprise, Lærdal)
+- Sak 2020/515 (referert i 2024/1255)
+- Sak 2016/167 (referert i 2024/1255 og 2022/924)
+
+### EU-domstolen
+- C-387/14 *Esaprojekt* — grensen for introduksjon av nye støttende virksomheter
+- C-95/10 *Strong Segurança* — § 16-10 kan ikke anvendes analogisk på del II
+- C-314/01 *ARGE* — krav om reell rådighet over ressurser (premiss 44)
+- C-176/98 *Holst Italia* — rettslig tilknytning irrelevant for rådighet
+
+### Lagmannsrettene
+- LH-2024-10855 — holdepunkter for støtteforhold
+- LE-2022-19926 — holdepunkter for støtteforhold
+- LE-2021-130025 — to-partstesten for ettersendelse
+- LB-2017-156250 — «erfaring fra arbeid av samme art og vanskelighetsgrad»
+- LB-2014-58107 — § 16-10 ikke analogisk anvendelig på del II
+
+### Juridisk litteratur
+- Dragsten, *Anskaffelsesloven med forskrift, Kommentarutgave*, s. 621 (selskapsrettslig kontroll og forpliktelseserklæring)
+
+### Forskrift
+- Forskrift om offentlige anskaffelser (FOA) av 12. august 2016 nr. 974, §§ 16-5, 16-10, 17-1, 23-5
+
+## 9. Videre arbeid
+
+Følgende problemstillinger er ikke fullt dekket av dette notatet og bør kartlegges:
+
+1. **Kvantitative bemanningskrav + § 16-10:** Søk etter saker der kvalifikasjonskravet stiller et spesifikt antall fagarbeidere/ansatte/årsverk, og leverandøren støtter seg på annen virksomhet. Spørsmålet er om spesifiseringskravet fra 2021/603 (økonomisk kapasitet) gjelder tilsvarende for kvantitative personellkrav. Ingen saker i databasen behandler denne kombinasjonen direkte.
+
+2. **Presumpsjonen om rådighet fra ESPD:** Søk i kategori B/C-saker etter tilfeller der presumpsjonen er eksplisitt utfordret — dvs. der noen har anført at rådigheten ikke eksisterte ved tilbudsfrist, til tross for levert ESPD.
+
+3. **Kvalitativ gjennomgang av kategori C-saker:** 82 saker nevner «forpliktelseserklæring» uten § 16-10 i referansetabellen. Noen av disse kan inneholde relevante nyanser.
+
+4. **Rammeavtaler for håndtverkertjenester:** Spesifikk kartlegging av praksis for rammeavtaler der kvalifikasjonskrav kombinerer kvantitativ bemanning (antall fagarbeidere) med kvalitative krav (fagbrev, sertifiseringer). Typiske anskaffelser: maler, murer, tømrer, taktekker, rørlegger.
