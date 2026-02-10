@@ -254,13 +254,13 @@ feiler. Årsfordeling: hovedsakelig 2003–2012.
 
 ## Prioritering
 
-| # | Tiltak | System | Kompleksitet | Verdi | Anbefaling |
+| # | Tiltak | System | Kompleksitet | Verdi | Status |
 |---|---|---|---|---|---|
 | 6 | Håndtering av opphevede lover | paragraf | Lav | Høy | Gjør først — robusthetsproblem |
-| 1 | Lovhenvisning-filter i `finn_praksis` | kofa | Lav | Høy | Gjør tidlig |
+| 1 | Lovhenvisning-filter i `finn_praksis` | kofa | Lav | Høy | **Ferdig** — `paragrafer`-parameter med AND-semantikk |
 | 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | Gjør tidlig — kobling finnes |
 | 7 | Fallback-seksjonering (99 saker) | kofa | Lav | Middels | Etter hoved-embedding |
-| 5 | Berik «ingen treff»-respons | kofa | Lav | Middels | Gjør sammen med #1 |
+| 5 | Berik «ingen treff»-respons | kofa | Lav | Middels | **Ferdig** — implementert sammen med #1 |
 | 3a | EU-direktivtekst (uten kobling) | paragraf | Lav | Middels | Gjør når paragraf utvides |
 | 2 | Kryssreferanser i lovdata | paragraf | Middels | Høy | Større oppgave, planlegg separat |
 | 3b | Kobling norsk rett ↔ EU-artikler | paragraf | Høy (manuell) | Høy | Vurder for FOA alene først |

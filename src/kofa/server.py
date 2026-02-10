@@ -39,7 +39,7 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | `hent_sak(sak_nr)` | Hent en spesifikk sak med alle detaljer |
 | `hent_avgjoerelse(sak_nr, seksjon?)` | Hent avgjørelsestekst (innledning, bakgrunn, anførsler, vurdering, konklusjon) |
 | `siste_saker(limit?, sakstype?, avgjoerelse?, innklaget?)` | Siste avgjørelser med filtre |
-| `finn_praksis(lov, paragraf?, limit?)` | Finn saker som refererer til en bestemt lovparagraf |
+| `finn_praksis(lov, paragraf?, paragrafer?, limit?)` | Finn saker som refererer til lovparagraf(er) — AND-semantikk for flere |
 | `relaterte_saker(sak_nr)` | Kryssreferanser: saker denne saken siterer og saker som siterer denne |
 | `mest_siterte(limit?)` | De mest siterte/prinsipielle KOFA-sakene |
 | `eu_praksis(eu_case_id, limit?)` | Finn KOFA-saker som refererer til en bestemt EU-dom |
@@ -53,6 +53,7 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | Brukersituasjon | Bruk | Hvorfor |
 |-----------------|------|---------|
 | Spør om en bestemt lovparagraf | `finn_praksis(lov, paragraf)` | Direkte oppslag i referansetabeller |
+| Spør om samspill mellom paragrafer | `finn_praksis(lov, paragrafer=[...])` | AND-søk: saker som refererer ALLE angitte paragrafer |
 | Spør om et tema/problemstilling | `sok("tildelingskriterier")` | FTS i metadata og sammendrag |
 | Kjenner saksnummer | `hent_sak("2023/1099")` | Direkte oppslag |
 | Vil lese avgjørelsens begrunnelse | `hent_avgjoerelse("2023/1099", seksjon="vurdering")` | Full vurderingstekst |
@@ -133,11 +134,18 @@ Hvert resultat er merket med reguleringsversjon: ny (2016-forskriften) eller gam
 | offentleglova | `offentlighetsloven` |
 | konkurranseloven | |
 
-**Eksempler:**
-- `finn_praksis(lov="anskaffelsesforskriften", paragraf="8-3")` → kvalifikasjonskrav
+**Enkelt-paragraf (eksisterende):**
+- `finn_praksis(lov="foa", paragraf="8-3")` → kvalifikasjonskrav
 - `finn_praksis(lov="foa", paragraf="24-2")` → avvisning av tilbud
 - `finn_praksis(lov="loa", paragraf="4")` → grunnleggende prinsipper
 - `finn_praksis(lov="forvaltningsloven")` → alle saker som nevner forvaltningsloven
+
+**Flere paragrafer (AND-semantikk):**
+- `finn_praksis(lov="foa", paragrafer=["16-10", "16-7"])` → saker som refererer BEGGE
+- `finn_praksis(lov="foa", paragrafer=["24-2", "24-8"])` → samspill avvisning/avlysning
+- Ved null treff vises antall saker per paragraf separat
+
+**Paragraf-input:** Aksepterer både `"16-10"` og `"§ 16-10"` — §-prefiks strippes automatisk.
 
 **Merk:** Saker merket «gammel forskrift» bruker anskaffelsesloven 1999 / forskriften 2006.
 Paragrafnumre i gammel og ny forskrift kan ha ulik betydning.
@@ -369,8 +377,10 @@ class MCPServer:
                 "title": "Finn KOFA-praksis etter lovhenvisning",
                 "description": (
                     "Finn KOFA-saker som refererer til en bestemt lov eller forskrift. "
-                    "Dekker saker fra 2017+. "
-                    "Eks: finn_praksis(lov='anskaffelsesforskriften', paragraf='2-4')"
+                    "Bruk 'paragrafer' med flere verdier for å finne saker som refererer "
+                    "ALLE angitte bestemmelser (AND-semantikk). "
+                    "Eks: finn_praksis(lov='foa', paragraf='8-3') eller "
+                    "finn_praksis(lov='foa', paragrafer=['16-10', '16-7'])"
                 ),
                 "inputSchema": {
                     "type": "object",
@@ -384,7 +394,19 @@ class MCPServer:
                         },
                         "paragraf": {
                             "type": "string",
-                            "description": "Paragrafnummer (f.eks. '2-4', '12'). Utelat for alle paragrafer.",
+                            "description": (
+                                "Enkelt paragrafnummer (f.eks. '2-4', '16-10'). "
+                                "Utelat for alle paragrafer."
+                            ),
+                        },
+                        "paragrafer": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": (
+                                "Flere paragrafnumre med AND-semantikk. "
+                                "Finner saker som refererer ALLE angitte paragrafer. "
+                                "Eks: ['16-10', '16-7']"
+                            ),
                         },
                         "limit": {
                             "type": "integer",
@@ -641,6 +663,7 @@ class MCPServer:
                 content = self.service.finn_praksis(
                     lov=arguments.get("lov", ""),
                     paragraf=arguments.get("paragraf"),
+                    paragrafer=arguments.get("paragrafer"),
                     limit=arguments.get("limit", 20),
                 )
             elif tool_name == "relaterte_saker":

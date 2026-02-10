@@ -1205,6 +1205,11 @@ class KofaSupabaseBackend:
     # Query: Find cases by law reference
     # =========================================================================
 
+    _LAW_REF_SELECT = (
+        "sak_nr, law_name, law_section, raw_text, context, regulation_version, "
+        "kofa_cases(innklaget, avgjoerelse, saken_gjelder, avsluttet)"
+    )
+
     @with_retry()
     def find_by_law_reference(
         self,
@@ -1225,10 +1230,7 @@ class KofaSupabaseBackend:
         """
         query = (
             self.client.table("kofa_law_references")
-            .select(
-                "sak_nr, law_section, raw_text, context, regulation_version, "
-                "kofa_cases(innklaget, avgjoerelse, saken_gjelder, avsluttet)"
-            )
+            .select(self._LAW_REF_SELECT)
             .eq("law_name", law_name)
         )
 
@@ -1238,6 +1240,71 @@ class KofaSupabaseBackend:
         query = query.order("sak_nr", desc=True).limit(limit)
         result = query.execute()
         return result.data or []
+
+    @with_retry()
+    def find_cases_by_sections(
+        self,
+        law_name: str,
+        sections: list[str],
+        limit: int = 20,
+    ) -> list[dict]:
+        """
+        Find KOFA cases citing ALL specified sections of a law (AND semantics).
+
+        Args:
+            law_name: Canonical law name
+            sections: Section numbers — cases must cite ALL of these
+            limit: Max number of unique cases
+
+        Returns:
+            List of dicts with case info, grouped by sak_nr in caller
+        """
+        # Step 1: Get sak_nr sets per section, then intersect
+        sak_nr_sets = []
+        for section in sections:
+            result = (
+                self.client.table("kofa_law_references")
+                .select("sak_nr")
+                .eq("law_name", law_name)
+                .eq("law_section", section)
+                .execute()
+            )
+            sak_nrs = {r["sak_nr"] for r in (result.data or [])}
+            sak_nr_sets.append(sak_nrs)
+
+        if not sak_nr_sets:
+            return []
+        matching = sak_nr_sets[0]
+        for s in sak_nr_sets[1:]:
+            matching &= s
+        if not matching:
+            return []
+
+        # Step 2: Fetch full details for matching cases (limit on unique cases)
+        matching_list = sorted(matching, reverse=True)[:limit]
+        result = (
+            self.client.table("kofa_law_references")
+            .select(self._LAW_REF_SELECT)
+            .eq("law_name", law_name)
+            .in_("law_section", sections)
+            .in_("sak_nr", matching_list)
+            .order("sak_nr", desc=True)
+            .execute()
+        )
+        return result.data or []
+
+    @with_retry()
+    def count_cases_by_section(self, law_name: str, section: str) -> int:
+        """Count distinct cases citing a specific law section."""
+        result = (
+            self.client.table("kofa_law_references")
+            .select("sak_nr", count="exact")
+            .eq("law_name", law_name)
+            .eq("law_section", section)
+            .limit(0)
+            .execute()
+        )
+        return result.count or 0
 
     def find_related_cases(self, sak_nr: str) -> dict:
         """

@@ -201,60 +201,156 @@ class KofaService:
         self,
         lov: str,
         paragraf: str | None = None,
+        paragrafer: list[str] | None = None,
         limit: int = 20,
     ) -> str:
-        """Find KOFA cases citing a specific law section."""
-        from kofa.reference_extractor import LAW_ALIASES
+        """Find KOFA cases citing specific law sections."""
+        from kofa.reference_extractor import LAW_ALIASES, _normalize_section
+
+        # Validate law name
+        lov = lov.strip()
+        if not lov:
+            return "Feil: 'lov' er påkrevd. Bruk f.eks. 'anskaffelsesforskriften' eller 'foa'."
 
         # Normalize law name
-        canonical = LAW_ALIASES.get(lov.lower().strip())
+        canonical = LAW_ALIASES.get(lov.lower())
         if not canonical:
-            # Try as-is (user may already pass canonical name)
-            canonical = lov.lower().strip()
+            canonical = lov.lower()
 
+        # Normalize and clean section input — filter empty strings, deduplicate
+        if paragrafer:
+            paragrafer = list(dict.fromkeys(_normalize_section(p) for p in paragrafer if p.strip()))
+            if len(paragrafer) == 1:
+                paragraf = paragrafer[0]
+                paragrafer = None
+            elif not paragrafer:
+                paragrafer = None
+        if paragraf:
+            paragraf = _normalize_section(paragraf)
+            if not paragraf:
+                paragraf = None
+
+        # Multi-section AND search
+        if paragrafer:
+            return self._finn_praksis_multi(canonical, lov, paragrafer, limit)
+
+        # Single-section or all-sections search (existing behavior)
         results = self.backend.find_by_law_reference(canonical, paragraf, limit)
 
         if not results:
-            section_label = f" {paragraf}" if paragraf else ""
-            return f"Ingen KOFA-saker funnet som refererer til {lov} {section_label}".strip()
+            section_label = f" § {paragraf}" if paragraf else ""
+            return f"Ingen KOFA-saker funnet som refererer til {lov}{section_label}"
 
-        section_label = f" {paragraf}" if paragraf else ""
-        lines = [f"## KOFA-praksis: {lov} {section_label}\n".strip()]
+        section_label = f" § {paragraf}" if paragraf else ""
+        lines = [f"## KOFA-praksis: {lov}{section_label}\n"]
         lines.append(f"Fant {len(results)} saker:\n")
 
         for r in results:
-            sak_nr = r.get("sak_nr", "?")
-            law_section = r.get("law_section", "")
-            case_info = r.get("kofa_cases", {}) or {}
-            innklaget = case_info.get("innklaget", "")
-            avgjoerelse = case_info.get("avgjoerelse", "")
-            saken_gjelder = case_info.get("saken_gjelder", "")
-            avsluttet = case_info.get("avsluttet", "")
+            lines.append(self._format_law_ref_result(r))
 
-            reg_version = r.get("regulation_version", "")
+        return "\n".join(lines)
+
+    def _finn_praksis_multi(
+        self,
+        canonical: str,
+        lov: str,
+        paragrafer: list[str],
+        limit: int,
+    ) -> str:
+        """AND search: find cases citing ALL specified sections."""
+        results = self.backend.find_cases_by_sections(canonical, paragrafer, limit)
+
+        if not results:
+            return self._no_results_multi(canonical, lov, paragrafer)
+
+        # Group by sak_nr
+        by_case: dict[str, list[dict]] = {}
+        for r in results:
+            by_case.setdefault(r["sak_nr"], []).append(r)
+
+        section_label = " + ".join(f"§ {p}" for p in paragrafer)
+        lines = [f"## KOFA-praksis: {lov} {section_label}\n"]
+        lines.append(f"Fant {len(by_case)} saker som refererer alle bestemmelsene:\n")
+
+        for sak_nr, refs in by_case.items():
+            case_info = refs[0].get("kofa_cases", {}) or {}
+            sections_found = sorted({r["law_section"] for r in refs})
+            reg_version = refs[0].get("regulation_version", "")
             version_label = " (gammel forskrift)" if reg_version == "old" else ""
 
             parts = [f"### {sak_nr}{version_label}"]
-            if law_section:
-                parts.append(f"**Referert paragraf:** {law_section}")
+            parts.append(f"**Refererte paragrafer:** {', '.join(sections_found)}")
+
+            innklaget = case_info.get("innklaget", "")
             if innklaget:
                 parts.append(f"**Innklaget:** {innklaget}")
+            avgjoerelse = case_info.get("avgjoerelse", "")
             if avgjoerelse:
                 parts.append(f"**Avgjoerelse:** {avgjoerelse}")
+            saken_gjelder = case_info.get("saken_gjelder", "")
             if saken_gjelder:
                 parts.append(f"*{saken_gjelder}*")
+            avsluttet = case_info.get("avsluttet", "")
             if avsluttet:
                 parts.append(f"Avsluttet: {avsluttet}")
 
-            context = r.get("context", "")
-            if context:
-                snippet = context[:200] + "..." if len(context) > 200 else context
-                parts.append(f"> {snippet}")
+            for ref in refs:
+                context = ref.get("context", "")
+                if context:
+                    snippet = context[:200] + "..." if len(context) > 200 else context
+                    parts.append(f"> **§ {ref['law_section']}:** {snippet}")
 
             parts.append("")
             lines.append("\n".join(parts))
 
         return "\n".join(lines)
+
+    def _no_results_multi(self, canonical: str, lov: str, paragrafer: list[str]) -> str:
+        """Enriched no-results response for multi-section AND search."""
+        section_label = " + ".join(f"§ {p}" for p in paragrafer)
+        lines = [
+            f"Ingen KOFA-saker funnet som refererer alle: {lov} {section_label}\n",
+            "**Antall saker per bestemmelse separat:**\n",
+        ]
+        for p in paragrafer:
+            count = self.backend.count_cases_by_section(canonical, p)
+            lines.append(f"- {lov} § {p}: {count} saker")
+
+        lines.append("\nBruk `finn_praksis` med enkelt paragraf for å se sakene separat.")
+        return "\n".join(lines)
+
+    @staticmethod
+    def _format_law_ref_result(r: dict) -> str:
+        """Format a single law reference result as markdown."""
+        sak_nr = r.get("sak_nr", "?")
+        law_section = r.get("law_section", "")
+        case_info = r.get("kofa_cases", {}) or {}
+        reg_version = r.get("regulation_version", "")
+        version_label = " (gammel forskrift)" if reg_version == "old" else ""
+
+        parts = [f"### {sak_nr}{version_label}"]
+        if law_section:
+            parts.append(f"**Referert paragraf:** {law_section}")
+        innklaget = case_info.get("innklaget", "")
+        if innklaget:
+            parts.append(f"**Innklaget:** {innklaget}")
+        avgjoerelse = case_info.get("avgjoerelse", "")
+        if avgjoerelse:
+            parts.append(f"**Avgjoerelse:** {avgjoerelse}")
+        saken_gjelder = case_info.get("saken_gjelder", "")
+        if saken_gjelder:
+            parts.append(f"*{saken_gjelder}*")
+        avsluttet = case_info.get("avsluttet", "")
+        if avsluttet:
+            parts.append(f"Avsluttet: {avsluttet}")
+
+        context = r.get("context", "")
+        if context:
+            snippet = context[:200] + "..." if len(context) > 200 else context
+            parts.append(f"> {snippet}")
+
+        parts.append("")
+        return "\n".join(parts)
 
     def related_cases(self, sak_nr: str) -> str:
         """Find cases related to a given case via cross-references."""
