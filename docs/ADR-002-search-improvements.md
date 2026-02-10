@@ -296,18 +296,36 @@ For **Høyesterett** ligger PDF-er på domstol.no med forutsigbar URL:
 For **lagmannsrett** er Lovdata eneste realistiske kilde. URL-mønster:
 `lovdata.no/dokument/{DOMSTOLKODE}/avgjorelse/{saksnummer}` (f.eks. `LBSIV`, `LBSTR`).
 
-**Juridisk vurdering — scraping av Lovdata for rettsavgjørelser:**
+**Juridisk vurdering — Lovdata-scraping forkastet, innsynsbegjæring valgt:**
 
-Lovdata er en privat stiftelse med egne brukervilkår, men rettsavgjørelser er
-offentlige dokumenter. Situasjonen er juridisk mer nyansert enn domstol.no,
-men i praksis snakker vi om ~170 målrettede oppslag av spesifikke avgjørelser
-som KOFA selv refererer til — ikke bulk-scraping av Lovdatas database.
+Opprinnelig plan var å hente lagmannsrettsavgjørelser fra Lovdata med crawl-delay.
+Etter nærmere vurdering er dette **forkastet** av tre grunner:
 
-Anbefalte hensyn:
-- Crawl-delay: 5–10 sekunder mellom forespørsler
-- Crawl i lavsesong (natt/helg)
-- Respekter `robots.txt` og unngå endepunkter som er blokkert
-- Identifiser deg med User-Agent som beskriver formålet
+1. **Brukervilkår:** Lovdata forbyr eksplisitt massenedlasting *og* bruk av innhold
+   i KI/AI-verktøy (inkl. RAG/MCP). For lover/forskrifter tilbyr de API med
+   NLOD 2.0 og inviterer til «eksperimentering og forskning med KI», men
+   rettsavgjørelser er uttrykkelig unntatt.
+2. **Databasevern:** Høyesterett (HR-2019-1725-A) fastslo i Lovdata vs.
+   Rettspraksis.no at Lovdatas databaser er vernet etter åndsverkloven § 24.
+   Selv om den saken gjaldt bulk-kopiering av 40 000 avgjørelser, rammer
+   bestemmelsen også «gjentatte uttrekk av uvesentlige deler» som til sammen
+   utgjør en vesentlig del.
+3. **Lovdatas KI-posisjon:** Lovdata har lansert Lovdata Pro 2 med eget KI-søk
+   (2025), og inngår kommersielle KI-avtaler med advokatfirmaer. En MCP-tjeneste
+   som bruker Lovdata-innhold vil sannsynligvis ses som konkurrerende virksomhet.
+
+**Valgt tilnærming — innsynsbegjæring til lagmannsrettene:**
+
+Rettsavgjørelser er offentlige dokumenter (tvisteloven § 14-2). Ved å innhente
+dem direkte fra domstolene via innsynsbegjæring unngår vi Lovdatas brukervilkår
+og databasevern fullstendig. Det innhentede materialet kan fritt brukes i KI.
+
+Praktisk gjennomføring:
+- Send én samlet innsynsbegjæring per lagmannsrett med liste over saksnumre
+- 6 lagmannsretter å kontakte (Borgarting ~50, Hålogaland ~28, Eidsivating ~14,
+  Agder ~7, Gulating ~6, Frostating ~5)
+- Be om avgjørelsene i digital form (PDF eller tekstformat)
+- Eldre Høyesterettsdommer (Rt.-format, pre-2008) kan innhentes fra Høyesterett
 
 **Sammenligning med observasjon 4 (EU-domstolspraksis):**
 
@@ -316,7 +334,7 @@ Anbefalte hensyn:
 | Unike saker | 211 | ~170 |
 | Totale referanser | 1 874 | ~1 564 |
 | Kobling til KOFA | Allerede i `kofa_eu_references` | Må ekstraheres først |
-| Fulltekstkilde | CELLAR/EUR-Lex (åpent API) | domstol.no (HR) + Lovdata (lagmannsrett) |
+| Fulltekstkilde | CELLAR/EUR-Lex (åpent API) | domstol.no (HR) + innsynsbegjæring (lagmannsrett) |
 | Python-bibliotek | `cellar-extractor` | Ingen — custom scraper |
 
 **Forslag — tre steg:**
@@ -331,19 +349,19 @@ Anbefalte hensyn:
 
 **Steg 2: Hent fulltekst (middels kompleksitet)**
 1. Høyesterett (HR-): Hent PDF fra domstol.no — uproblematisk, ~14 saker
-2. Lagmannsrett + eldre Høyesterett (Rt.): Hent HTML fra Lovdata —
-   ~150 saker, med crawl-delay på 5–10 sekunder
-3. Ny tabell `court_case_law(case_id, court, court_level, date, parties,
+2. Lagmannsrett: Innsynsbegjæring til 6 lagmannsretter — ~110 saker
+3. Eldre Høyesterett (Rt.): Innsynsbegjæring til Høyesterett — ~40-50 saker
+4. Ny tabell `court_case_law(case_id, court, court_level, date, parties,
    full_text, source_url, fetched_at)`
-4. PDF-ekstraksjon for HR-saker med eksisterende `pdf_extractor.py`
-5. HTML-parsing for Lovdata-saker
+5. PDF-ekstraksjon med eksisterende `pdf_extractor.py`
 
 **Steg 3: Gjør tilgjengelig via MCP**
 1. Nytt verktøy eller utvid eksisterende for å slå opp refererte dommer
 2. Koble til `finn_praksis` — «vis rettsavgjørelsene KOFA bygger på»
 
 **Kompleksitet:** Steg 1: lav (tilsvarende EU-referanseekstraksjon). Steg 2:
-middels (to ulike kilder, crawl-delay, HTML-parsing). Steg 3: lav.
+middels (innsynsbegjæring er manuell prosess, men teknisk enkel når materiale
+er mottatt — PDF-ekstraksjon). Steg 3: lav.
 
 ## Prioritering
 
@@ -353,7 +371,7 @@ middels (to ulike kilder, crawl-delay, HTML-parsing). Steg 3: lav.
 | 1 | Lovhenvisning-filter i `finn_praksis` | kofa | Lav | Høy | **Ferdig** — `paragrafer`-parameter med AND-semantikk |
 | 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | **Ferdig** — 191 dommer hentet fra EUR-Lex, `hent_eu_dom` MCP-verktøy |
 | 8a | Norsk rettspraksis — referanseekstraksjon | kofa | Lav | Høy | **Ferdig** — `kofa_court_references`-tabell, regex for HR/Rt/lagmannsrett/tingrett |
-| 8b | Norsk rettspraksis — fulltekst (HR + lagmannsrett) | kofa | Middels | Høy | Etter 8a, crawl-delay mot Lovdata |
+| 8b | Norsk rettspraksis — fulltekst (HR + lagmannsrett) | kofa | Middels | Høy | HR fra domstol.no (klar), lagmannsrett via innsynsbegjæring (avventer svar) |
 | 7 | Fallback-seksjonering (99 saker) | kofa | Lav | Middels | Etter hoved-embedding |
 | 5 | Berik «ingen treff»-respons | kofa | Lav | Middels | **Ferdig** — implementert sammen med #1 |
 | 3a | EU-direktivtekst (uten kobling) | paragraf | Lav | Middels | Gjør når paragraf utvides |
