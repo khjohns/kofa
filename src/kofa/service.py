@@ -569,7 +569,8 @@ class KofaService:
             lines.append(
                 f"- Prosessert **{ref_stats['cases_processed']}** saker "
                 f"({ref_stats['law_refs']} lovhenvisninger, {ref_stats['case_refs']} sakskryssreferanser, "
-                f"{ref_stats.get('eu_refs', 0)} EU-referanser)"
+                f"{ref_stats.get('eu_refs', 0)} EU-referanser, "
+                f"{ref_stats.get('court_refs', 0)} rettsavgjørelser)"
             )
             if ref_stats["errors"]:
                 lines.append(f"- {ref_stats['errors']} feil")

@@ -352,10 +352,52 @@ middels (to ulike kilder, crawl-delay, HTML-parsing). Steg 3: lav.
 | 6 | Håndtering av opphevede lover | paragraf | Lav | Høy | Gjør først — robusthetsproblem |
 | 1 | Lovhenvisning-filter i `finn_praksis` | kofa | Lav | Høy | **Ferdig** — `paragrafer`-parameter med AND-semantikk |
 | 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | Gjør tidlig — kobling finnes |
-| 8a | Norsk rettspraksis — referanseekstraksjon | kofa | Lav | Høy | Parallelt med #4 |
+| 8a | Norsk rettspraksis — referanseekstraksjon | kofa | Lav | Høy | **Ferdig** — `kofa_court_references`-tabell, regex for HR/Rt/lagmannsrett/tingrett |
 | 8b | Norsk rettspraksis — fulltekst (HR + lagmannsrett) | kofa | Middels | Høy | Etter 8a, crawl-delay mot Lovdata |
 | 7 | Fallback-seksjonering (99 saker) | kofa | Lav | Middels | Etter hoved-embedding |
 | 5 | Berik «ingen treff»-respons | kofa | Lav | Middels | **Ferdig** — implementert sammen med #1 |
 | 3a | EU-direktivtekst (uten kobling) | paragraf | Lav | Middels | Gjør når paragraf utvides |
 | 2 | Kryssreferanser i lovdata | paragraf | Middels | Høy | Større oppgave, planlegg separat |
 | 3b | Kobling norsk rett ↔ EU-artikler | paragraf | Høy (manuell) | Høy | Vurder for FOA alene først |
+
+## Gjennomført — endringslogg
+
+### 2026-02-09: Observasjon 1 + 5 — paragraffilter og «ingen treff»
+
+- `finn_praksis` har ny `paragrafer`-parameter med AND-semantikk (`6baf914`)
+- «Ingen treff»-respons berikes med naboløfter (hva finnes per enkeltparameter)
+
+### 2026-02-10: Lovhenvisning-regex — kvalitetsforbedring
+
+Tre regex-feil i `reference_extractor.py` førte til at ~65% av lovhenvisninger ble
+oversett (`ad13962`):
+
+| Problem | Eksempel | Årsak |
+|---|---|---|
+| Kortformer uten prefiks | «forskriften § 16-10» | `+` krevde tegn før suffiks, endret til `*` |
+| Del-referanser | «forskriften del III § 16-10» | Manglet mønster for romertalls-del |
+| Parentes uten mellomrom | «§ 16-10(5)» | Krevde whitespace før parentes |
+
+Målt forbedring: § 16-10-dekning 30%→89%, § 24-2 26%→94%, § 24-8 29%→91%.
+
+Nynorske former (forskrifta, lova) lagt til i `LAW_ALIASES`.
+
+Gjenstående gap dokumentert i `docs/TODO-referanseekstraksjon.md` — hovedsakelig
+bare §-referanser uten lovnavn (problem D), der lovnavn-propagering er anbefalt
+tilnærming.
+
+### 2026-02-10: Prefiksmatching i finn_praksis
+
+`finn_praksis` brukte eksakt match mot `law_section` — slik at `§ 16-10` kun fant
+2 treff i stedet for 15 (som inkluderer `§ 16-10 (1)`, `§ 16-10 første ledd` osv.)
+(`fe43bed`). Endret til OR-filter: eksakt match *eller* starts-with-space.
+
+### 2026-02-10: Observasjon 8a — norsk rettspraksis-referanser
+
+Referanseekstraksjon for norske domstolsavgjørelser implementert (`64f6ad2`):
+
+- `CourtReference`-dataklasse i `reference_extractor.py`
+- Regex for HR-ÅÅÅÅ-NNNN-X, Rt. ÅÅÅÅ s. NNNN, L[A-H]-ÅÅÅÅ-NNNNN, T[XXXX]-ÅÅÅÅ-NNNNN
+- Normalisering av Rt-formatvarianter til kanonisk form
+- `kofa_court_references`-tabell med migrasjon
+- Integrert i sync-pipeline (`kofa sync --references`)
