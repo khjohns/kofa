@@ -349,9 +349,9 @@ middels (to ulike kilder, crawl-delay, HTML-parsing). Steg 3: lav.
 
 | # | Tiltak | System | Kompleksitet | Verdi | Status |
 |---|---|---|---|---|---|
-| 6 | Håndtering av opphevede lover | paragraf | Lav | Høy | Gjør først — robusthetsproblem |
+| 6 | Håndtering av opphevede lover | paragraf | Lav | Høy | **Ferdig** — `is_current`-kolonne + sync-logikk (`e0247fb` i paragraf) |
 | 1 | Lovhenvisning-filter i `finn_praksis` | kofa | Lav | Høy | **Ferdig** — `paragrafer`-parameter med AND-semantikk |
-| 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | Gjør tidlig — kobling finnes |
+| 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | **Ferdig** — 191 dommer hentet fra EUR-Lex, `hent_eu_dom` MCP-verktøy |
 | 8a | Norsk rettspraksis — referanseekstraksjon | kofa | Lav | Høy | **Ferdig** — `kofa_court_references`-tabell, regex for HR/Rt/lagmannsrett/tingrett |
 | 8b | Norsk rettspraksis — fulltekst (HR + lagmannsrett) | kofa | Middels | Høy | Etter 8a, crawl-delay mot Lovdata |
 | 7 | Fallback-seksjonering (99 saker) | kofa | Lav | Middels | Etter hoved-embedding |
@@ -401,3 +401,37 @@ Referanseekstraksjon for norske domstolsavgjørelser implementert (`64f6ad2`):
 - Normalisering av Rt-formatvarianter til kanonisk form
 - `kofa_court_references`-tabell med migrasjon
 - Integrert i sync-pipeline (`kofa sync --references`)
+
+### 2026-02-10: Observasjon 4 — EU-domstolspraksis fra EUR-Lex
+
+Fulltekst for EU-dommer referert i KOFA hentet fra EUR-Lex HTML (`7d0a219`):
+
+**Resultat:** 191 av 208 unike EU-saker hentet (22 ga 404 — joined cases uten
+egen side). 6,5M tegn totalt, snitt 34k tegn per dom. Alle på engelsk.
+
+**Designvalg vs. opprinnelig plan:**
+
+| Beslutning | Plan (ADR) | Faktisk |
+|---|---|---|
+| Kilde | `cellar-extractor` Python-pakke | Direkte EUR-Lex HTML — SPARQL viste seg flaky, cellar-extractor er bulk-API |
+| Metadata | CELLAR SPARQL | `<meta name="DC.*">` fra HTML head — kun tilgjengelig i eldre format (pre-~2012) |
+| Lagring | Én rad per sak, full tekst | Som planlagt — `kofa_eu_case_law` tabell |
+| Seksjonering | Lagret i DB | On-the-fly i service-lag via tekstmarkører |
+| Språk | Engelsk, FR fallback | Som planlagt — alle 191 funnet på EN |
+
+**Implementering:**
+
+- `eurlex_fetcher.py` (ny): `case_id_to_celex()` konvertering (C-/T- → CELEX),
+  HTML-parsing for begge EUR-Lex-formater (gammel `TexteOnly`-div + ny CSS),
+  DC-metadata-ekstraksjon, EN→FR fallback ved 404
+- `supabase_backend.py`: `sync_eu_case_law()` (set difference, 10s delay,
+  graceful shutdown), `get_eu_case_law()`, pipeline-stats
+- `service.py`: `hent_eu_dom(eu_case_id, seksjon?)` med on-the-fly seksjonering
+  via "JUDGMENT OF THE COURT" / "Grounds" / "On those grounds" / "Operative part"
+- `server.py`: Nytt MCP-verktøy `hent_eu_dom`, oppdatert `SERVER_INSTRUCTIONS`
+- `cli.py`: `kofa sync --eu-cases`
+- Migrasjon: `kofa_eu_case_law` tabell med RLS
+
+**Metadata-dekning:** 53 av 191 dommer har `case_name` og `subject` (eldre format
+med DC-meta-tags). Nyere format (post-~2012) mangler disse — kan eventuelt
+berikes fra teksten eller CELLAR SPARQL i fremtiden.
