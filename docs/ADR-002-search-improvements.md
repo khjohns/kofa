@@ -252,6 +252,99 @@ feiler. Årsfordeling: hovedsakelig 2003–2012.
 **Kompleksitet:** Lav. Nøkkelordene er kjente, regex-logikk tilsvarende eksisterende
 `_assign_sections()`. Hovedforskjellen er at teksten ikke allerede er delt i avsnitt.
 
+## Observasjon 8: Norsk rettspraksis referert fra KOFA
+
+**Problem:** KOFA-avgjørelser refererer hyppig til norsk rettspraksis — særlig
+Høyesterett og lagmannsrettene. Disse referansene er verken ekstrahert eller
+lagret strukturert, og selve rettsavgjørelsene er ikke tilgjengelige i systemet.
+
+**Omfang — kartlagt fra `kofa_decision_text`:**
+
+| Domstolsnivå | Unike saker | Totale referanser | Referanseformat |
+|---|---|---|---|
+| Lagmannsrett | 110 | 644 | `L[A-H]-ÅÅÅÅ-NNNNN` |
+| Høyesterett (gammel) | ~40-50 | 610 | `Rt. ÅÅÅÅ s. NNNN` / `Rt-ÅÅÅÅ-NNNN` |
+| Høyesterett (ny) | 14 | 294 | `HR-ÅÅÅÅ-NNNN-X` |
+| Tingrett | 9 | 16 | `T[XXXX]-ÅÅÅÅ-NNNNN` |
+| **Totalt** | **~170** | **~1 564** | |
+
+560 KOFA-saker (av ~4 650) inneholder minst én domstolsreferanse.
+
+**Fordeling lagmannsrett per domstol:**
+
+| Lagmannsrett | Unike saker | Mest siterte |
+|---|---|---|
+| Borgarting (LB) | 50 | LB-2019-85112 (71 KOFA-saker) |
+| Hålogaland (LH) | 28 | LH-2018-99424 (13) |
+| Eidsivating (LE) | 14 | LE-2005-183161 (23) |
+| Agder (LA) | 7 | LA-2012-85717 (12) |
+| Gulating (LG) | 6 | LG-2017-28938 (10) |
+| Frostating (LF) | 5 | LF-2014-32160 (11) |
+
+**Tilgjengelige kilder for fulltekst:**
+
+| Kilde | Dekning | Tilgang | Juridisk status |
+|---|---|---|---|
+| domstol.no | Kun Høyesterett (PDF) | Åpen, forutsigbar URL | Offentlig organ, offentleglova |
+| Lovdata (gratis) | HR 2008+, lagmannsrett 2008+, tingrett 2016+ | HTML, ingen API | Privat stiftelse, men offentlige dokumenter |
+| Lovdata API (ny 2025) | Kun lover/forskrifter | Gratis, NLOD 2.0 | Rettsavgjørelser *ikke* inkludert |
+
+For **Høyesterett** ligger PDF-er på domstol.no med forutsigbar URL:
+`/globalassets/upload/hret/avgjorelser/{år}/{måned}/{hr-nummer}.pdf`
+— men månedsmappen varierer og kan ikke utledes fra saksnummeret.
+
+For **lagmannsrett** er Lovdata eneste realistiske kilde. URL-mønster:
+`lovdata.no/dokument/{DOMSTOLKODE}/avgjorelse/{saksnummer}` (f.eks. `LBSIV`, `LBSTR`).
+
+**Juridisk vurdering — scraping av Lovdata for rettsavgjørelser:**
+
+Lovdata er en privat stiftelse med egne brukervilkår, men rettsavgjørelser er
+offentlige dokumenter. Situasjonen er juridisk mer nyansert enn domstol.no,
+men i praksis snakker vi om ~170 målrettede oppslag av spesifikke avgjørelser
+som KOFA selv refererer til — ikke bulk-scraping av Lovdatas database.
+
+Anbefalte hensyn:
+- Crawl-delay: 5–10 sekunder mellom forespørsler
+- Crawl i lavsesong (natt/helg)
+- Respekter `robots.txt` og unngå endepunkter som er blokkert
+- Identifiser deg med User-Agent som beskriver formålet
+
+**Sammenligning med observasjon 4 (EU-domstolspraksis):**
+
+| | EU-domstol | Norsk rettspraksis |
+|---|---|---|
+| Unike saker | 211 | ~170 |
+| Totale referanser | 1 874 | ~1 564 |
+| Kobling til KOFA | Allerede i `kofa_eu_references` | Må ekstraheres først |
+| Fulltekstkilde | CELLAR/EUR-Lex (åpent API) | domstol.no (HR) + Lovdata (lagmannsrett) |
+| Python-bibliotek | `cellar-extractor` | Ingen — custom scraper |
+
+**Forslag — tre steg:**
+
+**Steg 1: Ekstraher referanser fra KOFA-tekst (lav kompleksitet)**
+1. Utvid `reference_extractor.py` med `CourtReference`-dataklasse
+2. Regex for `HR-ÅÅÅÅ-NNNN-X`, `Rt. ÅÅÅÅ s. NNNN`, `L[A-H]-ÅÅÅÅ-NNNNN`,
+   `T[XXXX]-ÅÅÅÅ-NNNNN` — med normalisering av Rt-formatvarianter
+3. Ny tabell `kofa_court_references(sak_nr, court_case_id, court_name,
+   court_level, paragraph_number, context, raw_text)`
+4. Kjør referanseekstraksjon på eksisterende `kofa_decision_text`
+
+**Steg 2: Hent fulltekst (middels kompleksitet)**
+1. Høyesterett (HR-): Hent PDF fra domstol.no — uproblematisk, ~14 saker
+2. Lagmannsrett + eldre Høyesterett (Rt.): Hent HTML fra Lovdata —
+   ~150 saker, med crawl-delay på 5–10 sekunder
+3. Ny tabell `court_case_law(case_id, court, court_level, date, parties,
+   full_text, source_url, fetched_at)`
+4. PDF-ekstraksjon for HR-saker med eksisterende `pdf_extractor.py`
+5. HTML-parsing for Lovdata-saker
+
+**Steg 3: Gjør tilgjengelig via MCP**
+1. Nytt verktøy eller utvid eksisterende for å slå opp refererte dommer
+2. Koble til `finn_praksis` — «vis rettsavgjørelsene KOFA bygger på»
+
+**Kompleksitet:** Steg 1: lav (tilsvarende EU-referanseekstraksjon). Steg 2:
+middels (to ulike kilder, crawl-delay, HTML-parsing). Steg 3: lav.
+
 ## Prioritering
 
 | # | Tiltak | System | Kompleksitet | Verdi | Status |
@@ -259,6 +352,8 @@ feiler. Årsfordeling: hovedsakelig 2003–2012.
 | 6 | Håndtering av opphevede lover | paragraf | Lav | Høy | Gjør først — robusthetsproblem |
 | 1 | Lovhenvisning-filter i `finn_praksis` | kofa | Lav | Høy | **Ferdig** — `paragrafer`-parameter med AND-semantikk |
 | 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | Gjør tidlig — kobling finnes |
+| 8a | Norsk rettspraksis — referanseekstraksjon | kofa | Lav | Høy | Parallelt med #4 |
+| 8b | Norsk rettspraksis — fulltekst (HR + lagmannsrett) | kofa | Middels | Høy | Etter 8a, crawl-delay mot Lovdata |
 | 7 | Fallback-seksjonering (99 saker) | kofa | Lav | Middels | Etter hoved-embedding |
 | 5 | Berik «ingen treff»-respons | kofa | Lav | Middels | **Ferdig** — implementert sammen med #1 |
 | 3a | EU-direktivtekst (uten kobling) | paragraf | Lav | Middels | Gjør når paragraf utvides |

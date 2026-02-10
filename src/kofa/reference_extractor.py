@@ -1,8 +1,9 @@
 """
 Reference extraction from KOFA decision text.
 
-Extracts law references (anskaffelsesloven, anskaffelsesforskriften, etc.)
-and KOFA cross-references (sak 2019/491) from structured decision paragraphs.
+Extracts law references (anskaffelsesloven, anskaffelsesforskriften, etc.),
+KOFA cross-references (sak 2019/491), EU case references (C-19/00),
+and Norwegian court case references (HR-2019-1801-A, Rt. 2007 s. 983, LB-2019-85112).
 
 Supports both old (pre-2017) and new (2017+) regulations via version detection.
 """
@@ -43,6 +44,17 @@ class EUCaseReference:
 
     case_id: str  # e.g. "C-19/00"
     case_name: str  # e.g. "SIAC Construction" (may be empty)
+    raw_text: str
+    position: int
+
+
+@dataclass
+class CourtReference:
+    """A reference to a Norwegian court case (Høyesterett, lagmannsrett, tingrett)."""
+
+    case_id: str  # Normalized: "HR-2019-1801-A", "Rt-2007-983", "LB-2019-85112"
+    court_level: str  # "hoyesterett", "lagmannsrett", "tingrett"
+    court_name: str  # "Høyesterett", "Borgarting lagmannsrett", etc.
     raw_text: str
     position: int
 
@@ -224,6 +236,48 @@ _DESCRIPTIVE_LAW_RE = re.compile(
     r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
     re.IGNORECASE,
 )
+
+# Pattern 5: Norwegian court case references
+# 5a: HR-ÅÅÅÅ-NNNN-X (Høyesterett, new format from 2008+)
+_HR_CASE_RE = re.compile(
+    r"(HR-\d{4}-\d+-[A-Z]+)",
+)
+
+# 5b: Rt. ÅÅÅÅ s. NNNN / Rt-ÅÅÅÅ-NNNN (Høyesterett, old format)
+# Handles many variants: "Rt. 2007 s. 983", "Rt-2007-983", "Rt.2007 s.983",
+# "Rt. 2007\ns. 983" (PDF line breaks), "Rt. 1998 side 1398"
+_RT_CASE_RE = re.compile(
+    r"Rt[\.\-]\s*(\d{4})\s*[\.\-\s]+(?:(?:s(?:ide)?[\.\s]*)|(?=\d))(\d+)",
+)
+
+# 5c: L[A-H]-ÅÅÅÅ-NNNNN (lagmannsrett)
+# LA=Agder, LB=Borgarting, LE=Eidsivating, LF=Frostating, LG=Gulating, LH=Hålogaland
+# Also handles "LB 2019-85112" (space instead of first hyphen)
+_LAGMANNSRETT_CASE_RE = re.compile(
+    r"(L[A-H])[\s-](\d{4}-\d+)",
+)
+
+# 5d: T[XXXX]-ÅÅÅÅ-NNNNN (tingrett)
+# e.g. TOSLO, TBERG, TNORD, etc.
+_TINGRETT_CASE_RE = re.compile(
+    r"(T[A-ZÆØÅ]{3,4}-\d{4}-\d+)",
+)
+
+# Lagmannsrett prefix → full name
+_LAGMANNSRETT_NAMES: dict[str, str] = {
+    "LA": "Agder lagmannsrett",
+    "LB": "Borgarting lagmannsrett",
+    "LE": "Eidsivating lagmannsrett",
+    "LF": "Frostating lagmannsrett",
+    "LG": "Gulating lagmannsrett",
+    "LH": "Hålogaland lagmannsrett",
+}
+
+
+def _normalize_rt_ref(year: str, page: str) -> str:
+    """Normalize Rt-reference to canonical form: Rt-ÅÅÅÅ-NNNN."""
+    return f"Rt-{year}-{page}"
+
 
 # Pattern 3: KOFA case cross-references
 # Matches: "sak 2019/491", "KOFA 2019/234", "klagenemndas sak 2020/172 avsnitt 25"
@@ -441,12 +495,94 @@ class ReferenceExtractor:
 
         return refs
 
+    def extract_court_references(self, text: str) -> list[CourtReference]:
+        """Extract Norwegian court case references from text.
+
+        Handles four formats:
+        - HR-ÅÅÅÅ-NNNN-X (Høyesterett, new format)
+        - Rt. ÅÅÅÅ s. NNNN / Rt-ÅÅÅÅ-NNNN (Høyesterett, old format)
+        - L[A-H]-ÅÅÅÅ-NNNNN (lagmannsrett)
+        - T[XXXX]-ÅÅÅÅ-NNNNN (tingrett)
+        """
+        refs: list[CourtReference] = []
+        seen: set[str] = set()
+
+        # HR- references (Høyesterett new format)
+        for m in _HR_CASE_RE.finditer(text):
+            case_id = m.group(1)
+            if case_id in seen:
+                continue
+            seen.add(case_id)
+            refs.append(
+                CourtReference(
+                    case_id=case_id,
+                    court_level="hoyesterett",
+                    court_name="Høyesterett",
+                    raw_text=m.group(0).strip(),
+                    position=m.start(),
+                )
+            )
+
+        # Rt. references (Høyesterett old format)
+        for m in _RT_CASE_RE.finditer(text):
+            case_id = _normalize_rt_ref(m.group(1), m.group(2))
+            if case_id in seen:
+                continue
+            seen.add(case_id)
+            refs.append(
+                CourtReference(
+                    case_id=case_id,
+                    court_level="hoyesterett",
+                    court_name="Høyesterett",
+                    raw_text=m.group(0).strip(),
+                    position=m.start(),
+                )
+            )
+
+        # Lagmannsrett references
+        for m in _LAGMANNSRETT_CASE_RE.finditer(text):
+            prefix = m.group(1)  # e.g. "LB"
+            case_id = f"{prefix}-{m.group(2)}"  # Normalize "LB 2019-85112" → "LB-2019-85112"
+            if case_id in seen:
+                continue
+            seen.add(case_id)
+            refs.append(
+                CourtReference(
+                    case_id=case_id,
+                    court_level="lagmannsrett",
+                    court_name=_LAGMANNSRETT_NAMES.get(prefix, f"{prefix} lagmannsrett"),
+                    raw_text=m.group(0).strip(),
+                    position=m.start(),
+                )
+            )
+
+        # Tingrett references
+        for m in _TINGRETT_CASE_RE.finditer(text):
+            case_id = m.group(1)
+            if case_id in seen:
+                continue
+            seen.add(case_id)
+            refs.append(
+                CourtReference(
+                    case_id=case_id,
+                    court_level="tingrett",
+                    court_name="tingrett",
+                    raw_text=m.group(0).strip(),
+                    position=m.start(),
+                )
+            )
+
+        return refs
+
     def extract_all(
         self, text: str
-    ) -> tuple[list[LawReference], list[CaseReference], list[EUCaseReference]]:
+    ) -> tuple[
+        list[LawReference], list[CaseReference], list[EUCaseReference], list[CourtReference]
+    ]:
         """Extract all references from text."""
         return (
             self.extract_law_references(text),
             self.extract_case_references(text),
             self.extract_eu_references(text),
+            self.extract_court_references(text),
         )

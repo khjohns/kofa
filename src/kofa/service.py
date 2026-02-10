@@ -608,6 +608,7 @@ Kjør `sync()` for å laste ned saker fra KOFA."""
                 ("Lovhenvisninger", pipeline.get("law_ref_cases", 0)),
                 ("Sakskryssreferanser", pipeline.get("case_ref_cases", 0)),
                 ("EU-referanser", pipeline.get("eu_ref_cases", 0)),
+                ("Rettsavgjørelser", pipeline.get("court_ref_cases", 0)),
             ]
             for label, count in steps:
                 pct = round(100 * count / total) if total > 0 else 0

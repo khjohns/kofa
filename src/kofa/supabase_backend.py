@@ -867,6 +867,7 @@ class KofaSupabaseBackend:
             "law_refs": 0,
             "case_refs": 0,
             "eu_refs": 0,
+            "court_refs": 0,
             "errors": 0,
             "stopped_reason": None,
         }
@@ -908,6 +909,7 @@ class KofaSupabaseBackend:
                     all_law_refs = []
                     all_case_refs = []
                     all_eu_refs = []
+                    all_court_refs = []
 
                     # Detect regulation version for this case
                     para_texts = [p.get("text", "") for p in paragraphs if p.get("text")]
@@ -918,7 +920,7 @@ class KofaSupabaseBackend:
                         if not text:
                             continue
                         para_num = para.get("paragraph_number")
-                        law_refs, case_refs, eu_refs = extractor.extract_all(text)
+                        law_refs, case_refs, eu_refs, court_refs = extractor.extract_all(text)
 
                         # Resolve lovdata_doc_id based on regulation version
                         def _resolve_doc_id(ref_law_name: str) -> str | None:
@@ -965,18 +967,40 @@ class KofaSupabaseBackend:
                                 }
                             )
 
+                        for ref in court_refs:
+                            all_court_refs.append(
+                                {
+                                    "sak_nr": sak_nr,
+                                    "court_case_id": ref.case_id,
+                                    "court_level": ref.court_level,
+                                    "court_name": ref.court_name,
+                                    "paragraph_number": para_num,
+                                    "context": text[:300],
+                                    "raw_text": ref.raw_text,
+                                }
+                            )
+
                     # Deduplicate within case
                     all_law_refs = self._deduplicate_law_refs(all_law_refs)
                     all_case_refs = self._deduplicate_case_refs(all_case_refs)
                     all_eu_refs = self._deduplicate_eu_refs(all_eu_refs)
+                    all_court_refs = self._deduplicate_court_refs(all_court_refs)
 
                     # Store
-                    self._store_references(sak_nr, all_law_refs, all_case_refs, force, all_eu_refs)
+                    self._store_references(
+                        sak_nr,
+                        all_law_refs,
+                        all_case_refs,
+                        force,
+                        all_eu_refs,
+                        all_court_refs,
+                    )
 
                     stats["cases_processed"] += 1
                     stats["law_refs"] += len(all_law_refs)
                     stats["case_refs"] += len(all_case_refs)
                     stats["eu_refs"] += len(all_eu_refs)
+                    stats["court_refs"] += len(all_court_refs)
 
                 except Exception as e:
                     logger.warning(f"Error extracting refs from {sak_nr}: {e}")
@@ -989,7 +1013,8 @@ class KofaSupabaseBackend:
                     rate = processed / elapsed_min if elapsed_min > 0 else 0
                     log(
                         f"Progress: {processed}/{total} "
-                        f"({stats['law_refs']} law, {stats['case_refs']} case, {stats['eu_refs']} EU refs) "
+                        f"({stats['law_refs']} law, {stats['case_refs']} case, "
+                        f"{stats['eu_refs']} EU, {stats['court_refs']} court refs) "
                         f"| {rate:.0f}/min"
                     )
 
@@ -1005,7 +1030,8 @@ class KofaSupabaseBackend:
         log(
             f"Processed: {stats['cases_processed']}, "
             f"Law refs: {stats['law_refs']}, Case refs: {stats['case_refs']}, "
-            f"EU refs: {stats['eu_refs']}, Errors: {stats['errors']}"
+            f"EU refs: {stats['eu_refs']}, Court refs: {stats['court_refs']}, "
+            f"Errors: {stats['errors']}"
         )
 
         if stats["cases_processed"] > 0:
@@ -1059,21 +1085,25 @@ class KofaSupabaseBackend:
                 break
             offset += page_size
 
-        # Also check case_references
-        offset = 0
-        while True:
-            result = (
-                self.client.table("kofa_case_references")
-                .select("from_sak_nr")
-                .limit(page_size)
-                .range(offset, offset + page_size - 1)
-                .execute()
-            )
-            batch = result.data or []
-            already_extracted.update(r["from_sak_nr"] for r in batch)
-            if len(batch) < page_size:
-                break
-            offset += page_size
+        # Also check case_references and court_references
+        for table, col in [
+            ("kofa_case_references", "from_sak_nr"),
+            ("kofa_court_references", "sak_nr"),
+        ]:
+            offset = 0
+            while True:
+                result = (
+                    self.client.table(table)
+                    .select(col)
+                    .limit(page_size)
+                    .range(offset, offset + page_size - 1)
+                    .execute()
+                )
+                batch = result.data or []
+                already_extracted.update(r[col] for r in batch)
+                if len(batch) < page_size:
+                    break
+                offset += page_size
 
         return [c for c in unique_cases if c not in already_extracted]
 
@@ -1179,6 +1209,17 @@ class KofaSupabaseBackend:
                     by_id[case_id]["eu_case_name"] = ref["eu_case_name"]
         return list(by_id.values())
 
+    @staticmethod
+    def _deduplicate_court_refs(refs: list[dict]) -> list[dict]:
+        """Deduplicate court references within a case."""
+        seen: set[str] = set()
+        unique = []
+        for ref in refs:
+            if ref["court_case_id"] not in seen:
+                seen.add(ref["court_case_id"])
+                unique.append(ref)
+        return unique
+
     def _store_references(
         self,
         sak_nr: str,
@@ -1186,6 +1227,7 @@ class KofaSupabaseBackend:
         case_refs: list[dict],
         force: bool,
         eu_refs: list[dict] | None = None,
+        court_refs: list[dict] | None = None,
     ) -> None:
         """Store extracted references in database."""
         if force:
@@ -1193,6 +1235,7 @@ class KofaSupabaseBackend:
             self.client.table("kofa_law_references").delete().eq("sak_nr", sak_nr).execute()
             self.client.table("kofa_case_references").delete().eq("from_sak_nr", sak_nr).execute()
             self.client.table("kofa_eu_references").delete().eq("sak_nr", sak_nr).execute()
+            self.client.table("kofa_court_references").delete().eq("sak_nr", sak_nr).execute()
 
         if law_refs:
             self.client.table("kofa_law_references").insert(law_refs).execute()
@@ -1200,6 +1243,8 @@ class KofaSupabaseBackend:
             self.client.table("kofa_case_references").insert(case_refs).execute()
         if eu_refs:
             self.client.table("kofa_eu_references").insert(eu_refs).execute()
+        if court_refs:
+            self.client.table("kofa_court_references").insert(court_refs).execute()
 
     # =========================================================================
     # Query: Find cases by law reference
@@ -1519,6 +1564,7 @@ class KofaSupabaseBackend:
         law_ref_cases = _distinct_count("kofa_law_references")
         case_ref_cases = _distinct_count("kofa_case_references", col="from_sak_nr")
         eu_ref_cases = _distinct_count("kofa_eu_references")
+        court_ref_cases = _distinct_count("kofa_court_references")
         total_paragraphs = _exact_count("kofa_decision_text", neq=("section", "raw"))
         embeddings = _exact_count("kofa_decision_text", not_null_col="embedding")
 
@@ -1530,6 +1576,7 @@ class KofaSupabaseBackend:
             "law_ref_cases": law_ref_cases,
             "case_ref_cases": case_ref_cases,
             "eu_ref_cases": eu_ref_cases,
+            "court_ref_cases": court_ref_cases,
             "embeddings": embeddings,
             "total_paragraphs": total_paragraphs,
         }
