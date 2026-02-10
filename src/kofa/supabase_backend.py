@@ -42,12 +42,6 @@ WP_API_BASE = "https://www.klagenemndssekretariatet.no/wp-json/wp/v2"
 # HTML tag stripping pattern
 HTML_TAG_RE = re.compile(r"<[^>]+>")
 
-# Old (pre-2017) regulation dok_ids for lovdata cross-reference
-_OLD_DOK_IDS: dict[str, str] = {
-    "anskaffelsesforskriften": "forskrift/2006-04-07-402",
-    "anskaffelsesloven": "lov/1999-07-16-69",
-}
-
 
 def _strip_html(text: str) -> str:
     """Strip HTML tags and decode entities."""
@@ -888,10 +882,6 @@ class KofaSupabaseBackend:
 
             log(f"Found {total} cases for reference extraction")
 
-            # Build lovdata doc ID lookup cache
-            doc_id_map = self._build_lovdata_doc_id_map()
-            log(f"Loaded {len(doc_id_map)} lovdata document mappings")
-
             extractor = ReferenceExtractor()
 
             for sak_nr in cases:
@@ -923,12 +913,6 @@ class KofaSupabaseBackend:
                         para_num = para.get("paragraph_number")
                         law_refs, case_refs, eu_refs, court_refs = extractor.extract_all(text)
 
-                        # Resolve lovdata_doc_id based on regulation version
-                        def _resolve_doc_id(ref_law_name: str) -> str | None:
-                            if reg_version == "old" and ref_law_name in _OLD_DOK_IDS:
-                                return _OLD_DOK_IDS[ref_law_name]
-                            return doc_id_map.get(ref_law_name)
-
                         # Attach paragraph number and context
                         for ref in law_refs:
                             all_law_refs.append(
@@ -939,7 +923,6 @@ class KofaSupabaseBackend:
                                     "law_name": ref.law_name,
                                     "law_section": ref.section,
                                     "raw_text": ref.raw_text,
-                                    "lovdata_doc_id": _resolve_doc_id(ref.law_name),
                                     "regulation_version": reg_version,
                                     "context": text[:300],
                                 }
@@ -1132,45 +1115,6 @@ class KofaSupabaseBackend:
         query = query.order("paragraph_number").limit(500)
         result = query.execute()
         return result.data or []
-
-    def _build_lovdata_doc_id_map(self) -> dict[str, str]:
-        """Build mapping from canonical law names to lovdata_documents.dok_id.
-
-        Returns dok_ids for the current (new) regulations.
-        Old regulation dok_ids are handled separately via _OLD_DOK_IDS.
-        """
-        # Known dok_ids for current (2016+) regulations
-        KNOWN_DOK_IDS = {
-            "anskaffelsesforskriften": "forskrift/2016-08-12-974",
-            "anskaffelsesloven": "lov/2016-06-17-73",
-            "klagenemndsforskriften": "forskrift/2002-11-15-1288",
-            "offentleglova": "lov/2006-05-19-16",
-        }
-
-        # Start with known IDs (these are stable Lovdata identifiers)
-        name_to_doc_id: dict[str, str] = dict(KNOWN_DOK_IDS)
-
-        # Discover additional laws by querying short_title
-        try:
-            for search_term, canonical in [
-                ("Konkurranseloven%", "konkurranseloven"),
-                ("Forvaltningsloven%", "forvaltningsloven"),
-            ]:
-                result = (
-                    self.client.table("lovdata_documents")
-                    .select("dok_id")
-                    .ilike("short_title", search_term)
-                    .eq("doc_type", "lov")
-                    .order("date_in_force", desc=True)
-                    .limit(1)
-                    .execute()
-                )
-                if result.data:
-                    name_to_doc_id.setdefault(canonical, result.data[0]["dok_id"])
-        except Exception as e:
-            logger.warning(f"Could not discover additional lovdata documents: {e}")
-
-        return name_to_doc_id
 
     @staticmethod
     def _deduplicate_law_refs(refs: list[dict]) -> list[dict]:
