@@ -29,7 +29,7 @@ Direktiv 2014/24/EU artikkel 63.
 
 Leverandøren kan støtte seg på enhver virksomhet, uavhengig av rettslig tilknytning (konsern, underleverandør, samarbeidspartner). Gjelder både økonomisk/finansiell kapasitet og teknisk/faglig kvalifikasjon.
 
-**Saklig virkeområde.** Støtteadgangen gjelder bare for kvalifikasjonskrav om økonomisk/finansiell kapasitet (§ 16-3) og teknisk/faglig kvalifikasjon (§ 16-5). Krav om registrering, autorisasjoner mv. (§ 16-2) er en tredje type kvalifikasjonskrav der § 16-10 ikke gjelder — verken forskriften eller direktivet (art. 63, jf. art. 58 nr. 3 og 4) åpner for støtte her (KOFA 2022/549 avsnitt 23–27).
+**Saklig virkeområde.** Støtteadgangen gjelder bare for kvalifikasjonskrav om økonomisk/finansiell kapasitet (§ 16-5) og teknisk/faglig kvalifikasjon (§ 16-6). Krav om registrering (§ 16-2) og autorisasjoner mv. (§ 16-3) er en tredje type kvalifikasjonskrav der § 16-10 ikke gjelder — verken forskriften eller direktivet (art. 63, jf. art. 58 nr. 3 og 4) åpner for støtte her (KOFA 2022/549 avsnitt 23–27).
 
 **Avgrensning nedad: støttende virksomhet vs. gjennomføringsunderleverandør.** § 16-10 gjelder bare når leverandøren bruker en annen virksomhets kapasitet for å oppfylle *kvalifikasjonskrav*. Underleverandører som bare bistår ved kontraktsgjennomføring — uten å bidra til kvalifikasjonsoppfyllelse — faller utenfor § 16-10. For slike kreves ikke rådighetsbevis eller forpliktelseserklæring (KOFA 2024/1092 avsnitt 37–38, jf. 2023/852 avsnitt 28). Tilsvarende: et ordinært kjøp fra en leverandør (f.eks. traktor) er ikke det samme som å «støtte seg på» virksomhetens kapasitet (KOFA 2023/993 avsnitt 41).
 
@@ -44,7 +44,7 @@ Leverandøren kan støtte seg på enhver virksomhet, uavhengig av rettslig tilkn
 
 ### Se også
 
-- § 16-2 (registrering, autorisasjoner), § 16-3 (økonomisk/finansiell kapasitet), § 16-5 (teknisk/faglig kvalifikasjon)
+- § 16-2 (registrering), § 16-3 (autorisasjoner mv.), § 16-5 (økonomisk/finansiell kapasitet), § 16-6 (teknisk/faglig kvalifikasjon)
 - Del II: § 16-10 gjelder ikke direkte, men praksis gir tilsvarende adgang (2024/1959 avsnitt 34). Se seksjon om del II nedenfor.
 
 ### Dybdeanalyse

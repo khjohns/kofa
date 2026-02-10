@@ -40,7 +40,7 @@ Spørsmålet er:
 
 ## 3. KOFA-praksis
 
-Notatet bygger på analyse av ni KOFA-avgjørelser som behandler forholdet mellom ESPD, forpliktelseserklæring og rådighet under § 16-10.
+Notatet bygger på analyse av 20 KOFA-avgjørelser, fem lagmannsrettsdommer (LH-2024-10855, LE-2022-19926, LE-2021-130025, LB-2017-156250 og LB-2014-58107) og én høyesterettsdom (HR-2025-1098-A). Seksjon 3 gjennomgår de sentrale KOFA-avgjørelsene; ytterligere saker om personellressurser behandles i analysen (seksjon 4.7–4.8).
 
 ### 3.1 Kategori A: § 16-10 + § 17-1 + forpliktelseserklæring
 
@@ -56,7 +56,7 @@ Notatet bygger på analyse av ni KOFA-avgjørelser som behandler forholdet mello
 
 **Faktum:** Valgte leverandør støttet seg opprinnelig på Norconsult, Sweco og Teca (ESPD levert). Etter tildeling viste det seg at det også var behov for støtte fra ANKO, TK Elevator og Jørgensen — som ikke var nevnt i tilbudet.
 
-**Nemndas vurdering:** For de tre opprinnelige underleverandørene (med ESPD): forpliktelseserklæring kunne ettersendes, jf. § 23-5 og sak 2022/31 (avsnitt 35). For de tre nye selskapene (uten ESPD, ikke nevnt i tilbudet): ettersendelse ikke tillatt — dette er å introdusere en ny støttende virksomhet, i strid med C-387/14 *Esaprojekt* (avsnitt 46–49). Nemnda uttaler at «det ikke kunne være tale om en tillatt presisering eller korrigering dersom leverandøren støtter seg på et nytt selskap. Dette ville tvert imot være en vesentlig endring av kvalifikasjonssøknaden (identiteten til leverandøren)» (avsnitt 46–47). Resultat: avvisningsplikt (avsnitt 50).
+**Nemndas vurdering:** For de tre opprinnelige underleverandørene (med ESPD): forpliktelseserklæring kunne ettersendes, jf. § 23-5 og sak 2022/31 (avsnitt 35). For de tre nye selskapene (uten ESPD, ikke nevnt i tilbudet): ettersendelse ikke tillatt — dette er å introdusere en ny støttende virksomhet, i strid med C-387/14 *Esaprojekt* (avsnitt 46–49). Nemnda viser til EU-domstolens uttalelse i C-387/14 om at «det ikke kunne være tale om en tillatt presisering eller korrigering dersom leverandøren støtter seg på et nytt selskap. Dette ville tvert imot være en vesentlig endring av kvalifikasjonssøknaden (identiteten til leverandøren)» (avsnitt 46–47). Resultat: avvisningsplikt (avsnitt 50).
 
 **Rettssetning:** Skillet er skarpt: virksomheter identifisert i tilbudet (f.eks. med ESPD) kan suppleres med forpliktelseserklæring. Virksomheter ikke nevnt i tilbudet kan ikke introduseres etter tilbudsfrist.
 
@@ -267,6 +267,14 @@ Rettstilstanden kan oppsummeres slik:
 | Er ESPD holdepunkt for at rådighet eksisterte? | Ja — presumpsjon testet og bestått i LH-2024-10855 / HR-2025-1098-A |
 | Kan presumpsjonen utfordres? | Trolig ja — der det kan påvises at støtteforholdet ble etablert etter tilbudsfrist, og det ikke foreligger andre holdepunkter |
 
+### 5.5 Personellressurser
+
+Praksis opererer med to nivåer for dokumentasjon av personellstøtte:
+
+- **Nøkkelpersonell** dokumenteres med navngitte personer, CV og kompetansebevis. Kravet er kvalitativt — matcher kompetansen det konkrete kvalifikasjonskravet? (2017/171, 2019/408, 2021/1408)
+- **Generell arbeidsstyrke** dokumenteres etter type og rolle, ikke individ. Selskapsrettslig kontroll over ressursene (konsernforhold, eierskap) reduserer dokumentasjonskravet ytterligere (2021/2068, 2023/192).
+- **Rammeavtaler** unntar navngivelse — leverandøren forplikter seg til et minimumsnivå for kompetanse, og konkret personell evalueres først ved avrop (2025/0894).
+
 ## 6. Del II-anskaffelser — særregler
 
 § 16-10 gjelder ikke direkte i del II. Langvarig KOFA-praksis gir likevel leverandøren tilsvarende adgang til å støtte seg på andre virksomheter (2024/1959 avsnitt 34). Men:
@@ -288,6 +296,7 @@ Rettstilstanden kan oppsummeres slik:
 | 2023/993 | Del III | (ikke støtte) | — | Avgrensning: ordinært kjøp ≠ støtte |
 | 2022/924 | Del II | Teknisk/faglig | Navngivelse + referanser | Ikke krav om forpliktelseserklæring |
 | 2021/603 | § 28-1 | Økonomisk (egenkapital) | Forpliktelseserklæring (for generell) | Utilstrekkelig — gebyr |
+| 2019/468 | Forsyningsforskriften | Teknisk/faglig (erfaring) | Konsortium-presentasjon, ingen ESPD/erklæring | **Avvist** — kvalifikasjoner ikke tellbare |
 | 2017/171 | Del III | Teknisk/faglig (bro, skyvemetode) | Forpliktelseserklæring med navngitt supervisor + CV | Ettersendelse tillatt |
 | 2019/408 | Del II | Teknisk/faglig (lysplanlegger) | Navngitte nøkkelpersoner med CV | **Avvist** — kompetanse matchet ikke kravet |
 | 2021/1408 | Del III | Gjennomføringsevne (bemanning) | CV + signert ansettelseskontrakt | OK — sannsynliggjort tilstrekkelig bemanning |
@@ -295,6 +304,7 @@ Rettstilstanden kan oppsummeres slik:
 | 2023/192 | Del III | Teknisk/faglig (erfaring) | ESPD + rollebeskrivelse i konsernstruktur | ESPD + organisasjonsbeskrivelse = holdepunkt |
 | 2021/1911 | Del III | Kapasitet (antall personell + maskinpark) | Beskrivelse av disponibelt personell/maskiner | Skjønnsmessig, men kvantitativ vurdering |
 | 2021/2067 | Del III | Teknisk/faglig (erfaring) + økonomisk | ESPD fra underleverandør + kredittvurdering | Ettersendelse tillatt; § 16-10 (5) arbeidsfordeling |
+| 2025/0894 | Del III (rammeavtale) | Teknisk/faglig (kompetanse) | Forpliktet minimumsnivå, ingen navngitte personer | OK — personell navngis ved avrop |
 | 2017/67 | Del III | Økonomisk (soliditet) | Tilbudskontekst (likviditet, betalingsgaranti) + generisk erklæring | Ettersendelse tillatt — kontekst kompenserer |
 | 2025/1673 | Del III | Teknisk/faglig (beredskap) | Forpliktelseserklæring + eksisterende beredskapsavtaler | Tillatt — eldre avtaler er nok |
 
@@ -304,6 +314,7 @@ Rettstilstanden kan oppsummeres slik:
 - Sak 2017/67 (veibelysning, Osram/Trondheim)
 - Sak 2017/171 (bro Fv. 505, Rogaland)
 - Sak 2019/408 (veglysarbeid, Kongsvinger)
+- Sak 2019/468 (energigjenvinning, Oslo kommune — forsyningsforskriften)
 - Sak 2021/119 (IT-kompetanseteam, Statens vegvesen)
 - Sak 2021/592 (pasienttransport, Helse Bergen)
 - Sak 2021/603 (reisebyrå, Sykehusinnkjøp)
