@@ -192,9 +192,11 @@ def _clean_eu_case_name(name: str) -> str:
 # =============================================================================
 
 # Pattern 1: Named law + § section
-# Matches: "anskaffelsesloven § 12", "forskriften § 20-8 (1) bokstav b"
+# Matches: "anskaffelsesloven § 12", "forskriften § 20-8 (1) bokstav b",
+#           "forskriften (2006) § 1-3 (2)"
 _NAMED_LAW_RE = re.compile(
     r"([\wæøåÆØÅ-]*(?:loven|lova|forskriften|forskrifta))"  # law name (* for bare forms)
+    r"(?:\s*\(\d{4}\))?"  # optional (YYYY) year qualifier
     r"(?:\s+del\s+[IV]+)?"  # optional "del III"
     r"\s+§§?\s*"  # § or §§
     r"([\d]+(?:-[\d]+)?)"  # section number
@@ -235,6 +237,16 @@ _DESCRIPTIVE_LAW_RE = re.compile(
     r"(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
     r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
     re.IGNORECASE,
+)
+
+# Pattern D: Bare § without law name (e.g. "jf. § 16-10", "se § 24-8 første ledd")
+# Used with context propagation — law name inferred from surrounding named refs.
+_BARE_SECTION_RE = re.compile(
+    r"§§?\s*"
+    r"(\d+(?:-\d+)?)"  # section number
+    r"(\s*(?:\(\d+\))?"  # optional (N)
+    r"(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
+    r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",
 )
 
 # Pattern 5: Norwegian court case references
@@ -395,12 +407,31 @@ def detect_regulation_version(paragraphs: list[str], sak_nr: str = "") -> str:
 
 
 class ReferenceExtractor:
-    """Extract law and case references from KOFA decision text."""
+    """Extract law and case references from KOFA decision text.
+
+    Maintains cross-paragraph context for bare § references (lovnavn-propagering).
+    Call reset_context() between cases to avoid context leaking.
+    """
+
+    def __init__(self):
+        self._context_law_name: str | None = None
+
+    def reset_context(self):
+        """Reset cross-paragraph law name context. Call between cases."""
+        self._context_law_name = None
 
     def extract_law_references(self, text: str) -> list[LawReference]:
-        """Extract all law/regulation references from text."""
+        """Extract all law/regulation references from text.
+
+        Uses three-level context for bare § references:
+        1. Nearest preceding named ref in same paragraph
+        2. Last named ref from previous paragraphs (cross-paragraph context)
+        3. KOFA heuristic: compound sections (X-Y) → FOA, simple → skip
+        """
         refs: list[LawReference] = []
         seen: set[tuple[str, str]] = set()  # (law_name, section) dedup
+        covered_spans: list[tuple[int, int]] = []  # positions covered by named patterns
+        named_law_positions: list[tuple[int, str]] = []  # (position, canonical) for context
 
         # Helper to build and append a LawReference with dedup
         def _add_ref(canonical: str, section: str, subsection: str, match) -> None:
@@ -424,31 +455,73 @@ class ReferenceExtractor:
 
         # Pattern 1: Named law references
         for m in _NAMED_LAW_RE.finditer(text):
+            covered_spans.append((m.start(), m.end()))
             canonical = _normalize_law_name(m.group(1))
             if not canonical:
                 continue
+            named_law_positions.append((m.start(), canonical))
             _add_ref(canonical, m.group(2), (m.group(3) or "").strip(), m)
 
         # Pattern 1b: Abbreviation references (FOA §, LOA §)
         for m in _ABBREV_LAW_RE.finditer(text):
+            covered_spans.append((m.start(), m.end()))
             canonical = _normalize_law_name(m.group(1))
             if not canonical:
                 continue
+            named_law_positions.append((m.start(), canonical))
             _add_ref(canonical, m.group(2), (m.group(3) or "").strip(), m)
 
         # Pattern 1c: Abbreviation WITHOUT § (e.g. "FOA 7-9 (2)")
         for m in _ABBREV_NO_SIGN_RE.finditer(text):
+            covered_spans.append((m.start(), m.end()))
             canonical = _normalize_law_name(m.group(1))
             if not canonical:
                 continue
+            named_law_positions.append((m.start(), canonical))
             _add_ref(canonical, m.group(2), (m.group(3) or "").strip(), m)
 
         # Pattern 2: Descriptive "lov/forskrift om ..." references
         for m in _DESCRIPTIVE_LAW_RE.finditer(text):
+            covered_spans.append((m.start(), m.end()))
             canonical = _normalize_law_name(m.group(1).strip())
             if not canonical:
                 continue
+            named_law_positions.append((m.start(), canonical))
             _add_ref(canonical, m.group(2), (m.group(3) or "").strip(), m)
+
+        # Update cross-paragraph context from named refs in this paragraph
+        if named_law_positions:
+            named_law_positions.sort()
+            self._context_law_name = named_law_positions[-1][1]
+
+        # Pattern D: Bare § references (no preceding law name)
+        for m in _BARE_SECTION_RE.finditer(text):
+            # Skip if this § is part of a named pattern match
+            if any(s <= m.start() < e for s, e in covered_spans):
+                continue
+
+            section = m.group(1)
+            subsection = (m.group(2) or "").strip()
+
+            # Level 1: nearest preceding named ref in same paragraph
+            context_law = None
+            for pos, name in sorted(named_law_positions, reverse=True):
+                if pos < m.start():
+                    context_law = name
+                    break
+
+            # Level 2: cross-paragraph context
+            if not context_law:
+                context_law = self._context_law_name
+
+            # Level 3: KOFA heuristic — compound sections (X-Y) are almost always FOA
+            if not context_law:
+                if "-" in section:
+                    context_law = "anskaffelsesforskriften"
+                else:
+                    continue  # Simple section without context: too ambiguous
+
+            _add_ref(context_law, section, subsection, m)
 
         return refs
 

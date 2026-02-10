@@ -901,6 +901,7 @@ class KofaSupabaseBackend:
                     break
 
                 try:
+                    extractor.reset_context()
                     # Get all paragraphs for this case
                     paragraphs = self._get_decision_paragraphs(sak_nr)
                     if not paragraphs:
