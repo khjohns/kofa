@@ -12,8 +12,8 @@ kapasitet) og § 16-5 (tekniske kvalifikasjoner), ikke § 16-7 (kvalitetssikring
 standarder). Tilsvarende i EU-direktivet: artikkel 63 viser til artikkel 58(3) og 58(4),
 ikke artikkel 62. Ingen KOFA-sak drøfter spørsmålet eksplisitt.
 
-Øvelsen avdekket fem forbedringsmuligheter i MCP-verktøyene, pluss et
-robusthetsproblem i paragraf MCP som ble oppdaget underveis.
+Øvelsen avdekket fem forbedringsmuligheter i MCP-verktøyene, et robusthetsproblem
+i paragraf MCP, og en strategi for 322 raw-only saker i KOFA-pipelinen.
 
 ## Observasjon 1: Lovhenvisning-filtrering i KOFA-søk
 
@@ -217,6 +217,41 @@ som fallback og er enkle å oppdatere manuelt. Kan beholdes som cache.
 
 **Kompleksitet:** Lav. Endring i sync-logikk + ny kolonne + prioritering i oppslag.
 
+## Observasjon 7: Fallback-seksjonering for raw-only saker
+
+**Problem:** 322 saker har ekstrahert PDF-tekst men kun `raw_full_text` — seksjonsinndelingen
+feilet. Embed-skriptet filtrerer `section != 'raw'`, så disse sakene blir ikke embeddet.
+
+**Fordeling:**
+
+| Kategori | Antall | Merknad |
+|---|---|---|
+| Avvist | 223 | Typisk korte, mangler strukturerte seksjoner |
+| Brudd på regelverket | 69 | Substansielle, ~14 900 tegn snitt |
+| Ikke brudd på regelverket | 30 | Substansielle, ~14 500 tegn snitt |
+
+De 99 substansielle sakene (brudd/ikke brudd) **har** seksjons-nøkkelord i teksten
+(«bakgrunn», «anførsler», «vurdering»), men eldre PDF-format med brevhoder og
+manglende nummererte avsnitt gjør at `_split_into_paragraphs()` / `_assign_sections()`
+feiler. Årsfordeling: hovedsakelig 2003–2012.
+
+**Beslutning:** Alternativ 2 — fallback-seksjonering med nøkkelorddeteksjon.
+
+**Implementering:**
+1. Legg til fallback i `pdf_extractor.py` for saker der vanlig seksjonering feiler
+2. Bruk regex for å finne seksjons-nøkkelord (bakgrunn, anførsler, vurdering) i
+   `raw_full_text` og del teksten på disse punktene
+3. Tilordne tekst mellom nøkkelord til riktig seksjon
+4. For avviste saker (223 stk) uten nøkkelord: behold som `raw` — disse er korte
+   og har begrenset substansielt innhold
+5. Kjør etter hoved-embedding-kjøringen (~120 000 paragrafer), som eget steg
+
+**Forventet resultat:** ~99 substansielle saker får seksjonsinndeling og kan embeddes.
+223 avviste saker forblir `raw` (akseptabelt — kort tekst, lite substansielt innhold).
+
+**Kompleksitet:** Lav. Nøkkelordene er kjente, regex-logikk tilsvarende eksisterende
+`_assign_sections()`. Hovedforskjellen er at teksten ikke allerede er delt i avsnitt.
+
 ## Prioritering
 
 | # | Tiltak | System | Kompleksitet | Verdi | Anbefaling |
@@ -224,6 +259,7 @@ som fallback og er enkle å oppdatere manuelt. Kan beholdes som cache.
 | 6 | Håndtering av opphevede lover | paragraf | Lav | Høy | Gjør først — robusthetsproblem |
 | 1 | Lovhenvisning-filter i `finn_praksis` | kofa | Lav | Høy | Gjør tidlig |
 | 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | Gjør tidlig — kobling finnes |
+| 7 | Fallback-seksjonering (99 saker) | kofa | Lav | Middels | Etter hoved-embedding |
 | 5 | Berik «ingen treff»-respons | kofa | Lav | Middels | Gjør sammen med #1 |
 | 3a | EU-direktivtekst (uten kobling) | paragraf | Lav | Middels | Gjør når paragraf utvides |
 | 2 | Kryssreferanser i lovdata | paragraf | Middels | Høy | Større oppgave, planlegg separat |
