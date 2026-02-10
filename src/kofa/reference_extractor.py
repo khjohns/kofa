@@ -55,7 +55,9 @@ class EUCaseReference:
 LAW_ALIASES: dict[str, str] = {
     # Default bare forms in KOFA context
     "forskriften": "anskaffelsesforskriften",
+    "forskrifta": "anskaffelsesforskriften",
     "loven": "anskaffelsesloven",
+    "lova": "anskaffelsesloven",
     # Common abbreviations
     "foa": "anskaffelsesforskriften",
     "loa": "anskaffelsesloven",
@@ -180,10 +182,12 @@ def _clean_eu_case_name(name: str) -> str:
 # Pattern 1: Named law + § section
 # Matches: "anskaffelsesloven § 12", "forskriften § 20-8 (1) bokstav b"
 _NAMED_LAW_RE = re.compile(
-    r"([\wæøåÆØÅ-]+(?:loven|lova|forskriften|forskrifta))"  # law name
+    r"([\wæøåÆØÅ-]*(?:loven|lova|forskriften|forskrifta))"  # law name (* for bare forms)
+    r"(?:\s+del\s+[IV]+)?"  # optional "del III"
     r"\s+§§?\s*"  # § or §§
     r"([\d]+(?:-[\d]+)?)"  # section number
-    r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
+    r"(\s*(?:\(\d+\))?"  # optional (N) — no space required before paren
+    r"(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
     r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
     re.IGNORECASE,
 )
@@ -193,7 +197,8 @@ _ABBREV_LAW_RE = re.compile(
     r"\b(FOA|LOA|foa|loa)"  # abbreviation
     r"\s+§§?\s*"  # §
     r"([\d]+(?:-[\d]+)?)"  # section number
-    r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
+    r"(\s*(?:\(\d+\))?"  # optional (N) — no space required before paren
+    r"(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
     r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
 )
 
@@ -203,7 +208,8 @@ _ABBREV_NO_SIGN_RE = re.compile(
     r"\b(FOA|LOA|foa|loa)"  # abbreviation
     r"\s+"  # space (no §)
     r"(\d+-\d+)"  # section with dash (required)
-    r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
+    r"(\s*(?:\(\d+\))?"  # optional (N) — no space required before paren
+    r"(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
     r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
 )
 
@@ -213,7 +219,8 @@ _DESCRIPTIVE_LAW_RE = re.compile(
     r"([\wæøåÆØÅ\s]+?)"  # descriptive name
     r"\s+§§?\s*"  # §
     r"([\d]+(?:-[\d]+)?)"  # section number
-    r"(\s*(?:\(\d+\))?(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
+    r"(\s*(?:\(\d+\))?"  # optional (N) — no space required before paren
+    r"(?:\s*(?:første|andre|annet|tredje|fjerde|femte)"
     r"\s+ledd)?(?:\s*bokstav\s+[a-zæøå])?)?",  # optional subsection
     re.IGNORECASE,
 )
