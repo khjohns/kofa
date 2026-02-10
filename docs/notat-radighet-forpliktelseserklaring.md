@@ -216,7 +216,11 @@ Ettersendelse er ikke tillatt der:
 - Støttende virksomhet ikke er identifisert i tilbudet overhodet (2023/473, jf. C-387/14 *Esaprojekt*)
 - Forpliktelseserklæringen er for generell til at oppdragsgiver kan vurdere om kvalifikasjonskravet oppfylles (2021/603) — særlig relevant for økonomiske kvalifikasjonskrav
 
-### 5.3 Åpent spørsmål: Rådighet ved tilbudsfrist
+### 5.3 Praktisk vs. logisk rettstilstand for kvantitative krav
+
+Gjeldende nemndspraksis godtar ESPD + ettersendt forpliktelseserklæring for personellstøtte uten å problematisere spesifiseringen av omfanget. En oppdragsgiver som aksepterer dette for kvantitative bemanningskrav handler i tråd med praksis. Men logisk er det vanskelig å begrunne forskjellen fra 2021/603: en generisk forpliktelseserklæring som sier «vi stiller våre ressurser til disposisjon» gir ikke bedre grunnlag for å vurdere oppfyllelse av «minimum 20 malere» enn en generisk erklæring om «økonomisk soliditet» ga for å vurdere oppfyllelse av krav om positiv egenkapital. Distinksjonen i praksis skyldes at alle personellsakene har vært kvalitative — det kvantitative scenariet er rett og slett ikke testet. Dette er et punkt som kan utfordres i en fremtidig sak.
+
+### 5.4 Åpent spørsmål: Rådighet ved tilbudsfrist
 
 Praksis bygger på en uuttalt presumpsjon: at holdepunkter i tilbudet (typisk ESPD) indikerer at rådigheten faktisk eksisterte ved tilbudsfrist. Denne presumpsjonen er ikke direkte utfordret i sakene som er analysert. ESPD dokumenterer intensjon om støtte, ikke rådighet over «nødvendige ressurser». Forskjellen er reell, men nemnda har ikke hatt anledning til å ta stilling til et scenario der presumpsjonen bestrides — for eksempel der det kan påvises at støtteforholdet ble etablert etter tilbudsfrist.
 
