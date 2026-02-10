@@ -73,6 +73,7 @@ def cmd_sync(args):
         scrape=args.scrape,
         pdf=args.pdf,
         references=args.references,
+        eu_cases=args.eu_cases,
         force=args.force,
         limit=args.limit,
         max_time=args.max_time,
@@ -152,6 +153,11 @@ def main():
     )
     sync_parser.add_argument(
         "--refresh-pending", action="store_true", help="Re-scrape cases with no decision yet"
+    )
+    sync_parser.add_argument(
+        "--eu-cases",
+        action="store_true",
+        help="Fetch EU Court judgment text from EUR-Lex",
     )
     sync_parser.add_argument(
         "--embeddings", action="store_true", help="Generate embeddings for decision text"

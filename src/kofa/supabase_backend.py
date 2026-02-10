@@ -1378,6 +1378,202 @@ class KofaSupabaseBackend:
         return result.data or []
 
     # =========================================================================
+    # Sync: EU case law (EUR-Lex)
+    # =========================================================================
+
+    def sync_eu_case_law(
+        self,
+        limit: int | None = None,
+        delay: float = 10.0,
+        max_errors: int = 20,
+        verbose: bool = False,
+        force: bool = False,
+    ) -> dict:
+        """
+        Fetch EU Court judgment text from EUR-Lex for cases referenced in KOFA.
+
+        Finds EU case IDs in kofa_eu_references that are missing from
+        kofa_eu_case_law, then fetches full text from EUR-Lex HTML.
+
+        Args:
+            limit: Max number of judgments to fetch (None = all missing)
+            delay: Seconds between requests (EUR-Lex robots.txt: 10s)
+            max_errors: Stop after N consecutive errors
+            verbose: Print progress to stdout
+            force: Re-fetch all, even previously fetched
+
+        Returns:
+            dict with fetch stats
+        """
+        from kofa.eurlex_fetcher import EurLexFetcher
+
+        global _shutdown_requested
+        _shutdown_requested = False
+
+        prev_sigint = signal.getsignal(signal.SIGINT)
+        prev_sigterm = signal.getsignal(signal.SIGTERM)
+        signal.signal(signal.SIGINT, _request_shutdown)
+        signal.signal(signal.SIGTERM, _request_shutdown)
+
+        stats = {
+            "fetched": 0,
+            "errors": 0,
+            "skipped": 0,
+            "stopped_reason": None,
+        }
+        start_time = time.time()
+        consecutive_errors = 0
+        log = _log if verbose else lambda msg: logger.info(msg)
+
+        try:
+            # Find EU case IDs referenced in KOFA decisions
+            missing = self._find_missing_eu_case_law(force)
+
+            if limit:
+                missing = missing[:limit]
+            total = len(missing)
+
+            if not missing:
+                log("No EU judgments need fetching")
+                return stats
+
+            log(f"Found {total} EU judgments to fetch (delay={delay}s)")
+
+            fetcher = EurLexFetcher()
+
+            for _i, eu_case_id in enumerate(missing):
+                if _shutdown_requested:
+                    stats["stopped_reason"] = "interrupted"
+                    log("Shutdown requested...")
+                    break
+
+                if consecutive_errors >= max_errors:
+                    stats["stopped_reason"] = "too_many_errors"
+                    log(f"Stopped: {max_errors} consecutive errors")
+                    break
+
+                try:
+                    judgment = fetcher.fetch(eu_case_id)
+
+                    if judgment is None:
+                        stats["skipped"] += 1
+                        consecutive_errors = 0
+                    else:
+                        self._upsert_eu_case_law(judgment)
+                        stats["fetched"] += 1
+                        consecutive_errors = 0
+
+                except Exception as e:
+                    logger.warning(f"Error fetching {eu_case_id}: {e}")
+                    stats["errors"] += 1
+                    consecutive_errors += 1
+
+                # Progress
+                processed = stats["fetched"] + stats["errors"] + stats["skipped"]
+                if processed > 0 and processed % 10 == 0:
+                    elapsed_min = (time.time() - start_time) / 60
+                    rate = processed / elapsed_min if elapsed_min > 0 else 0
+                    remaining = total - processed
+                    eta_min = remaining / rate if rate > 0 else 0
+                    log(
+                        f"Progress: {processed}/{total} "
+                        f"({stats['fetched']} ok, {stats['errors']} err, "
+                        f"{stats['skipped']} skip) "
+                        f"| {rate:.0f}/min, ETA {eta_min:.0f} min"
+                    )
+
+                if delay > 0:
+                    time.sleep(delay)
+
+        finally:
+            signal.signal(signal.SIGINT, prev_sigint)
+            signal.signal(signal.SIGTERM, prev_sigterm)
+
+        # Final summary
+        elapsed = time.time() - start_time
+        status_label = (
+            "DONE" if not stats["stopped_reason"] else f"STOPPED ({stats['stopped_reason']})"
+        )
+        log(f"{status_label} in {elapsed / 60:.1f} min")
+        log(f"Fetched: {stats['fetched']}, Errors: {stats['errors']}, Skipped: {stats['skipped']}")
+
+        if stats["fetched"] > 0:
+            self._update_sync_cursor(
+                "eu_case_law",
+                datetime.now(UTC).isoformat(),
+                stats["fetched"],
+            )
+
+        return stats
+
+    def _find_missing_eu_case_law(self, force: bool) -> list[str]:
+        """Find EU case IDs referenced in KOFA but not yet in kofa_eu_case_law."""
+        # Get all unique eu_case_id from kofa_eu_references
+        referenced: set[str] = set()
+        page_size = 1000
+        offset = 0
+        while True:
+            result = (
+                self.client.table("kofa_eu_references")
+                .select("eu_case_id")
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            batch = result.data or []
+            referenced.update(r["eu_case_id"] for r in batch)
+            if len(batch) < page_size:
+                break
+            offset += page_size
+
+        if force:
+            return sorted(referenced)
+
+        # Get already fetched
+        already_fetched: set[str] = set()
+        offset = 0
+        while True:
+            result = (
+                self.client.table("kofa_eu_case_law")
+                .select("eu_case_id")
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            batch = result.data or []
+            already_fetched.update(r["eu_case_id"] for r in batch)
+            if len(batch) < page_size:
+                break
+            offset += page_size
+
+        return sorted(referenced - already_fetched)
+
+    def _upsert_eu_case_law(self, judgment) -> None:
+        """Upsert a fetched EU judgment into kofa_eu_case_law."""
+        row = {
+            "eu_case_id": judgment.eu_case_id,
+            "celex": judgment.celex,
+            "case_name": judgment.case_name or None,
+            "judgment_date": judgment.judgment_date or None,
+            "subject": judgment.subject or None,
+            "description": judgment.description or None,
+            "full_text": judgment.full_text,
+            "source_url": judgment.source_url,
+            "language": judgment.language,
+        }
+        self.client.table("kofa_eu_case_law").upsert(row, on_conflict="eu_case_id").execute()
+
+    @with_retry()
+    def get_eu_case_law(self, eu_case_id: str) -> dict | None:
+        """Get a single EU judgment by case ID."""
+        result = (
+            self.client.table("kofa_eu_case_law")
+            .select("*")
+            .eq("eu_case_id", eu_case_id)
+            .limit(1)
+            .execute()
+        )
+        return result.data[0] if result.data else None
+
+    # =========================================================================
     # Query: EU case references
     # =========================================================================
 
@@ -1510,6 +1706,7 @@ class KofaSupabaseBackend:
         case_ref_cases = _distinct_count("kofa_case_references", col="from_sak_nr")
         eu_ref_cases = _distinct_count("kofa_eu_references")
         court_ref_cases = _distinct_count("kofa_court_references")
+        eu_case_law_count = _exact_count("kofa_eu_case_law")
         total_paragraphs = _exact_count("kofa_decision_text", neq=("section", "raw"))
         embeddings = _exact_count("kofa_decision_text", not_null_col="embedding")
 
@@ -1522,6 +1719,7 @@ class KofaSupabaseBackend:
             "case_ref_cases": case_ref_cases,
             "eu_ref_cases": eu_ref_cases,
             "court_ref_cases": court_ref_cases,
+            "eu_case_law_count": eu_case_law_count,
             "embeddings": embeddings,
             "total_paragraphs": total_paragraphs,
         }

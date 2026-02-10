@@ -44,6 +44,7 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | `mest_siterte(limit?)` | De mest siterte/prinsipielle KOFA-sakene |
 | `eu_praksis(eu_case_id, limit?)` | Finn KOFA-saker som refererer til en bestemt EU-dom |
 | `mest_siterte_eu(limit?)` | De mest siterte EU-dommene i KOFA |
+| `hent_eu_dom(eu_case_id, seksjon?)` | Hent fulltekst fra EU-dom (sammendrag, begrunnelse, domsslutning) |
 | `sok_avgjoerelse(query, seksjon?, limit?)` | Fulltekstsøk i avgjørelsesteksten (ikke metadata) |
 | `semantisk_sok_kofa(query, seksjon?, limit?)` | Semantisk søk med AI-embeddings i avgjørelsestekst |
 | `statistikk(aar?, gruppering?)` | Aggregert statistikk |
@@ -65,6 +66,7 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | Leser en sak og vil se kontekst | `relaterte_saker("2023/1099")` | Finner saker den bygger på + saker som bygger på den |
 | Vil se prinsipielle avgjørelser | `mest_siterte(limit=10)` | De viktigste/mest refererte sakene |
 | Spør om en EU-dom | `eu_praksis(eu_case_id="C-19/00")` | KOFA-saker som anvender EU-dommen |
+| Vil lese selve EU-dommen | `hent_eu_dom("C-19/00")` → TOC, deretter `hent_eu_dom("C-19/00", "begrunnelse")` | Fulltekst fra EUR-Lex |
 | Vil se viktigste EU-dommer | `mest_siterte_eu(limit=10)` | De mest refererte EU-dommene i KOFA |
 
 **Kjerneforskjell mellom søkeverktøyene:**
@@ -79,8 +81,9 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 2. **Hent detaljer** → `hent_sak(sak_nr)` for å lese sammendrag og se utfall
 3. **Les avgjørelsen** → `hent_avgjoerelse(sak_nr)` for innholdsfortegnelse, deretter `hent_avgjoerelse(sak_nr, seksjon="vurdering")` for begrunnelsen
 4. **Se kontekst** → `relaterte_saker(sak_nr)` for å se hva saken bygger på og hvem som bygger videre
-5. **Slå opp lovhjemmel** → Bruk Paragraf MCP (`lov("anskaffelsesforskriften", "8-3")`) for å se selve lovteksten
-6. **Tilby videre utforskning** → Se under
+5. **Les EU-dommen** → Hvis KOFA refererer en EU-dom: `hent_eu_dom("C-19/00")` for innhold, deretter `hent_eu_dom("C-19/00", "begrunnelse")` for selve begrunnelsen
+6. **Slå opp lovhjemmel** → Bruk Paragraf MCP (`lov("anskaffelsesforskriften", "8-3")`) for å se selve lovteksten
+7. **Tilby videre utforskning** → Se under
 
 ## VIKTIG: Tilby videre utforskning
 
@@ -499,6 +502,33 @@ class MCPServer:
                 },
             },
             {
+                "name": "hent_eu_dom",
+                "title": "Hent EU-dom",
+                "description": (
+                    "Hent fulltekst fra en EU-domstolsavgjørelse referert i KOFA-praksis. "
+                    "Uten seksjon: viser metadata og innholdsfortegnelse. "
+                    "Med seksjon: 'sammendrag', 'begrunnelse', 'domsslutning'. "
+                    "Eks: hent_eu_dom(eu_case_id='C-19/00', seksjon='begrunnelse')"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "eu_case_id": {
+                            "type": "string",
+                            "description": "EU-saksnummer (f.eks. 'C-19/00')",
+                        },
+                        "seksjon": {
+                            "type": "string",
+                            "description": (
+                                "Seksjon: 'sammendrag', 'begrunnelse', 'domsslutning'. "
+                                "Utelat for innholdsfortegnelse."
+                            ),
+                        },
+                    },
+                    "required": ["eu_case_id"],
+                },
+            },
+            {
                 "name": "statistikk",
                 "title": "KOFA-statistikk",
                 "description": (
@@ -682,6 +712,11 @@ class MCPServer:
             elif tool_name == "mest_siterte_eu":
                 content = self.service.mest_siterte_eu(
                     limit=arguments.get("limit", 20),
+                )
+            elif tool_name == "hent_eu_dom":
+                content = self.service.hent_eu_dom(
+                    eu_case_id=arguments.get("eu_case_id", ""),
+                    seksjon=arguments.get("seksjon"),
                 )
             elif tool_name == "statistikk":
                 content = self.service.statistics(

@@ -452,6 +452,142 @@ class KofaService:
 
         return "\n".join(lines)
 
+    def hent_eu_dom(self, eu_case_id: str, seksjon: str | None = None) -> str:
+        """
+        Get EU Court judgment text, with optional section filtering.
+
+        Without seksjon: returns metadata + table of contents with char counts.
+        With seksjon: returns the requested section text.
+
+        Sections are split on-the-fly using text markers:
+        - sammendrag: text before "JUDGMENT OF THE COURT"
+        - begrunnelse: text between "JUDGMENT OF THE COURT" and "On those grounds"
+        - domsslutning: text from "On those grounds" to end
+        """
+        case_law = self.backend.get_eu_case_law(eu_case_id)
+
+        if not case_law:
+            return (
+                f"Ingen EU-dom funnet for {eu_case_id}. "
+                f"Sjekk at saksnummeret er korrekt (f.eks. 'C-19/00'). "
+                f"Bruk `mest_siterte_eu()` for å se tilgjengelige EU-dommer."
+            )
+
+        full_text = case_law.get("full_text", "")
+        sections = self._split_eu_judgment_sections(full_text)
+
+        if seksjon:
+            seksjon = seksjon.lower().strip()
+            if seksjon not in sections:
+                available = ", ".join(f"'{s}'" for s in sections if s != "full")
+                return f"Ukjent seksjon: '{seksjon}'. Tilgjengelige seksjoner: {available}"
+            section_text = sections[seksjon]
+            if not section_text:
+                return f"Seksjonen '{seksjon}' er tom for {eu_case_id}."
+
+            section_labels = {
+                "sammendrag": "Sammendrag (Summary)",
+                "begrunnelse": "Begrunnelse (Grounds)",
+                "domsslutning": "Domsslutning (Operative part)",
+            }
+            label = section_labels.get(seksjon, seksjon)
+            lines = [f"## {eu_case_id} — {label}\n"]
+            lines.append(f"*{len(section_text):,} tegn*\n")
+            lines.append(section_text)
+            return "\n".join(lines)
+
+        # No section specified — return metadata + TOC
+        lines = [f"## EU-dom: {eu_case_id}\n"]
+
+        case_name = case_law.get("case_name", "")
+        if case_name:
+            lines.append(f"**Navn:** {case_name}")
+        judgment_date = case_law.get("judgment_date", "")
+        if judgment_date:
+            lines.append(f"**Dato:** {judgment_date}")
+        subject = case_law.get("subject", "")
+        if subject:
+            lines.append(f"**Emne:** {subject}")
+        language = case_law.get("language", "EN")
+        lines.append(f"**Språk:** {language}")
+        source_url = case_law.get("source_url", "")
+        if source_url:
+            lines.append(f"**Kilde:** {source_url}")
+
+        # TOC with char counts
+        lines.append("\n### Innholdsfortegnelse\n")
+        section_labels = {
+            "sammendrag": "Sammendrag (Summary)",
+            "begrunnelse": "Begrunnelse (Grounds)",
+            "domsslutning": "Domsslutning (Operative part)",
+        }
+        for sec_key, sec_label in section_labels.items():
+            text = sections.get(sec_key, "")
+            chars = len(text)
+            tokens = chars // 4
+            lines.append(f"- **{sec_label}:** {chars:,} tegn (~{tokens:,} tokens)")
+
+        total = len(full_text)
+        lines.append(f"\n**Totalt:** {total:,} tegn (~{total // 4:,} tokens)")
+
+        lines.append(
+            "\nBruk `hent_eu_dom(eu_case_id, seksjon='begrunnelse')` for å lese en bestemt seksjon."
+        )
+
+        return "\n".join(lines)
+
+    @staticmethod
+    def _split_eu_judgment_sections(full_text: str) -> dict[str, str]:
+        """
+        Split EU judgment text into sections on-the-fly.
+
+        Uses text markers (in priority order):
+        - "JUDGMENT OF THE COURT" splits summary from grounds
+        - "Grounds" (old format TOC heading) as fallback for grounds start
+        - "On those grounds" splits grounds from operative part
+        - "Operative part" (old format TOC heading) as fallback
+
+        Returns dict with keys: sammendrag, begrunnelse, domsslutning
+        """
+        import re
+
+        # Find grounds start: "JUDGMENT OF THE COURT" or fallback to "Grounds" heading
+        judgment_marker = re.search(
+            r"JUDGMENT OF THE (?:COURT|GENERAL COURT)",
+            full_text,
+        )
+        if not judgment_marker:
+            judgment_marker = re.search(r"\nGrounds\n", full_text)
+
+        # Find operative part: "On those grounds" or fallback to "Operative part" heading
+        operative_marker = re.search(
+            r"On those grounds.*?(?:hereby|:)\s*",
+            full_text,
+            re.DOTALL,
+        )
+        if not operative_marker:
+            operative_marker = re.search(r"\nOperative part\n", full_text)
+
+        if judgment_marker and operative_marker:
+            sammendrag = full_text[: judgment_marker.start()].strip()
+            begrunnelse = full_text[judgment_marker.start() : operative_marker.start()].strip()
+            domsslutning = full_text[operative_marker.start() :].strip()
+        elif judgment_marker:
+            sammendrag = full_text[: judgment_marker.start()].strip()
+            begrunnelse = full_text[judgment_marker.start() :].strip()
+            domsslutning = ""
+        else:
+            # No markers found — return full text as begrunnelse
+            sammendrag = ""
+            begrunnelse = full_text.strip()
+            domsslutning = ""
+
+        return {
+            "sammendrag": sammendrag,
+            "begrunnelse": begrunnelse,
+            "domsslutning": domsslutning,
+        }
+
     def mest_siterte_eu(self, limit: int = 20) -> str:
         """Find the most frequently cited EU Court cases in KOFA decisions."""
         results = self.backend.most_cited_eu_cases(limit)
@@ -498,6 +634,7 @@ class KofaService:
         scrape: bool = False,
         pdf: bool = False,
         references: bool = False,
+        eu_cases: bool = False,
         force: bool = False,
         limit: int | None = None,
         max_time: int = 0,
@@ -509,8 +646,8 @@ class KofaService:
         """Run sync operation."""
         lines = ["## Synkronisering\n"]
 
-        # WP API sync (skip if only doing PDF or reference extraction)
-        if not pdf and not references:
+        # WP API sync (skip if only doing PDF, reference, or EU case law extraction)
+        if not pdf and not references and not eu_cases:
             wp_stats = self.backend.sync_from_wp_api(force=force, verbose=verbose)
             lines.append("### WordPress API")
             lines.append(f"- Hentet **{wp_stats['upserted']}** saker fra {wp_stats['pages']} sider")
@@ -577,6 +714,24 @@ class KofaService:
             if ref_stats.get("stopped_reason"):
                 lines.append(f"- Stoppet: {ref_stats['stopped_reason']}")
 
+        # EU case law fetching (optional)
+        if eu_cases:
+            eu_stats = self.backend.sync_eu_case_law(
+                limit=limit,
+                delay=delay,
+                max_errors=max_errors,
+                verbose=verbose,
+                force=force,
+            )
+            lines.append("\n### EU-domstolspraksis (EUR-Lex)")
+            lines.append(f"- Hentet **{eu_stats['fetched']}** EU-dommer fra EUR-Lex")
+            if eu_stats["errors"]:
+                lines.append(f"- {eu_stats['errors']} feil")
+            if eu_stats["skipped"]:
+                lines.append(f"- {eu_stats['skipped']} hoppet over (404)")
+            if eu_stats.get("stopped_reason"):
+                lines.append(f"- Stoppet: {eu_stats['stopped_reason']}")
+
         return "\n".join(lines)
 
     def get_status(self) -> str:
@@ -611,6 +766,7 @@ Kjør `sync()` for å laste ned saker fra KOFA."""
                 ("EU-referanser", pipeline.get("eu_ref_cases", 0)),
                 ("Rettsavgjørelser", pipeline.get("court_ref_cases", 0)),
             ]
+            eu_case_law = pipeline.get("eu_case_law_count", 0)
             for label, count in steps:
                 pct = round(100 * count / total) if total > 0 else 0
                 lines.append(f"| {label} | {count:,} | {total:,} | {pct}% |")
@@ -625,6 +781,13 @@ Kjør `sync()` for å laste ned saker fra KOFA."""
                 emb_pct = round(100 * embeddings / paragraphs) if paragraphs > 0 else 0
                 lines.append(f"- **Avsnitt (non-raw):** {paragraphs:,}")
                 lines.append(f"- **Embeddings:** {embeddings:,} ({emb_pct}%)")
+
+            if eu_case_law > 0:
+                eu_ref_unique = pipeline.get("eu_ref_cases", 0)
+                lines.append(
+                    f"- **EU-dommer (fulltekst):** {eu_case_law}"
+                    + (f" av ~{eu_ref_unique} refererte" if eu_ref_unique else "")
+                )
 
         # Sync cursors
         for key, val in status.items():
