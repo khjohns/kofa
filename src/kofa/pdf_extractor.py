@@ -13,7 +13,7 @@ import re
 from dataclasses import dataclass, field
 
 import httpx
-import pymupdf
+import pymupdf  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 

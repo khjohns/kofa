@@ -11,7 +11,7 @@ import os
 from dataclasses import dataclass
 from functools import lru_cache
 
-from kofa._supabase_utils import get_shared_client, with_retry
+from kofa._supabase_utils import _rows, get_shared_client, with_retry
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +83,8 @@ class KofaVectorSearch:
                 output_dimensionality=EMBEDDING_DIM,
             ),
         )
-        normalized = self._normalize(list(result.embeddings[0].values))
+        embedding = result.embeddings[0]  # type: ignore[index]
+        normalized = self._normalize(list(embedding.values))  # type: ignore[arg-type]
         return tuple(normalized)
 
     @with_retry()
@@ -135,7 +136,7 @@ class KofaVectorSearch:
                 avgjoerelse=row.get("avgjoerelse"),
                 avsluttet=row.get("avsluttet"),
             )
-            for row in result.data
+            for row in _rows(result.data)
         ]
 
     def _fallback_fts_search(
@@ -170,7 +171,7 @@ class KofaVectorSearch:
                 avgjoerelse=row.get("avgjoerelse"),
                 avsluttet=row.get("avsluttet"),
             )
-            for row in result.data
+            for row in _rows(result.data)
         ]
 
     def search_fts(

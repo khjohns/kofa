@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 import httpx
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 logger = logging.getLogger(__name__)
 
@@ -134,7 +134,7 @@ class KofaScraper:
 
         return meta
 
-    def _extract_strong_labels(self, soup: BeautifulSoup, meta: CaseMetadata) -> None:
+    def _extract_strong_labels(self, soup: BeautifulSoup | Tag, meta: CaseMetadata) -> None:
         """Extract from <strong>Label:</strong> Value pattern."""
         for strong in soup.find_all("strong"):
             text = strong.get_text(strip=True)
@@ -161,7 +161,7 @@ class KofaScraper:
             if value and not getattr(meta, field_name):
                 setattr(meta, field_name, value)
 
-    def _extract_dl(self, soup: BeautifulSoup, meta: CaseMetadata) -> None:
+    def _extract_dl(self, soup: BeautifulSoup | Tag, meta: CaseMetadata) -> None:
         """Extract from <dl>/<dt>/<dd> definition lists."""
         for dl in soup.find_all("dl"):
             dts = dl.find_all("dt")
@@ -172,7 +172,7 @@ class KofaScraper:
                 if field_name and not getattr(meta, field_name):
                     setattr(meta, field_name, dd.get_text(strip=True))
 
-    def _extract_table(self, soup: BeautifulSoup, meta: CaseMetadata) -> None:
+    def _extract_table(self, soup: BeautifulSoup | Tag, meta: CaseMetadata) -> None:
         """Extract from <table> rows with label/value columns."""
         for table in soup.find_all("table"):
             for row in table.find_all("tr"):
@@ -183,10 +183,12 @@ class KofaScraper:
                     if field_name and not getattr(meta, field_name):
                         setattr(meta, field_name, cells[1].get_text(strip=True))
 
-    def _extract_pdf_link(self, soup: BeautifulSoup, meta: CaseMetadata, base_url: str) -> None:
+    def _extract_pdf_link(
+        self, soup: BeautifulSoup | Tag, meta: CaseMetadata, base_url: str
+    ) -> None:
         """Find PDF link in the page."""
         for a in soup.find_all("a", href=True):
-            href = a["href"]
+            href = str(a["href"])
             if href.endswith(".pdf") and "avgjorelse" in href.lower():
                 meta.pdf_url = href
                 return
@@ -195,8 +197,9 @@ class KofaScraper:
                 return
         # Fallback: any PDF link
         for a in soup.find_all("a", href=True):
-            if a["href"].endswith(".pdf"):
-                meta.pdf_url = a["href"]
+            href = str(a["href"])
+            if href.endswith(".pdf"):
+                meta.pdf_url = href
                 return
 
     def close(self):

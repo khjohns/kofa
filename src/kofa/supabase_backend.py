@@ -15,7 +15,7 @@ from datetime import UTC, datetime
 import httpx
 from bs4 import BeautifulSoup
 
-from kofa._supabase_utils import get_shared_client, with_retry
+from kofa._supabase_utils import _row, _rows, get_shared_client, with_retry
 from kofa.scraper import CaseMetadata, KofaScraper
 
 logger = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ class KofaSupabaseBackend:
     def get_case(self, sak_nr: str) -> dict | None:
         """Get a single case by sak_nr."""
         result = self.client.table("kofa_cases").select("*").eq("sak_nr", sak_nr).limit(1).execute()
-        return result.data[0] if result.data else None
+        return _row(result.data)
 
     @with_retry()
     def search(self, query: str, limit: int = 20) -> list[dict]:
@@ -76,7 +76,7 @@ class KofaSupabaseBackend:
             "search_kofa",
             {"search_query": query, "max_results": limit},
         ).execute()
-        return result.data or []
+        return _rows(result.data)
 
     @with_retry()
     def recent_cases(
@@ -98,7 +98,7 @@ class KofaSupabaseBackend:
 
         query = query.order("avsluttet", desc=True).limit(limit)
         result = query.execute()
-        return result.data or []
+        return _rows(result.data)
 
     @with_retry()
     def statistics(
@@ -111,12 +111,17 @@ class KofaSupabaseBackend:
             "kofa_statistics",
             {"filter_year": aar, "group_by_field": gruppering},
         ).execute()
-        return result.data or []
+        return _rows(result.data)
 
     @with_retry()
     def get_case_count(self) -> int:
         """Get total number of cases."""
-        result = self.client.table("kofa_cases").select("*", count="exact").limit(0).execute()
+        result = (
+            self.client.table("kofa_cases")
+            .select("*", count="exact")  # type: ignore[arg-type]
+            .limit(0)
+            .execute()
+        )
         return result.count or 0
 
     # =========================================================================
@@ -360,7 +365,7 @@ class KofaSupabaseBackend:
                     query = query.is_("scraped_at", "null")
                 query = query.order("sak_nr", desc=True).range(offset, offset + page_size - 1)
                 result = query.execute()
-                batch = result.data or []
+                batch = _rows(result.data)
                 cases.extend(batch)
                 if len(batch) < page_size:
                     break
@@ -601,7 +606,7 @@ class KofaSupabaseBackend:
                     query = query.is_("pdf_extracted_at", "null")
                 query = query.order("sak_nr", desc=True).range(offset, offset + page_size - 1)
                 result = query.execute()
-                batch = result.data or []
+                batch = _rows(result.data)
                 cases.extend(batch)
                 if len(batch) < page_size:
                     break
@@ -800,8 +805,9 @@ class KofaSupabaseBackend:
                 .limit(1)
                 .execute()
             )
-            if result.data:
-                return result.data[0].get("cursor_value")
+            row = _row(result.data)
+            if row:
+                return row.get("cursor_value")
         except Exception as e:
             logger.warning(f"Could not read sync cursor for {source}: {e}")
         return None
@@ -1040,7 +1046,7 @@ class KofaSupabaseBackend:
                 .range(offset, offset + page_size - 1)
                 .execute()
             )
-            batch = result.data or []
+            batch = _rows(result.data)
             cases_with_text.extend(r["sak_nr"] for r in batch)
             if len(batch) < page_size:
                 break
@@ -1063,7 +1069,7 @@ class KofaSupabaseBackend:
                 .range(offset, offset + page_size - 1)
                 .execute()
             )
-            batch = result.data or []
+            batch = _rows(result.data)
             already_extracted.update(r["sak_nr"] for r in batch)
             if len(batch) < page_size:
                 break
@@ -1083,7 +1089,7 @@ class KofaSupabaseBackend:
                     .range(offset, offset + page_size - 1)
                     .execute()
                 )
-                batch = result.data or []
+                batch = _rows(result.data)
                 already_extracted.update(r[col] for r in batch)
                 if len(batch) < page_size:
                     break
@@ -1100,7 +1106,7 @@ class KofaSupabaseBackend:
             .order("paragraph_number")
             .execute()
         )
-        return result.data or []
+        return _rows(result.data)
 
     @with_retry()
     def get_decision_text(self, sak_nr: str, section: str | None = None) -> list[dict]:
@@ -1114,7 +1120,7 @@ class KofaSupabaseBackend:
             query = query.eq("section", section)
         query = query.order("paragraph_number").limit(500)
         result = query.execute()
-        return result.data or []
+        return _rows(result.data)
 
     @staticmethod
     def _deduplicate_law_refs(refs: list[dict]) -> list[dict]:
@@ -1234,7 +1240,7 @@ class KofaSupabaseBackend:
 
         query = query.order("sak_nr", desc=True).limit(limit)
         result = query.execute()
-        return result.data or []
+        return _rows(result.data)
 
     @with_retry()
     def find_cases_by_sections(
@@ -1262,7 +1268,7 @@ class KofaSupabaseBackend:
                 section,
             )
             result = query.execute()
-            sak_nrs = {r["sak_nr"] for r in (result.data or [])}
+            sak_nrs = {r["sak_nr"] for r in _rows(result.data)}
             sak_nr_sets.append(sak_nrs)
 
         if not sak_nr_sets:
@@ -1286,21 +1292,17 @@ class KofaSupabaseBackend:
             .order("sak_nr", desc=True)
             .execute()
         )
-        return result.data or []
+        return _rows(result.data)
 
     @with_retry()
     def count_cases_by_section(self, law_name: str, section: str) -> int:
         """Count references citing a law section (prefix match)."""
-        result = (
-            self._section_filter(
-                self.client.table("kofa_law_references")
-                .select("sak_nr", count="exact")
-                .eq("law_name", law_name),
-                section,
-            )
-            .limit(0)
-            .execute()
+        q = (
+            self.client.table("kofa_law_references")
+            .select("sak_nr", count="exact")  # type: ignore[arg-type]
+            .eq("law_name", law_name)
         )
+        result = self._section_filter(q, section).limit(0).execute()
         return result.count or 0
 
     def find_related_cases(self, sak_nr: str) -> dict:
@@ -1317,7 +1319,7 @@ class KofaSupabaseBackend:
             .eq("from_sak_nr", sak_nr)
             .execute()
         )
-        cited_nrs = list({r["to_sak_nr"] for r in (cites_refs.data or [])})
+        cited_nrs = list({r["to_sak_nr"] for r in _rows(cites_refs.data)})
 
         cites = []
         if cited_nrs:
@@ -1328,7 +1330,7 @@ class KofaSupabaseBackend:
                 .order("sak_nr")
                 .execute()
             )
-            cites = cases_result.data or []
+            cites = _rows(cases_result.data)
             # Add cases not in DB (older cases we don't have)
             found = {c["sak_nr"] for c in cites}
             for nr in sorted(cited_nrs):
@@ -1350,7 +1352,7 @@ class KofaSupabaseBackend:
         # Flatten: merge from_sak_nr with joined case info, dedup
         seen = set()
         cited_by = []
-        for r in cited_by_result.data or []:
+        for r in _rows(cited_by_result.data):
             nr = r["from_sak_nr"]
             if nr in seen:
                 continue
@@ -1375,7 +1377,7 @@ class KofaSupabaseBackend:
             "kofa_most_cited",
             {"max_results": limit},
         ).execute()
-        return result.data or []
+        return _rows(result.data)
 
     # =========================================================================
     # Sync: EU case law (EUR-Lex)
@@ -1519,7 +1521,7 @@ class KofaSupabaseBackend:
                 .range(offset, offset + page_size - 1)
                 .execute()
             )
-            batch = result.data or []
+            batch = _rows(result.data)
             referenced.update(r["eu_case_id"] for r in batch)
             if len(batch) < page_size:
                 break
@@ -1538,7 +1540,7 @@ class KofaSupabaseBackend:
                 .range(offset, offset + page_size - 1)
                 .execute()
             )
-            batch = result.data or []
+            batch = _rows(result.data)
             already_fetched.update(r["eu_case_id"] for r in batch)
             if len(batch) < page_size:
                 break
@@ -1571,7 +1573,7 @@ class KofaSupabaseBackend:
             .limit(1)
             .execute()
         )
-        return result.data[0] if result.data else None
+        return _row(result.data)
 
     # =========================================================================
     # Query: EU case references
@@ -1591,7 +1593,7 @@ class KofaSupabaseBackend:
             .limit(limit)
             .execute()
         )
-        return result.data or []
+        return _rows(result.data)
 
     @with_retry()
     def most_cited_eu_cases(self, limit: int = 20) -> list[dict]:
@@ -1600,7 +1602,7 @@ class KofaSupabaseBackend:
             "kofa_most_cited_eu",
             {"max_results": limit},
         ).execute()
-        return result.data or []
+        return _rows(result.data)
 
     # =========================================================================
     # Decision text search (FTS)
@@ -1622,7 +1624,7 @@ class KofaSupabaseBackend:
                 "max_results": limit,
             },
         ).execute()
-        return result.data or []
+        return _rows(result.data)
 
     # =========================================================================
     # Status
@@ -1643,7 +1645,10 @@ class KofaSupabaseBackend:
         try:
             result = (
                 self.client.table("kofa_cases")
-                .select("*", count="exact")
+                .select(
+                    "*",
+                    count="exact",  # type: ignore[arg-type]
+                )
                 .not_.is_("innklaget", "null")
                 .limit(0)
                 .execute()
@@ -1661,7 +1666,7 @@ class KofaSupabaseBackend:
         # Sync cursors
         try:
             result = self.client.table("kofa_sync_meta").select("*").execute()
-            for row in result.data or []:
+            for row in _rows(result.data):
                 status[f"sync_{row['source']}"] = {
                     "synced_at": row.get("synced_at"),
                     "last_count": row.get("last_count"),
@@ -1676,7 +1681,11 @@ class KofaSupabaseBackend:
         """Get pipeline coverage counts for status display."""
 
         def _exact_count(table: str, not_null_col: str | None = None, neq: tuple | None = None):
-            q = self.client.table(table).select("*", count="exact").limit(0)
+            q = (
+                self.client.table(table)
+                .select("*", count="exact")  # type: ignore[arg-type]
+                .limit(0)
+            )
             if not_null_col:
                 q = q.not_.is_(not_null_col, "null")
             if neq:
@@ -1692,7 +1701,7 @@ class KofaSupabaseBackend:
                 if neq:
                     q = q.neq(neq[0], neq[1])
                 result = q.range(offset, offset + page_size - 1).execute()
-                batch = result.data or []
+                batch = _rows(result.data)
                 unique.update(r[col] for r in batch)
                 if len(batch) < page_size:
                     break

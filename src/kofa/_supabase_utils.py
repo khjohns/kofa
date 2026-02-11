@@ -14,12 +14,28 @@ import random
 import time
 from collections.abc import Callable
 from functools import lru_cache
-from typing import ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar
 
 logger = logging.getLogger(__name__)
 
 P = ParamSpec("P")
 R = TypeVar("R")
+
+
+# =============================================================================
+# Supabase response type helpers
+# =============================================================================
+
+
+def _rows(data: Any) -> list[dict[str, Any]]:
+    """Type-narrow Supabase .data (JSON union) to list[dict]."""
+    return data or []
+
+
+def _row(data: Any) -> dict[str, Any] | None:
+    """Type-narrow first element of Supabase .data to dict | None."""
+    return data[0] if data else None
+
 
 # =============================================================================
 # Configuration (via env vars, no external config dependency)
