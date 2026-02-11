@@ -48,23 +48,51 @@ Etter hver problemutforskning oppdateres kommentarene til de berørte bestemmels
 
 Konkret, avgrenset, praktisk relevant. Eksempel: «Er ESPD fra støttende virksomhet tilstrekkelig til å dokumentere rådighet, eller må forpliktelseserklæring foreligge ved tilbudsfrist?»
 
-### Steg 2: Systematisk søk
+### Steg 2: Systematisk søk (to faser)
 
-Bruk KOFA-databasen (MCP-verktøy) for å identifisere alle relevante avgjørelser. Søkestrategier:
+Søket gjennomføres i to faser: primærsøk for bred fangst, deretter ettersøk etter at analysen har identifisert hull.
 
-- Tekstsøk (FTS/vektor) etter nøkkelbegreper
-- Referansesøk — finn saker som refererer til aktuelle bestemmelser
-- Kryssreferansesøk — finn saker som refererer til hverandre
-- Seksjonssøk — søk i `vurdering`-seksjonen for rettslig analyse
+#### Fase 1: Primærsøk — interseksjonsbasert fangst
 
-Dokumenter søkestrategien og antall treff. Vær eksplisitt om hva som er gjennomgått og hva som gjenstår.
+Mål: gå fra null til en prioritert kandidatliste *uten å lese noen saker*. Fremgangsmåte:
 
-### Steg 3: Kategorisering
+1. **Referansetabell** — finn alle saker som refererer til primærbestemmelsen (f.eks. § 16-10). Dette er kjernesettet.
+2. **Interseksjonsutvidelse** — finn saker som refererer til *flere* relevante bestemmelser (f.eks. § 16-10 ∩ § 17-1). Interseksjonen gir de mest presise treffene.
+3. **FTS-supplement** — fulltekstsøk etter spesifikke begreper (f.eks. «forpliktelseserklæring») for å kompensere for gap i referansetabellen. Referansetabellen har kjente hull — ikke alle lovhenvisninger i avgjørelsene er fanget av regex-ekstraksjonen.
+4. **Interseksjonsrangering** — kombiner og ranger etter kildeoverlapp:
+   - **A** = referansetabell(primær) ∩ referansetabell(sekundær) ∩ FTS(nøkkelbegrep) → mest relevant
+   - **B** = referansetabell(primær) ∩ FTS(nøkkelbegrep) → relevant
+   - **C** = FTS(nøkkelbegrep) alene → variabel relevans, men kan inneholde avgrensningspraksis
+5. **Vektorsøk** (når tilgjengelig) — semantisk søk som supplement for å fange saker der nøkkelbegrepene ikke brukes direkte. *Ikke implementert per 2026-02 — planlagt.*
 
-Sorter sakene etter relevans og bidrag. Typiske kategorier:
+Denne kategoriseringen er *mekanisk* — den skjer før innholdet er lest. Den gir en prioritert leseliste der A-saker leses først.
+
+**Konkret eksempel (rådighet/forpliktelseserklæring):**
+
+| Kategori | Definisjon | Antall | Resultat |
+|---|---|---|---|
+| A | § 16-10 ∩ § 17-1 ∩ FTS(«forpliktelseserklæring») | 3 | Alle direkte relevante |
+| B | § 16-10 ∩ FTS(«forpliktelseserklæring») | 24 | ~15 relevante |
+| C | FTS(«forpliktelseserklæring») alene (2017+) | 82 | ~5 relevante |
+
+#### Fase 2: Ettersøk — gap-søk og vinkelrotasjon
+
+Etter at primæranalysen er ferdig, identifiserer seksjon «Videre arbeid» konkrete hull. Ettersøket angriper disse direkte:
+
+1. **Gap-søk** — direkte SQL mot identifiserte hull (f.eks. § 16-10 + kvantitative termer)
+2. **Vinkelrotasjon** — søk på samme tema fra nye innfallsvinkler med alternativ terminologi (f.eks. «råder over», «støttende virksomhet», «underleverandør + kvalifikasjon»)
+3. **Kryssvalidering** — saker som treffer i *flere* uavhengige søk har høyest signal
+
+Dokumenter søkestrategien, antall treff per fase, og hva som er gjennomgått vs. gjenstår.
+
+### Steg 3: Innholdsbasert kategorisering
+
+Etter lesing rekategoriseres sakene etter relevans og bidrag:
 - **A:** Direkte relevant, behandler problemstillingen inngående
 - **B:** Utfyllende, berører problemstillingen som del av en bredere vurdering
 - **C:** Perifer, nevner relevante begreper uten å analysere dem
+
+Merk: innholdsbasert kategorisering kan avvike vesentlig fra interseksjonsrangeringen. En sak i mekanisk kategori C (bare FTS-treff) kan vise seg å være innholdsmessig A — og omvendt.
 
 ### Steg 4: Analyse
 
@@ -206,10 +234,7 @@ docs/
 
 ### Fra gap-søk og vinkelrotasjon (2026-02-10)
 
-**Søkestrategi: gap-søk + vinkelrotasjon fungerer godt.** Etter at det primære notatet var ferdig med ~20 saker, avdekket et systematisk ettersøk ytterligere ~10 relevante saker — hvorav 7 med substansielt ny dekning. Metoden:
-1. **Gap-søk:** Direkte SQL mot identifiserte hull i seksjon 9 (f.eks. § 16-10 + kvantitative termer)
-2. **Vinkelrotasjon:** Søk på samme tema fra nye innfallsvinkler — ordlyden «råder over», termen «støttende virksomhet», kombinasjonen «underleverandør + kvalifikasjon» — fanger saker der den primære terminologien ikke brukes
-3. **Kryssvalidering:** Saker som treffer i *flere* søk har høyest signal (2019/379, 2024/1092, 2022/1643 traff i 3–4 uavhengige søk)
+Ettersøksfasen (nå formalisert i Steg 2, Fase 2) avdekket ~10 nye kandidater fra et primærsett på ~20 — hvorav 7 med substansielt ny dekning. Observasjoner:
 
 **Kategori C-saker er verdifulle.** Saker som nevner forpliktelseserklæring uten å ha § 16-10 i referansetabellen inneholder ofte avgrensningspraksis — dvs. saker der nemnda slår fast at § 16-10 *ikke* gjelder. Disse er like viktige som sakene der bestemmelsen anvendes.
 
