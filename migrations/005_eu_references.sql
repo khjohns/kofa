@@ -27,8 +27,15 @@ CREATE POLICY "kofa_eu_references_public_read"
     USING (true);
 
 CREATE POLICY "kofa_eu_references_service_write"
-    ON kofa_eu_references FOR ALL
-    USING (auth.role() = 'service_role');
+    ON kofa_eu_references FOR INSERT
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY "kofa_eu_references_update"
+    ON kofa_eu_references FOR UPDATE
+    USING ((select auth.role()) = 'service_role')
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY "kofa_eu_references_delete"
+    ON kofa_eu_references FOR DELETE
+    USING ((select auth.role()) = 'service_role');
 
 COMMENT ON TABLE kofa_eu_references IS
     'EU Court of Justice case references extracted from KOFA decision text';

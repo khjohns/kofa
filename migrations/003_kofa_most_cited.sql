@@ -19,10 +19,11 @@ BEGIN
         c.avgjoerelse,
         c.saken_gjelder,
         c.avsluttet
-    FROM kofa_case_references cr
-    LEFT JOIN kofa_cases c ON c.sak_nr = cr.to_sak_nr
+    FROM public.kofa_case_references cr
+    LEFT JOIN public.kofa_cases c ON c.sak_nr = cr.to_sak_nr
     GROUP BY cr.to_sak_nr, c.innklaget, c.avgjoerelse, c.saken_gjelder, c.avsluttet
     ORDER BY cited_count DESC
     LIMIT max_results;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SET search_path = '';

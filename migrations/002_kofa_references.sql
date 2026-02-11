@@ -49,11 +49,19 @@ ALTER TABLE kofa_case_references ENABLE ROW LEVEL SECURITY;
 CREATE POLICY kofa_law_references_read ON kofa_law_references FOR SELECT USING (true);
 CREATE POLICY kofa_case_references_read ON kofa_case_references FOR SELECT USING (true);
 
--- Service role write access
-CREATE POLICY kofa_law_references_write ON kofa_law_references FOR ALL
-    USING (auth.role() = 'service_role')
-    WITH CHECK (auth.role() = 'service_role');
+-- Service role write access (separate INSERT/UPDATE/DELETE to avoid SELECT overlap)
+CREATE POLICY kofa_law_references_write ON kofa_law_references FOR INSERT
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_law_references_update ON kofa_law_references FOR UPDATE
+    USING ((select auth.role()) = 'service_role')
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_law_references_delete ON kofa_law_references FOR DELETE
+    USING ((select auth.role()) = 'service_role');
 
-CREATE POLICY kofa_case_references_write ON kofa_case_references FOR ALL
-    USING (auth.role() = 'service_role')
-    WITH CHECK (auth.role() = 'service_role');
+CREATE POLICY kofa_case_references_write ON kofa_case_references FOR INSERT
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_case_references_update ON kofa_case_references FOR UPDATE
+    USING ((select auth.role()) = 'service_role')
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_case_references_delete ON kofa_case_references FOR DELETE
+    USING ((select auth.role()) = 'service_role');

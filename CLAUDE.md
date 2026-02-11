@@ -82,7 +82,9 @@ Prosjektnavn: `unified-timeline` (delt med paragraf og andre Catenda-prosjekter)
 - Formatering: ruff, line-length 100
 - Arkitektur: Aldri kall Supabase direkte fra server.py — gå via service.py → supabase_backend.py
 - MCP-verktøy: Norske navn (sok, hent_sak, finn_praksis) med norske beskrivelser
-- SQL-migrasjoner: Kjøres via Supabase MCP `apply_migration`, ikke lokale filer
+- SQL-migrasjoner: Kjøres via Supabase MCP `apply_migration`. Lokale filer i `migrations/` holdes oppdatert som referanse.
+- RLS-mønster: Separate policies for SELECT (public read) og INSERT/UPDATE/DELETE (service_role write). Aldri bruk `FOR ALL` (overlapper SELECT). Wrap `auth.role()` i subselect: `(select auth.role()) = 'service_role'`.
+- SQL-funksjoner: Alltid `SET search_path = ''` og bruk `public.`-prefikser på tabellreferanser.
 - Referansekode: `../paragraf/` har tilsvarende arkitektur for Lovdata — bruk som mal
 
 ## Rettslig analyse — to-lagsmodell

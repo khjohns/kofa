@@ -68,7 +68,8 @@ BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SET search_path = '';
 
 DROP TRIGGER IF EXISTS kofa_cases_updated ON kofa_cases;
 CREATE TRIGGER kofa_cases_updated
@@ -141,7 +142,7 @@ BEGIN
         c.avgjoerelse, c.saken_gjelder, c.summary,
         c.avsluttet, c.pdf_url,
         ts_rank(c.fts, tsquery_and) AS rank
-    FROM kofa_cases c
+    FROM public.kofa_cases c
     WHERE c.fts @@ tsquery_and
     ORDER BY rank DESC
     LIMIT max_results;
@@ -170,13 +171,14 @@ BEGIN
             c.avgjoerelse, c.saken_gjelder, c.summary,
             c.avsluttet, c.pdf_url,
             ts_rank(c.fts, tsquery_or) AS rank
-        FROM kofa_cases c
+        FROM public.kofa_cases c
         WHERE c.fts @@ tsquery_or
         ORDER BY rank DESC
         LIMIT max_results;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SET search_path = '';
 
 -- =============================================================================
 -- Statistics function
@@ -193,7 +195,7 @@ BEGIN
         SELECT
             COALESCE(c.avgjoerelse, 'Ukjent') AS label,
             COUNT(*)::BIGINT AS count
-        FROM kofa_cases c
+        FROM public.kofa_cases c
         WHERE (filter_year IS NULL OR EXTRACT(YEAR FROM c.avsluttet) = filter_year)
         GROUP BY c.avgjoerelse
         ORDER BY count DESC;
@@ -202,7 +204,7 @@ BEGIN
         SELECT
             COALESCE(c.sakstype, 'Ukjent') AS label,
             COUNT(*)::BIGINT AS count
-        FROM kofa_cases c
+        FROM public.kofa_cases c
         WHERE (filter_year IS NULL OR EXTRACT(YEAR FROM c.avsluttet) = filter_year)
         GROUP BY c.sakstype
         ORDER BY count DESC;
@@ -210,7 +212,8 @@ BEGIN
         RAISE EXCEPTION 'Unknown grouping: %', group_by_field;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SET search_path = '';
 
 -- =============================================================================
 -- RLS Policies
@@ -225,15 +228,27 @@ CREATE POLICY kofa_cases_read ON kofa_cases FOR SELECT USING (true);
 CREATE POLICY kofa_decision_text_read ON kofa_decision_text FOR SELECT USING (true);
 CREATE POLICY kofa_sync_meta_read ON kofa_sync_meta FOR SELECT USING (true);
 
--- Service role write access
-CREATE POLICY kofa_cases_write ON kofa_cases FOR ALL
-    USING (auth.role() = 'service_role')
-    WITH CHECK (auth.role() = 'service_role');
+-- Service role write access (separate INSERT/UPDATE/DELETE to avoid SELECT overlap)
+CREATE POLICY kofa_cases_write ON kofa_cases FOR INSERT
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_cases_update ON kofa_cases FOR UPDATE
+    USING ((select auth.role()) = 'service_role')
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_cases_delete ON kofa_cases FOR DELETE
+    USING ((select auth.role()) = 'service_role');
 
-CREATE POLICY kofa_decision_text_write ON kofa_decision_text FOR ALL
-    USING (auth.role() = 'service_role')
-    WITH CHECK (auth.role() = 'service_role');
+CREATE POLICY kofa_decision_text_write ON kofa_decision_text FOR INSERT
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_decision_text_update ON kofa_decision_text FOR UPDATE
+    USING ((select auth.role()) = 'service_role')
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_decision_text_delete ON kofa_decision_text FOR DELETE
+    USING ((select auth.role()) = 'service_role');
 
-CREATE POLICY kofa_sync_meta_write ON kofa_sync_meta FOR ALL
-    USING (auth.role() = 'service_role')
-    WITH CHECK (auth.role() = 'service_role');
+CREATE POLICY kofa_sync_meta_write ON kofa_sync_meta FOR INSERT
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_sync_meta_update ON kofa_sync_meta FOR UPDATE
+    USING ((select auth.role()) = 'service_role')
+    WITH CHECK ((select auth.role()) = 'service_role');
+CREATE POLICY kofa_sync_meta_delete ON kofa_sync_meta FOR DELETE
+    USING ((select auth.role()) = 'service_role');
