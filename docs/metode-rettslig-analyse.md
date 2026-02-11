@@ -63,7 +63,7 @@ Mål: gå fra null til en prioritert kandidatliste *uten å lese noen saker*. Fr
    - **A** = referansetabell(primær) ∩ referansetabell(sekundær) ∩ FTS(nøkkelbegrep) → mest relevant
    - **B** = referansetabell(primær) ∩ FTS(nøkkelbegrep) → relevant
    - **C** = FTS(nøkkelbegrep) alene → variabel relevans, men kan inneholde avgrensningspraksis
-5. **Vektorsøk** (når tilgjengelig) — semantisk søk som supplement for å fange saker der nøkkelbegrepene ikke brukes direkte. *Ikke implementert per 2026-02 — planlagt.*
+5. **Vektorsøk** — semantisk søk som supplement for å fange saker der nøkkelbegrepene ikke brukes direkte. Bruker Gemini text-embedding-004 (1536 dim) med hybrid FTS+vektor via `search_kofa_decision_hybrid`. Spesielt verdifullt for konseptuelle søk der terminologien varierer (se validering nedenfor).
 
 Denne kategoriseringen er *mekanisk* — den skjer før innholdet er lest. Den gir en prioritert leseliste der A-saker leses først.
 
@@ -269,6 +269,27 @@ Ettersøksfasen (nå formalisert i Steg 2, Fase 2) avdekket ~10 nye kandidater f
 **Negativt funn er også funn.** Gap 1 (kvantitative bemanningskrav) og Gap 2 (ESPD som eneste holdepunkt) ga null treff — som bekrefter at disse scenariene genuint er utestet i praksis. Denne bekreftelsen styrker notatets konklusjon.
 
 **Nøkkelkolonner i CLAUDE.md.** SQL-spørringer mot Supabase feilet på grunn av feil kolonnenavn (`case_number` vs `sak_nr`, `content` vs `text`). CLAUDE.md bør inneholde nøkkelkolonner for alle tabeller — oppdatert.
+
+### Fra validering av vektorsøk (2026-02-11)
+
+Tre testsøk sammenlignet FTS alene mot hybrid (vektor+FTS) for å validere merverdien av embeddings:
+
+**Test 1: Eksakt juridisk term** («forpliktelseserklæring», seksjon=vurdering)
+FTS og hybrid gir omtrent samme resultat. FTS fungerer godt på eksakte termer. Hybrid rerangerer marginalt.
+
+**Test 2: Naturlig språk** («kan oppdragsgiver avvise tilbud som ikke oppfyller kvalifikasjonskrav», seksjon=vurdering)
+Hybrid fant 6 treff med fts_rank=0 — alle 6 direkte relevante (100% presisjon). FTS misset dem fordi de bruker synonymer: «kvalifikasjonene» i stedet for «kvalifikasjonskrav», «kvalifikasjonskriterier», «krav satt i konkurransegrunnlaget». Eksempel: 2005/197 («rett, men ikke plikt til å avvise»), 2009/219 (plikt/rett-distinksjonen).
+
+**Test 3: Konseptuelt søk** («tildelingskriterier utenfor det som er relevant for kontrakten», seksjon=vurdering)
+Mest dramatisk forskjell. FTS: 7 treff, 1 relevant (14% presisjon) — matchet på «tildelingskriter*» + «utenfor» i irrelevante kontekster. Hybrid: 10 treff, 10 relevante (100% presisjon) — fant NF-doktrine-formuleringer, ulovlige tildelingskriterier, grensedragning kvalifikasjon/tildeling uten å bruke søketermene direkte.
+
+| Søketype | FTS presisjon | Hybrid presisjon | Hybrid-eksklusive |
+|---|---|---|---|
+| Eksakt term | ~90% | ~90% | Marginal |
+| Naturlig språk | ~80% | ~100% | 6 relevante treff FTS misset |
+| Konseptuelt | 14% | 100% | Alt relevant kom fra vektor |
+
+**Implikasjon for søkestrategi:** Vektorsøk bør brukes som standard i fase 1 (punkt 5), spesielt for konseptuelle søk og ved vinkelrotasjon i fase 2. FTS beholder sin rolle for eksakte termer og som komponent i hybrid-funksjonen. Interseksjonsmetoden (referansetabell + FTS + vektor) gir tre uavhengige signaler som styrker rangeringen.
 
 ### Søkeeffektivitet per notat
 
