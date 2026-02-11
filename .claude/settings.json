@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | grep -E '\\.py$' | xargs -r ./venv/bin/ruff check --fix"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__plugin_supabase_supabase__apply_migration",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '\\n⚠️  Migrasjon kjørt i Supabase. Husk å lagre SQL lokalt i migrations/ og oppdater eksisterende filer om nødvendig.'"
+          }
+        ]
+      }
+    ]
+  }
+}
