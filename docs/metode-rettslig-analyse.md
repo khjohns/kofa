@@ -278,9 +278,16 @@ Ettersøksfasen (nå formalisert i Steg 2, Fase 2) avdekket ~10 nye kandidater f
 |---|---|---|---|---|---|---|---|
 | Rådighet/forpliktelseserklæring | 27 | 27 | ~18 | 7 | 3/3 (100%) | ~15/24 (63%) | 20 KOFA + 6 retts. |
 | Grensedragning § 16-10 | *avledet fra ettersøk* | — | — | — | — | — | 11 KOFA |
+| NF-doktrinens grenser | 20 | 20 | 17 | 2 | 15/17 (88%) | 2/3 (67%) | 19 KOFA + 2 retts. |
 
 **Foreløpige observasjoner:**
 - A-kategorien (trippel interseksjon) har 100% presisjon — bekrefter at interseksjon er en sterk relevansprediktor
 - B-kategorien har ~63% presisjon — en tredjedel faller utenfor problemstillingen etter lesing
 - Ettersøket øker dekningen med ~28% (7/25) — vesentlig, men med fallende marginalnytte
 - Ettersøk produserer materiale for *andre* dokumenter (5 av 7 funn gikk til kommentar/nytt notat) — bør gjøres med hele porteføljen i tankene
+
+### Fra kartlegging av NF-doktrinens grenser (2026-02-11)
+
+**Motpraksis krever alternativ terminologi.** FTS på doktrine­begrepet («naturlig forståelse») gir høy presisjon for bekreftelser (88%), men fanger dårlig motpraksis — saker der oppdragsgiver har gått *utenfor*. Disse bruker sjelden doktrinebegrepet og konstaterer i stedet at noe er «utenfor tildelingskriteriets rammer» eller at oppdragsgiver har «gått utenfor». Ettersøk med alternativ terminologi fanget 2 av 3 motpraksiskandidater.
+
+**Implikasjon for søkestrategi:** Ved doktrine-kartlegging bør primærsøket suppleres med FTS på *konklusjonstermene* (brudd, utenfor, ikke innenfor) — ikke bare doktrinens egne begreper.

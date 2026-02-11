@@ -25,3 +25,9 @@ Thumbs.db
 
 # Sensitive docs
 docs/Klage/
+
+# Rettslige arbeidsdokumenter (avledet fra databasen, ikke del av verktøyet)
+docs/notat-*.md
+docs/arbeidsnotat-*.md
+docs/kommentar-foa-*.md
+docs/metode-rettslig-analyse.md
