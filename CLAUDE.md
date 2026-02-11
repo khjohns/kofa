@@ -2,31 +2,6 @@
 
 MCP-server for KOFA-avgjørelser (Klagenemnda for offentlige anskaffelser). Gir Claude/LLM tilgang til ~5000 avgjørelser via Model Context Protocol.
 
-## Prosjektstruktur
-
-```
-src/kofa/
-  __init__.py              # Eksporterer MCPServer, KofaService
-  server.py                # MCP JSON-RPC server, verktøydefinisjoner, SERVER_INSTRUCTIONS
-  service.py               # Forretningslogikk, formatering, alias-normalisering
-  supabase_backend.py      # Database-operasjoner mot Supabase PostgreSQL
-  pdf_extractor.py         # PDF → strukturert tekst med seksjonering
-  reference_extractor.py   # Regex-ekstraksjon av lov/saks/EU/domstolsreferanser
-  eurlex_fetcher.py        # Henting og parsing av EU-dommer fra EUR-Lex HTML
-  vector_search.py         # Hybrid vektor+FTS søk (KofaVectorSearch)
-  scraper.py               # HTML-scraping av metadata fra kofa.no
-  cli.py                   # CLI: kofa serve|sync|status
-  web.py                   # Flask blueprint for HTTP MCP-transport
-  _supabase_utils.py       # Delt: retry-dekorator, klient, feilklassifisering
-scripts/
-  embed_kofa.py            # Embedding-generering med Gemini API
-docs/
-  ADR-001.md               # Arkitekturbeslutninger (les denne for full kontekst)
-  metode-rettslig-analyse.md # Arbeidsmetodikk for rettslig analyse (to-lagsmodellen)
-  notat-*.md               # Problemdrevne rettslige notater
-  kommentar-foa-*.md       # Lovkommentarer per bestemmelse
-```
-
 ## Arkitektur
 
 Tre-lags med klar ansvarsfordeling:
@@ -34,16 +9,16 @@ Tre-lags med klar ansvarsfordeling:
 CLI/MCP Server → Service → Supabase Backend
 ```
 
-Deler Supabase-prosjekt med `../paragraf/` (Lovdata MCP). Alle tabeller prefikset `kofa_`.
+Deler Supabase-prosjekt (`unified-timeline`) med `../paragraf/` (Lovdata MCP). Alle tabeller prefikset `kofa_`.
 
 ## Kommandoer
 
 ```bash
-# Utvikling
+# MCP-server
 ./venv/bin/python -m kofa serve          # stdio MCP server
 ./venv/bin/python -m kofa status         # Vis sync-status
 
-# Sync pipeline (krever SUPABASE_URL + SUPABASE_KEY)
+# Sync pipeline
 kofa sync                                # WP API → kofa_cases
 kofa sync --scrape                       # HTML → metadata
 kofa sync --pdf                          # PDF → kofa_decision_text
@@ -51,30 +26,22 @@ kofa sync --references                   # Regex → kofa_law/case/eu_references
 kofa sync --eu-cases                     # EUR-Lex → kofa_eu_case_law
 kofa sync --embeddings                   # Gemini → embeddings
 
-# Linting
-./venv/bin/ruff check src/
+# Kvalitet
+./venv/bin/ruff check src/               # Linting
+./venv/bin/pyright src/                   # Type-checking
 ```
 
-## Databasetabeller (Supabase)
+## Testing
 
-- `kofa_cases` — Saker med metadata og vektet FTS. PK: `sak_nr`. Nøkkelkolonner: `saken_gjelder`, `innklaget`, `klager`, `sakstype`, `regelverk`, `summary`, `pdf_url`
-- `kofa_decision_text` — Avgjørelsestekst per avsnitt. PK: `id`. Nøkkelkolonner: `sak_nr`, `paragraph_number`, `section`, `text`, `search_vector`, `embedding`
-- `kofa_law_references` — Lovhenvisninger. PK: `id`. Nøkkelkolonner: `sak_nr`, `law_name`, `law_section`, `raw_text`, `context`, `regulation_version`
-- `kofa_case_references` — KOFA-kryssreferanser. Nøkkelkolonner: `from_sak_nr`, `to_sak_nr`, `context`
-- `kofa_eu_references` — EU-domstolsreferanser. Nøkkelkolonner: `sak_nr`, `eu_case_id`, `eu_case_name`, `context`
-- `kofa_eu_case_law` — Fulltekst EU-dommer fra EUR-Lex. PK: `eu_case_id`. Nøkkelkolonner: `celex`, `case_name`, `full_text`, `char_count` (generated), `language`
-- `kofa_court_references` — Norske domstolsreferanser. Nøkkelkolonner: `sak_nr`, `court_case_id`, `court_level`, `court_name`, `context`
-- `kofa_sync_meta` — Sync-status og cursors. PK: `source`
+- Ingen test-suite — verifisering skjer via direkte SQL mot Supabase (MCP `execute_sql`)
+- Lint: `ruff check src/`
+- Types: `pyright src/`
 
-## Seksjoner i avgjørelsestekst
+## Miljøvariabler
 
-KOFA-avgjørelser følger fast rekkefølge: `bakgrunn` → `anfoersler` → `vurdering` (evt. `innledning` før, `konklusjon` etter). Seksjonsklassifisering skjer i `pdf_extractor.py:_assign_sections()`.
-
-Viktig: enkeltord-nøkkelord (bakgrunn, anførsler) krever kolon i regex for å unngå falske seksjonsgrenser fra PDF-linjeskift.
-
-## Supabase-prosjekt
-
-Prosjektnavn: `unified-timeline` (delt med paragraf og andre Catenda-prosjekter).
+- `SUPABASE_URL` — Supabase-prosjektets URL (kreves for sync og MCP-server)
+- `SUPABASE_KEY` — Service role-nøkkel (kreves for skriveoperasjoner)
+- `GEMINI_API_KEY` — Google Gemini API (kreves kun for `--embeddings`)
 
 ## Konvensjoner
 
@@ -82,22 +49,4 @@ Prosjektnavn: `unified-timeline` (delt med paragraf og andre Catenda-prosjekter)
 - Formatering: ruff, line-length 100
 - Arkitektur: Aldri kall Supabase direkte fra server.py — gå via service.py → supabase_backend.py
 - MCP-verktøy: Norske navn (sok, hent_sak, finn_praksis) med norske beskrivelser
-- SQL-migrasjoner: Kjøres via Supabase MCP `apply_migration`. Lokale filer i `migrations/` holdes oppdatert som referanse.
-- RLS-mønster: Separate policies for SELECT (public read) og INSERT/UPDATE/DELETE (service_role write). Aldri bruk `FOR ALL` (overlapper SELECT). Wrap `auth.role()` i subselect: `(select auth.role()) = 'service_role'`.
-- SQL-funksjoner: Alltid `SET search_path = ''` og bruk `public.`-prefikser på tabellreferanser.
 - Referansekode: `../paragraf/` har tilsvarende arkitektur for Lovdata — bruk som mal
-
-## Rettslig analyse — to-lagsmodell
-
-Prosjektet produserer rettslig analyse i to lag (se `docs/metode-rettslig-analyse.md` for full metodebeskrivelse):
-
-1. **Problemdrevne notater** (`docs/notat-*.md`) — dybdeanalyse av konkrete rettsspørsmål. Systematisk søk → kategorisering → analyse → funn. Selvstendig lesbare.
-2. **Lovkommentarer** (`docs/kommentar-foa-*.md`) — akkumulerende referansestruktur per bestemmelse. Oppdateres med funn fra notatene.
-
-### Handlingsregler
-
-Ved rettslig analyse: følg metodikken i `docs/metode-rettslig-analyse.md` (skjelett, to-fase søk, søkestrategi-seksjon, søkeeffektivitetstabell). Etter hver problemutforskning: deponer funn i relevante lovkommentarer og oppdater metodedokumentet med nye observasjoner. Verifiser saksreferanser og sitater mot databasen. Bruk ordlyden som fasit — KOFA-avgjørelser kan selv ha feil paragrafhenvisninger.
-
-## Vedlikehold av denne filen
-
-Vurder om CLAUDE.md bør oppdateres når du gjør endringer som påvirker prosjektstruktur, arkitektur, konvensjoner eller arbeidsflyt. Foreslå oppdatering for brukeren ved behov.
