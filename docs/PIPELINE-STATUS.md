@@ -1,6 +1,6 @@
 # KOFA Pipeline Status
 
-Sist oppdatert: 2026-02-09
+Sist oppdatert: 2026-02-11
 
 ## Oversikt
 
@@ -12,11 +12,11 @@ Sist oppdatert: 2026-02-09
 | PDF-tekst ekstrahert | 3 670 | 4 652 | 79% | 98% av de med PDF-URL |
 | Seksjonsinndelt | 3 348 | 3 670 | 91% | |
 | Raw-only | 322 | 3 670 | 9% | Hovedsakelig pre-2013 |
-| Referanser: lov | 3 042 | 3 670 | 83% | 7 387 enkeltref |
-| Referanser: KOFA-saker | 2 437 | 3 670 | 66% | 6 605 enkeltref |
-| Referanser: EU-dommer | 1 006 | 3 670 | 27% | 1 874 enkeltref, 211 unike EU-saker |
-| Paragrafer (non-raw) | ~120 000 | — | — | |
-| Embeddings | 0 | ~120 000 | 0% | |
+| Referanser: lov | 3 314 | 3 670 | 90% | 25 901 enkeltref |
+| Referanser: KOFA-saker | 2 435 | 3 670 | 66% | 6 602 enkeltref |
+| Referanser: EU-dommer | 1 005 | 3 670 | 27% | 1 867 enkeltref, 213 unike EU-saker |
+| Paragrafer (non-raw) | 139 216 | — | — | |
+| Embeddings | 139 216 | 139 216 | 100% | Gemini text-embedding-004 |
 
 ## Gapanalyse
 
@@ -85,7 +85,7 @@ Integritetskontroll bestått: 0 selv-referanser, 0 `new` på pre-2016 saker, 367
 
 ## Neste steg
 
-1. **Embeddings** — ~120 000 paragrafer
-2. **IVFFlat-indeks** — bygges etter embedding-kjøring
+1. ~~**Embeddings**~~ — Ferdig (139 216 paragrafer, 2026-02-11)
+2. ~~**IVFFlat-indeks**~~ — Ferdig (lists=100, vector_cosine_ops, 1 088 MB, 2026-02-11)
 3. **Vurdere OCR** — for 60 skannede PDFer (lav prioritet)
 4. **Vurdere forbedret seksjonering** — for 99 substansielle raw-only saker (lav prioritet)
