@@ -1,0 +1,296 @@
+Utskrift fra Lovdata - 10.02.2026 14:18
+ 
+ 
+Eidsivating lagmannsrett - Dom - LE-2022-19926 Lagmannsretten er kommet til samme resultat som tingretten men ser noe annerledes på begrunnelsen.
+ 
+ 
+Instans
+Eidsivating lagmannsrett – Dom
+Dato
+2022-11-03
+Publisert
+LE-2022-19926
+Stikkord
+Erstatningsrett. Offentlige anskaffelser. Tilbudskonkurranse. Erstatning. Anskaffelsesforskriften § 9-5.
+Sammendrag
+Saken gjelder krav om erstatning for den positive kontraktsinteresse som følge av brudd på anskaffelsesregelverket, jf. . Gjøvik kommune anket tingrettens dom, hvor de ble dømt til å betale erstatning for å ha brutt regelverket ved ikke å avvise valgte leverandør fra konkurranse om anskaffelse av en generalentreprise. Lagmannsretten fant at ankemotparten ikke oppfylte anbudets kvalifikasjonskrav, og at kommunen ved å ikke ha varslet ankemotparten hadde kvalifisert til erstatningsansvar for den positive kontraktsinteresse. (Sammendrag ved Lovdata.)
+Saksgang
+Vestre Innlandet tingrett TVIN-2021-66378 – Eidsivating lagmannsrett LE-2022-19926 (22-019926ASD-ELAG/).
+Parter
+Gjøvik kommune (advokat Marianne Høstmark Dragsten) mot Syljuåsen AS (advokat Ronny Rosenvold).
+Forfatter
+Lagdommer Bjørn Olav Aspelund, lagdommer Hans Christian Koss og tingrettsdommer Thomas Johansson.
+ 
+Innholdsfortegnelse
+Eidsivating lagmannsrett - Dom - LE-2022-19926 Lagmannsretten er kommet til samme resultat som tingretten men ser noe annerledes på begrunnelsen.
+Innholdsfortegnelse
+Lagmannsretten er kommet til samme resultat som tingretten men ser noe annerledes på begrunnelsen.
+Innledning
+Omfattet kvalifikasjonskravet rørfag?
+Adgang til dialog om tilbudet
+Kravet om erstatning
+Sammenfatning
+Sakskostnader
+ 
+ 
+ 
+Lagmannsretten er kommet til samme resultat som tingretten men ser noe annerledes på begrunnelsen.
+ 
+Innledning
+Det er krevet erstatning for den positive kontraktsinteresse, det vil si det fortjenestetapet Syljuåsen skal ha lidt ved at kommunen tildelte kontrakten til Veidekke. Det er på det rene at Syljuåsen ble rangert som nr. 2 i tilbudskonkurransen. Slik saken står for lagmannsretten, er det ikke tvil om at kontrakten ville bli tildelt Syljuåsen dersom det var grunnlag for å avvise Veidekkes tilbud.
+Etter 
+anskaffelsesloven § 10
+ har en leverandør krav på erstatning for tap han har lidt som følge av brudd på loven eller 
+anskaffelsesforskriften
+. Bestemmelsen oppfattes i praksis som en henvisning til alminnelige regler om erstatning, jf. 
+Rt-2001-1062
+ 
+Nucleus
+.
+Anskaffelsesforskriften § 9-5
+ første ledd bokstav a bestemmer at oppdragsgiveren «skal» avvise en leverandør som ikke oppfyller «kvalifikasjonskravene». Kvalifikasjonskrav er krav som oppdragsgiver «kan» stille krav til leverandørens kvalifikasjoner, jf. 
+anskaffelsesforskriften § 8-7
+ første ledd og 
+§ 16-1
+. Dette er «minimumskrav som skal sikre at leverandøren har evne til å levere i henhold til kontrakten», og som leverandørene må oppfylle «for å få lov til å delta i konkurransen», jf. Dragsten: 
+Anskaffelsesforskriften
+ med kommentarer, Juridika, bekreftet á jour pr. 1. september 2019.
+Saken reiser særlig spørsmål om – og i så fall i hvilken utstrekning – det etter tilbudsfristen er adgang til endre og supplere tilbudet for å oppfylle kvalifikasjonskravene.
+ 
+Omfattet kvalifikasjonskravet rørfag?
+Kommunen har prinsipalt anført at det ikke var stilt særlige kvalifikasjonskrav til rørfag, og lagmannsretten ser på dette spørsmålet først.
+Lagmannsretten finner grunn til å understreke at kommunen først problematiserte dette spørsmålet etter at Syljuåsen hadde bedt om innsyn i Veidekkes tilbud i mai 2020. I kommunens brev 22. mai 2022 ble det gitt uttrykk for at det ikke ble stilt kvalifikasjonskrav om noen bestemt tiltaksklasse for rørfag, og at det var grunnen til at det ikke var bedt om noen dokumentasjon for valg av underentreprenør og dennes kvalifikasjoner.
+Anskaffelsesforskriften § 14-1
+ tredje ledd bokstav d nr. 3 bestemmer at konkurransegrunnlaget bl.a. skal angi hvilke kvalifikasjonskrav leverandøren må oppfylle. Innholdet av kvalifikasjonskravene må ved uklarhet fastlegges gjennom en fortolkning av konkurransegrunnlaget. Denne fortolkningen må skje objektiv, jf. 
+Rt-2012-1729
+ 
+Mika
+ 
+avsnitt 66-67
+.
+Om «kvalifikasjonskrav» het det i konkurransegrunnlaget pkt. 5.0:
+Kvalifikasjonskrav er krav som er satt til tilbyderen for å sikre at tilbyderen har de nødvendige kapasiteter for å kunne delta i konkurransen og således kunne sikre oppfyllelse av kontraktens forpliktelser.
+Tilbyder må dokumentere at vedkommende har de kvalifikasjoner som oppdragsgiver etterspør for å kunne gjennomføre oppdraget. Det samme gjelder dersom tilbyderen består av en gruppe med to eller flere deltakere (arbeidsfellesskap mv.).
+Dersom tilbyder er avhengig av å støtte seg på underentreprenørenes kvalifikasjoner for å oppfylle et eller flere av kvalifikasjonskravene, må tilbyder dokumentere i tilbudet at han har rådighet over underentreprenørens kapasitet. Tilbudet må i slike tilfeller inneholde følgende dokumentasjon for hver enkelt underentreprenør:
+a.
+Dokumentasjon av de tekniske, økonomiske eller faglige kvalifikasjonene hos vedkommende underentreprenør. Dokumentasjonen skal utformes og systematiseres i henhold til tabellene under.
+ 
+b.
+Forpliktelseserklæring eller annen dokumentasjon av at tilbyderen har rådighet over de nødvendige ressursene fra underentreprenøren. En forpliktelseserklæring skal ha følgende tekst: 
+«Undertegnede firma (Underentreprenørens navn og organisasjonsnummer) forplikter seg til å utføre følgende arbeider (beskrivelsen av de arbeidene som underentreprenør skal utføre for tilbyder) for (navn på tilbyder) i prosjekt (navn på prosjektet). (Dato og underskrift).»
+ 
+Kvalifikasjonskravene var nærmere utdypet i pkt. 5.3 om «tilbyders / entreprenørs tekniske og faglige kapasitet». Kravet var der presisert slik:
+Sentral godkjenning eller dokumentert kompetanse som angitt i SAK kapittel 11 eller tilsvarende, i tiltaksklasse 2 og 3 i godkjenningsområdet.
+Dersom leverandøren ikke kan oppfylle kompetansekravet er det tillatt å støtte seg på andre foretak med slik kompetanse. Dokumentasjon på oppfyllelse av kravet skal synliggjøres som en forpliktelseserklæring mellom partene for dette oppdraget.
+De nevnte innholdskravene var supplert med krav om dokumentasjon i form av fremleggelse av «Sentral godkjenning i Tkl 2 og 3 eller annen tilsvarende dokumentasjon ihht kravet».
+Tilbudsinnbydelsen avklarte i dette punkt imidlertid ikke 
+hvilke
+ godkjenningsområder som var omfattet av kvalifikasjonskravet og heller ikke med eventuell tiltaksklasse. Det fremgikk således ikke direkte om det var stilt kvalifikasjonskrav til «rørfag». Avklaring må derfor søkes andre steder i tilbudsinnbydelsen.
+Det er nærliggende å se hen til at «Skjema for vederlag, prissammenstilling og regningsarbeider». Det er på det rene at skjemaet var en del av tilbudsinnbydelsen, jf. oppdragsgiver krav til tilbudet i konkurransebeskrivelsen pkt. 4.1 underpunkt 4. Etter sitt innhold var skjemaet ment for utfylling av disaggregerte prisposter i tilbudet.
+I skjemaets innledende del, under overskriften «A.01 Forutsetninger for prising», het det at «tiltaket gjennomføres i tiltaksklasser» i henhold til en umiddelbart påfølgende liste av ulike funksjoner. For utførelsen av «sanitær, varme- og slukkeinstallasjoner» var det forutsatt at tiltaket skulle gjennomføres i tiltaksklasse 3. Det fremgikk videre at tilbudet skulle sammenstilles i tilbudsskjemaet, og at samtlige punkter i skjemaet måtte være utfylt for at det kunne betraktes som fullstendig.
+Dette punktet i skjemaet var uendret gjennom hele tilbudskonkurransen, i motsetning til punkt A.05 som lagmannsretten kommer tilbake til nedenfor.
+Lagmannsretten bemerker for sammenhengens skyld at det ikke er bestridt i saken at «sanitær, varme- og slukkeinstallasjoner» er «rørfag». Når tilbudsskjemaet benytter begrepene «sanitær, varme- og slukkeinstallasjoner», har det trolig sammenheng med at fagområdene sanitærinstallasjoner, varme- og kuldeinstallasjoner og slukkeinstallasjoner er særskilte godkjenningsområder for ansvarsrett etter 
+byggesaksforskriften § 13-5
+ tredje ledd, henholdsvis bokstavene o), p) og q). Begrepet «rørfag» forekommer ikke i 
+byggesaksforskriften
+.
+Lagmannsretten er enig med tingretten i at skjemaet må forstås slik at det var krav om tiltaksklasse 3 for utførelse av sanitær, varme- og slukkeinstallasjoner. Spørsmålet er imidlertid om angivelsen bare var ment å gjelde som et varsel om hvilke krav som ville bli stilt ved inngåelse av kontrakten («kontraktskrav»), slik kommunen har anført, eller om angivelsen også var ment som en angivelse av et 
+kvalifikasjonskrav
+.
+Lagmannsretten finner det klart at formuleringen i prisskjemaet tilsier at kravet om tiltaksklasse 3 for utførelse av sanitær, varme- og slukkeinstallasjoner var ment som et kvalifikasjonskrav. Avgjørende her er at listen er det eneste som avklarer hvilke tiltaksklasser som skulle gjelde for de respektive godkjenningsområder, og som altså var kvalifikasjonskrav etter tilbudsinnbydelsens punkt 5.3. Uten dette skjemaet var det ikke mulig for tilbyderne å vite hvilke tiltaksklasser for hvilke godkjenningsområder kvalifikasjonskrav viste til.
+Kommunens anførsel om at listen bare var ment som avsjekk av kontraktskrav fremstår på den annen side som anstrengt. Synspunktet må basere seg på at tilbudsinnbydelsen ga anvisninger på forhold oppdragsgiver ville innta i endelig kontrakt, men som likevel ikke var ment som et kvalifikasjonskrav. Tilbudsinnbydelsen, så langt det er fremlagt, inneholder imidlertid ingen slike forutsetninger. Tvert om fremgår det av tilbudsinnbydelsen at «
+NS 8406
+ – Forenklet norsk bygge- og anleggskontrakt» var lagt til grunn for innbydelsen, med korreksjoner inntatt i «Spesielle kontraktsbestemmelser» i kontraktsgrunnlagets kapittel B. Ikke på noe sted i det kontraktsmaterialet eller øvrig dokumentasjon som har vært fremlagt for lagmannsretten er det spor av at kravet om særskilte tiltaksklasser først ville bli aktualisert på kontraktsinngåelsestidspunktet.
+En slik tanke fremstår også som anstrengt etter anskaffelsesregelverkets system. Hensikten med kvalifikasjonskrav er å stille krav til tilbyderen som sådan, mer enn til selve kontraktsytelsen. Poenget er å sikre at tilbyderen har egenskaper som er nødvendige for at han i det hele tatt er i stand til å prestere ytelsen.
+Prisskjemaet er bygget opp rundt samme systematikk som ansvarsreglene i 
+byggesaksforskriften
+. Det gir god mening i å stille kvalifikasjonskrav som korresponderer med 
+byggesaksforskriftens
+ ansvarsrettssystem. Uten tilstrekkelig ansvarsrett i nødvendig tiltaksklasse er det umulig for tilbyderen, evt. den han har overlatt det aktuelle fagområdet til, å oppfylle en kontrakt han eventuelt måtte bli tildelt etter avsluttet konkurranse. Lagmannsretten kan således ikke se at det kan ha hersket noen reell uklarhet om at tiltaksklasse 3 gjaldt som kvalifikasjonskrav. Et kvalifikasjonskrav utformet som et krav om en bestemt offentligrettslig tillatelse er dessuten enkelt å praktisere.
+Lagmannsretten nevner i denne sammenheng at prisskjemaets henvisning til «sanitær, varme- og slukkeinstallasjoner» dekker tre separate fagområder i 
+byggesaksforskriften
+, med separate krav til godkjenning. Dersom en konkret entreprise krever både sanitær- og slokkeinstallasjoner, er det ikke tilstrekkelig å ha ansvarsrett bare for det ene fagområdet. Det vil derfor være i byggherrens – og ansvarlig søkers – interesse å påse at alle aktuelle fagområder er belagt med ansvar.
+Lagmannsretten ser så på kommunens anførsler knyttet til punkt A.05 i det samme skjemaet. Dette punktet hadde overskriften «A.05 Egen organisasjon/underentreprenører». Skjemaet krevde i underpunkt 1 angivelse av tilbyderens organisasjonsplan, mens det i underpunkt 2 skulle angis hvilke underentreprenører og samarbeidende firmaer tilbyderen «regnet med å benytte». Det var så angitt en liste over ulike typer arbeider som det kunne være aktuelt å bruke som underentreprenører eller samarbeidende firmaer til, så som malerarbeider, leverandører systemvegger, trevinduer/dører, finstål osv., og det fremgikk uttrykkelig at underentreprenørene måtte være «kvalifisert i relevante/aktuelle godkjenningsområder».
+Rørfag var imidlertid ikke opplistet i det skjemaet som var en del av konkurransegrunnlaget. Kommunen har argumentert med at listen dermed må forstås antitetisk; som et uttrykk for at det ikke var meningen at rørarbeider skulle være omfattet av tilbudsinnbydelsens kvalifikasjonskrav.
+Lagmannsretten finner det klart at anførselen ikke kan føre frem. Oppregningen fremstår ikke som annet enn en angivelse av hvilke selskaper det kunne være aktuelt å samarbeide med. Listen fremstår således ikke som noe unntak fra – eller presisering til – bestemmelsen om godkjenningsområder og krav til tiltaksklasse i punkt A.01. Angivelsen fremstår dessuten helt frikoblet fra bygningslovgivningens ansvarsrettssystem. Eksempelvis er hverken byggtapetsering, maling eller leveranse av finstål belagt med krav om ansvarlig utførende. Det fremstår derfor som nokså meningsløst dersom slike arbeider eller leveranser skulle være omfattet av kvalifikasjonskrav. Sammenholdt med at opplistingen avsluttes med «andre underleverandører» finner lagmannsretten det klart at opplistingen verken konkretiserte tilbudskonkurransens kvalifikasjonskrav eller kunne forstås antitetisk slik at rørarbeider ikke var omfattet av kvalifikasjonskrav.
+Det er dermed ikke nødvendig å gå inn på betydningen av at listen i skjemaet ble endret mens kommunen evaluerte de innkomne tilbudene.
+Lagmannsretten finner det etter dette klart at tilbudsgrunnlaget må forstås slik oppdragsgiver hadde oppstilt et kvalifikasjonskrav om tiltaksklasse 3 for sanitær, varme- og slukkeinstallasjoner.
+ 
+Adgang til dialog om tilbudet
+Det er på det rene at Veidekke ikke selv oppfylte krav om sentral godkjenning for «rørfag», dvs. det som i konkurransegrunnlaget er omtalt som sanitær, varme- og slukkeinstallasjoner. Ved inngivelsen av det opprinnelige tilbudet 17. januar 2020 var det heller ikke vedlagt dokumentasjon for at Veidekke hadde knyttet til seg en underleverandør som kunne oppfylle kravet i Veidekkes sted. I utgangspunktet skulle derfor Veidekkes tilbud vært avvist, jf. 
+anskaffelsesforskriften § 9-5
+ første ledd bokstav a).
+Veidekke innga imidlertid et revidert tilbud 20. februar 2022. Med dette reviderte tilbudet fulgte også en «forpliktelseserklæring», hvoretter firma Medby AS forpliktet seg til å stille sine ressurser til rådighet for Veidekke i anledning tilbudskonkurransen. Det ble imidlertid ikke fremlagt noen dokumentasjon for at firmaet hadde sentral godkjenning for de aktuelle rørfagene. Det er på det rene at Medby hadde sentral godkjenning i fagene i tiltaksklasse 2, men ikke i tiltaksklasse 3.
+Spørsmålet er dermed om konkurransereglene kommunen hadde oppstilt, sammenholdt med reglene i 
+anskaffelsesforskriften
+, åpnet for at Veidekke kunne oppfylle kvalifikasjonskravet gjennom etterfølgende dialog, med den følge at tilbudet ikke skulle vært avvist. Kommunen har med tyngde fremholdt at en slik adgang følger av den dialogadgangen i tilbudskonkurranser som ble innført ved 
+anskaffelsesforskriften 2016
+. Forskriften innebar at det ved forskriftens 
+del II
+ ble gitt nye regler for den særnorske delen av anskaffelsesregelverket.
+Dialogadgangen omhandles i 
+anskaffelsesforskriften § 9-3
+, som lyder:
+§ 9-3
+. Dialog i tilbudskonkurranser
+(1) Dialogen kan gjelde alle sider ved tilbudene og andre mottatte dokumenter eller opplysninger og kan blant annet omfatte avklaringer og forhandlinger.
+(2) Oppdragsgiveren kan ha dialog med en eller flere leverandører. En eventuell utvelgelse skal skje i samsvar med likebehandlingsprinsippet.
+(3) Oppdragsgiveren skal i anskaffelsesdokumentene opplyse om han planlegger å ha dialog med leverandørene. Dersom oppdragsgiveren planlegger dialog, skal han angi hva dialogen vil gjelde og så vidt mulig beskrive hvordan dialogen vil bli gjennomført.
+(4) Oppdragsgiveren skal behandle leverandørene likt i dialogen. Oppdragsgiveren kan ikke på en diskriminerende måte gi opplysninger som kan gi noen av leverandørene en fordel fremfor andre.
+(5) Under dialogen skal oppdragsgiveren ikke uten samtykke gi de øvrige leverandørene tilgang til løsninger eller andre fortrolige opplysninger som en leverandør har gitt. Et samtykke skal gjelde de bestemte opplysningene som oppdragsgiveren planlegger å gi tilgang til.
+Bestemmelsen hviler på en forutsetning om at oppdragsgiver har adgang til å ha dialog med de ulike tilbyderne om de inngitte tilbudene.
+Lagmannsretten er ikke kjent med at det foreligger høyesterettspraksis om bestemmelsen. Av lagmannsrettspraksis foreligger bare Borgarting lagmannsretts dom i sak 
+LB-2019-145192
+. Det er derfor grunn til å redegjøre noe nærmere for bestemmelsen.
+Bestemmelsene var et resultat av Forenklingsutvalgets arbeid, jf. 
+NOU 2014:4
+, og ble vedtatt i forbindelse med vedtakelsen av den nye 
+anskaffelsesloven 2016
+. Adgangen til å kunne ha dialog om tilbudet i etterkant av inngivelsen var ment å imøtekomme en oppfatning om at det dagjeldende forhandlingsforbudet var for strengt og lite fleksibelt, og førte til en rekke unødvendige avvisninger. Det ble samtidig fremholdt at hensynet til effektiv bruk av samfunnets ressurser var det sentrale formålet med anskaffelsesregelverket.
+I NOU 2014:14 pkt. 2.4.3 [skal vel være 
+NOU 2014:4 pkt. 20.4.3
+, Lovdatas anm.] het det:
+Utvalget foreslår at oppdragsgivers adgang til å be om ettersending og supplering av dokumentasjon vedrørende kvalifikasjoner utvides. Oppdragsgiver skal ha adgang til å be om ettersending, supplering, klargjøring eller utfylling av enhver opplysning eller ethvert dokument som gjelder dokumentasjonen for oppfyllelse av kvalifikasjonskravene. Bakgrunnen for en slik anmodning kan for eksempel være at fremlagt dokumentasjon er mangelfull eller uklar, eller at konkrete dokumenter mangler. Det skal heller ikke være noen grense for hvilken type dokumentasjon som kan ettersendes, sammenlign gjeldende forskrift § 12-3.
+Om begrunnelsen for dialogadgangen het det i 
+Prop. nr. 51 L side 75
+:
+Regjeringen har besluttet å følge [flertallet i Forenklingsutvalget sitt] forslag om å innføre nye anskaffelsesprosedyrer hvor forhandlinger gjøres til en valgfri del av alle konkurranser. Den nye forskriften skal således åpne for at leverandører og oppdragsgivere kan gå i dialog når det er behov for det for å få til en god anskaffelse. Med de nye prosedyreformene vil det alltid være adgang til å snakke om hvordan tilbud og løsninger skal forstås, og til å få ryddet misforståelser og avvik av veien uten risiko for å bryte et forhandlingsforbud.
+Et helt sentralt poeng med de nye prosedyrene er at oppdragsgivers valg om å forhandle tas etter at tilbudsfristen har løpt ut. Det er først på dette tidspunktet oppdragsgiver kjenner tilbudenes innhold og har det fullstendige grunnlaget for å vurdere om det faktisk er behov for å forhandle. Dette vil gi oppdragsgiver økt fleksibilitet og muligheten til å opptre mer som en privat aktør. Dernest vil en opphevelse av forhandlingsforbudet innebære at oppdragsgiver slipper å måtte trekke den vanskelige grensen mellom avklaringer (som er tillatt i anbudskonkurranser) og forhandlinger (som er forbudt i anbudskonkurranser). Dette vil kunne føre til at færre leverandører må avvises, og følgelig bedre konkurranse. Ved å legge til rette for økt dialog mellom oppdragsgiver og leverandører der det fremstår forretningsmessig fornuftig, øker også sjansen for at resultatet blir en anskaffelse som dekker oppdragsgivers behov på best mulig måte. I tillegg viser erfaringer fra anbudskonkurranser at det er en risiko for at oppdragsgiver fastsetter unødvendig detaljerte kravspesifikasjoner av frykt for å få inn tilbud som ikke dekker anskaffelsesbehovet på en god måte. De nye anskaffelsesprosedyrene vil derfor kunne legge bedre til rette for innovasjon.
+Hvor omfattende forhandlingene skal være, vil det i utgangspunktet være opp til oppdragsgiver å bestemme. Eksempelvis kan oppdragsgiver nøye seg med å foreta avklaringer og mindre justeringer, eller han kan gjennomføre fulle forhandlinger om alle sider av tilbudene. Likebehandlingsprinsippet vil stille krav til gjennomføringen av forhandlingene, herunder til hvilke leverandører oppdragsgiver velger å forhandle med. Hvis oppdragsgiver utelukkende ønsker å foreta avklaringer, vil han i utgangspunktet kunne nøye seg med å gå i dialog med leverandørene som har gitt tilbud med uklarheter. Vil oppdragsgiver derimot forhandle om elementer i tilbudene, må en eventuell utvelgelse av leverandører til forhandlinger skje på grunnlag av tildelingskriteriene.
+De nye anskaffelsesprosedyrene vil redusere forutberegneligheten for leverandørene sammenlignet med det gjeldende regelverket. De vil måtte utarbeide tilbud uten å vite med sikkerhet om de vil bli innkalt til forhandlinger eller ei. Dette kan for så vidt bidra til å effektivisere anskaffelsesprosessene ved at leverandørene presses til å gi sitt beste tilbud med en gang. Departementet ønsker likevel å gjøre noen justeringer i forslaget fra Forenklingsutvalgets flertall ved den endelige utformingen av nye forskriftsregler. For å sikre likebehandling og tilstrekkelig grad av forutberegnelighet for leverandørene vil departementet gi noen utfyllende rammer for forhandlingsadgangen. Departementet vil blant annet vurdere om det bør stilles krav til hvilke opplysninger oppdragsgiver må gi til leverandørene i konkurransegrunnlaget og underveis i prosessen, og til gjennomføringen av forhandlingene.
+Det fremgår av 
+anskaffelsesforskriften § 9-3
+ første ledd at dialogen kan gjelde «alle sider ved tilbudene» og kan også omfatte «avklaringer og forhandlinger». Dragsten: 
+Anskaffelsesforskriften
+ med kommentarer, Juridika (bekreftet á jour pr. 1. september 2019) antar at dialogen i prinsippet også kan omfatte kvalifikasjonskrav, og gir uttrykk for at det må være anledning til å ettersende dokumentasjon på at kvalifikasjonskrav var oppfylt. Hun kritiserer KOFAs avgjørelse i sak 
+2017/75
+ Rørleggerservice, som bygget på en motsatt oppfatning.
+I den saken hadde den valgte leverandøren ikke inngitt dokumentasjon for at han oppfylte krav om tiltaksklasse 3 hos ansvarlig utførende for brannslokkeanlegg (sprinkleranlegg). Da oppdragsgiver oppdaget dette, ble den valgte leverandøren gitt anledning til å ettersende dokumentasjon. Det ble gjort ved at det ble inngitt dokumentasjon for at et annet selskap, som hadde påtatt seg å forestå utførelsen av brannslokkeanlegg, dokumenterte at det oppfylte kravet om tiltaksklasse 3.
+KOFA kom til at dialogadgangen ikke åpnet for å ettersende dokumentasjon for kvalifikasjonskravet etter at tilbudet var inngitt. Etter å ha konstatert at forarbeidene gir begrenset veiledning om adgangen til å be om ettersending og supplering av dokumentasjon for kvalifikasjonskrav, bemerket KOFA:
+Det å ettersende, supplere, klargjøre eller utfylle en «opplysning» eller et «dokument», er imidlertid noe ganske annet enn å fremlegge dokumentasjon på at et kvalifikasjonskrav som skulle vært oppfylt på tilbudstidspunktet, er oppfylt i etterkant. Et kvalifikasjonskrav avgrenser kretsen av leverandører hvis tilbud kan tas i betraktning. En adgang til å gå i dialog om hvordan kravene kan oppfylles der kravene ikke er tilfredsstilt ved tilbudsfristens utløp, innebærer i realiteten en endring av forutsetningene for konkurransen. En slik endring vil innebære en forskjellsbehandling i relasjon til de leverandører som i respekt for kvalifikasjonskravene ikke innga tilbud, og dermed være i strid med kravene i lovens 
+§ 4
+.
+Dragstens syn fikk heller ikke gehør senere i KOFA-praksis, jf. sak 
+2020/515
+, som imidlertid gjelder nettopp vår sak. Ved denne behandlingen var nemnda satt som stornemnd, jf. 
+KOFA-forskriften § 12
+ første ledd, som åpner for slik behandling i saker som reiser «prinsipielle spørsmål».
+Nemnda uttalte:
+Slik klagenemnda ser det, er det en forskjell på de situasjonene hvor tilbudet som ble levert innenfor utløpet av tilbudsfristen, allerede inneholdt opplysninger om oppfyllelsen av det aktuelle kvalifikasjonskravet, men hvor disse opplysningene var mangelfulle, og de tilfellene der kvalifikasjonskravet ikke er oppfylt på tilbudstidspunktet.
+[...]
+Der kvalifikasjonskravet ikke er oppfylt ved tilbudsfristens utløp, er det etter klagenemndas syn vanskelig å karakterisere en etterfølgende oppfyllelse av kvalifikasjonskravet som en «ettersending» eller «supplering», jf. denne terminologien i det ovennevnte utdraget fra NOU-en. Det overordnede målet om at den nye tilbudskonkurransen skulle være en «fleksibel» prosedyre, endrer ikke på dette. I 
+NOU 2014:4
+ er det en forholdsvis bred vurdering av adgangen til dialog om tilbud med vesentlige avvik. Verken denne behandlingen eller lovens øvrige forarbeider gir holdepunkter for å anta at dialogen også var ment å bli brukt til å avhjelpe kvalifikasjonskrav som ikke var oppfylt på tilbudstidspunktet.
+En oppdragsgivers dialog med leverandører om hvordan de skal oppfylle kvalifikasjonskrav de ikke tilfredsstilte ved tilbudsfristens utløp, innebærer i realiteten en endring av forutsetningene for konkurransen, jf. klagenemndas avgjørelse i sak 2017/75 avsnitt 29. En slik dialog vil innebære en forskjellsbehandling i relasjon til de leverandørene som – i respekt for kvalifikasjonskravene – ikke leverte tilbud i konkurransen. En slik dialog vil derfor være i strid med prinsippene om likebehandling og forutberegnelighet i loven 
+§ 4
+Formelt er KOFAs uttalelser bare rådgivende. Klagenemnda er imidlertid opprettet og besatt med medlemmer som antas å ha særlig anskaffelsesrettslig kyndighet. Når KOFA i stornemnd har kommet til et enstemmig resultat, og det rettsspørsmålet nemnda har tatt stilling til, dessuten er i samsvar med nemndas tidligere praksis, synes rettstilstanden å være avklart. Dersom domstolene skulle komme til et annet resultat, må det være fordi det foreligger et tålelig sikkert grunnlag for å trekke en annen, rettslig konklusjon.
+Lagmannsretten kan ikke se at det foreligger et slikt grunnlag. KOFAs syn om at det er forskjell mellom ettersendelse av dokumentasjon for at kvalifikasjonskravet var oppfylt på tilbudstidspunktet og dokumentasjon for at kvalifikasjonskravet ble oppfylt etter dette tidspunktet, synes godt begrunnet. Lagmannsretten er enig med KOFA i at hverken NOU 2014:14 [skal vel være 
+NOU 2014:4
+, Lovdatas anm.] eller 
+Prp.nr. 51 L
+ kan forstås slik at den «fleksible prosedyren» som det ble lagt opp til, skulle strekkes så langt at det ikke en gang var nødvendig å oppfylle kvalifikasjonskravet på tilbudstidspunktet. Det er nok så at hensikten med den nye dialogadgangen var å gjøre tilbudskonkurransene mindre rigide enn ordinære anbudskonkurranser og dermed unngå unødvendige avvisninger. Det ville bidra til «gode anskaffelser». Det er likevel fremdeles tale om en 
+konkurranse
+, hvor kommunen selv har valgt å oppstille kvalifikasjonskrav for deltagelse. Det vises til at kommunen i tilbudsinnbydelsen punkt 5.0 har presisert at kvalifikasjonskravene skal sikre at tilbyderen har de nødvendige kapasiteter for å «kunne delta i konkurransen» og at «tilbudet» inneholde dokumentasjon på eventuelle underleverandører oppfyller kvalifikasjonskravene samt en forpliktelseserklæring. Det er viktig for alle parter, ikke minst de tilbyderne som deltar i den, at reglene for deltagelse i og gjennomføringen av konkurransen er så klare som mulig før konkurransen tar til. Dersom forarbeidene mente å legge opp til at de nye reglene skulle være så fleksible at det ikke en gang er nødvendig å oppfylle oppdragsgivers egne forutsetninger om at kvalifikasjonskravene må være oppfylt på tilbudstidspunktet, måtte det ha fremgått klart.
+Også Borgarting lagmannsretts dom 
+LB-2019-145192
+ bygger på tilsvarende synspunkt. I den saken ble det lagt til grunn at oppdragsgiver ikke hadde anledning til å gjenoppta dialogen med den valgte leverandøren etter at det ble oppdaget en vesentlig feil ved dennes tilbud. Feilen bestod i at tilbudet bygget på en utnyttelsesgrad som overskred byggetomtens maksimale tillatte bruksareal. Dette var særskilt nevnt i konkurransegrunnlaget, og det var i saken ikke bestridt at feilen var vesentlig. Borgarting lagmannsrett kom til at det var i strid med likebehandlingsprinsippet at oppdragsgiver gjenopptok dialogen og tillot tilbyderen å inngi et revidert tilbud i tråd med konkurransegrunnlaget.
+Selv om det ikke foreligger rikholdig nemnds- eller rettspraksis, kan lagmannsretten ikke se at det er noen egentlig tvil om rettstilstanden. Det er dessuten grunn til å bemerke at mens 
+LB-2019-145192
+ gjaldt en sak om vesentlig avvik fra konkurransegrunnlaget, gjelder saken her avvik fra 
+kvalifikasjonskrav
+. Ettersom disse typisk gjelder fundamentale krav til leverandøren for i det hele tatt å kunne delta i konkurransen, er det ingen grunn til en lempeligere praktisering av dialogadgangen enn der det er tale om avvik fra konkurransegrunnlagets spesifikasjon av krav til ytelsen.
+Det er et godt begrunnet skille mellom en situasjon der dokumentasjon for at et kvalifikasjonskrav var oppfylt på tilbudstidspunktet, ettersendes, og en situasjon der kravet først ble oppfylt senere. Som KOFA bemerker, dreier det seg i det sistnevnte tilfellet om endring av selve forutsetningene for konkurransen. Dersom lovgiver hadde ment å strekke dialogadgangen så langt, måtte det ha kommet til uttrykk.
+Lagmannsretten minner dessuten om at det i proposisjonen ble uttrykt en bekymring for at en helt fri dialogadgang skulle svekke hensynet til likebehandling og forutberegnelighet, og varslet derfor regulering av kravene til opplysninger oppdragsgiver må gi i tilbudsinnbydelsen.
+En slik regulering foreligger i 
+anskaffelsesforskriften § 9-3
+ tredje ledd, som bestemmer at det skal angis i tilbudsinnbydelsen dersom oppdragsgiver planlegger å ha dialog med leverandørene, så langt mulig hva den vil gjelde og hvordan den vil bli gjennomført. Bestemmelsens fjerde ledd krever dessuten at oppdragsgiveren skal behandle alle tilbyderne likt under dialogen.
+Det er for så vidt på det rene at det i vår sak ble gjennomført et møte 14. februar 2020 og at kommunen da innledet en dialog med tilbyderne, selv om det ikke foreligger noe referat fra dette. Det er også på det rene at Veidekke etter dette innga et revidert tilbud, der Medby ble oppgitt som deres underentreprenør på rørfag og der dette ble dokumentert ved en «forpliktelseserklæring». Det er noe uklart om Veidekkes reviderte tilbud, inkludert tilleggsdokumentasjon, kom til etter oppfordring fra kommunen. Det er fremlagt et brev fra kommunen til Byggservice Innlandet av 17. februar 2020 som, under henvisning til konkurransebeskrivelsens kvalifikasjonskrav, oppfordret selskapet til å inngi dokumentasjon på «godkjenningsområdene ihht de krav som er stilt i prosjektet». Det ble uttrykkelig presisert at det særlig er tilbudsskjema «som angir klasser for de enkelte fag». Som nevnt innledningsvis, førte dette til at Byggservice Innlandet erstattet Medby med en annen underentreprenør på rørfag.
+Det sentrale med dette brevet er at det må forstås slik at oppdragsgiver på dette tidspunktet selv la til grunn at det gjaldt kvalifikasjonskrav også for rørfag, og at disse kravene fremgikk av tilbudsskjemaet i konkurransegrunnlaget. Ettersom brevet setter en svært kort frist – to dager etter brevets dato – for å ettersende dokumentasjon for at kompetansekravet var oppfylt, må brevet forstås slik at det også var kommunens oppfatning at kvalifikasjonskravet måtte være oppfylt på tidspunktet for inngivelsen av tilbudet. Fristen for ettersendelse var satt så kort at det reelt sett bare kunne oppfylles av en tilbyder som allerede hadde dokumentasjonen tilgjengelig.
+At Byggservice Innlandet gikk vekk fra Medby som underentreprenør på rørfag, bygget klart nok på en forståelse av at det var stilt kvalifikasjonskrav om tiltaksklasse 3. Når Byggservice Innlandet i tillegg uttrykkelig opplyste at de ikke hadde tid til en søknad om lokal godkjenning, innebar det at en oppfatning om at det ikke uten videre var opplagt at Medby var i stand til å erklære ansvar for den aktuelle tiltaksklassen. Dette forholdet ville imidlertid nødvendigvis også ramme Veidekkes tilbud, og det kan vanskelig sies å være i samsvar med likebehandlingsprinsippet når oppdragsgiver unnlot å gjøre de øvrige tilbyderne oppmerksom på mulige misforståelser her.
+Lagmannsretten ser til slutt på kommunens anførsler om at 
+anskaffelsesforskriften del II
+ ikke krever at kvalifikasjonskravet må være oppfylt på tilbudstidspunktet. Det er bl.a. vist til 
+anskaffelsesforskriften § 9-4
+ annet ledd bokstav a), som bare gir en avvisningsrett. Det er også vist til at det etter forskriftens 
+§ 8-10
+ ikke er plikt til å kreve at dokumentasjon på kvalifikasjonskravene skal legges ved tilbudet. Endelig er det vist til at oppdragsgiver har adgang til å utsette avvisningsspørsmålet til etter at dialog, som også kan omfatte kvalifikasjonskrav, er gjennomført.
+Det må medgis at 
+anskaffelsesforskriften
+ ikke gir noe helt klart svar på når kvalifikasjonskrav må være oppfylt. Det gir likevel veiledning når det i forskriften 
+§ 9-7
+ første ledd er bestemt at det «skal» tas stilling til avvisningsspørsmål «snarest mulig», sammenholdt med kravet i forskriften 
+§ 9-5
+ første ledd bokstav a) om at oppdragsgiver «skal» avvise en leverandør som ikke oppfyller kvalifikasjonskravene. Som nevnt innledningsvis, må kvalifikasjonskravene være oppfylt for å få lov til å delta i konkurransen. Dette tilsier at kravet må være oppfylt når tilbudet inngis. Dersom oppdragsgiver mener det er tilstrekkelig at kravet oppfylles senere, kan kravet mer hensiktsmessig utformes som et tildelingskriterium eller som et krav til kontraktens innhold, med mindre tilbudsinnbydelsen selv åpner for at kvalifikasjonskravet kan oppfylles senere.
+Anskaffelsesforskriften § 9-4
+ annet ledd bokstav a) underbygger i hvert fall ikke det synet kommunen har gitt uttrykk for. Denne bestemmelsen er – i motsetning til «skal»-regelen i 
+§ 9-5
+ første ledd bokstav a) – utformet som en «kan»-regel for forespørselstilfellene.
+Heller ikke 
+anskaffelsesforskriften § 8-10
+ underbygger kommunens anførsel. Bestemmelsen åpner for at oppdragsgiver kan kreve at leverandøren inngir egenerklæring som et foreløpig bevis for at han oppfyller (bl.a.) kvalifikasjonskrav. Noen slik bestemmelse ble ikke gitt i konkurransegrunnlaget i saken her. Tvert imot het det i konkurransegrunnlaget at kvalifikasjonskravene var satt for å sikre at tilbyderen hadde nødvendig kapasitet for «å kunne 
+delta
+ i konkurransen» (uthevet her), og det ble stilt uttrykkelige krav til hvordan kvalifikasjonskravet måtte dokumenteres i «tilbudet».
+Lagmannsretten er etter dette kommet til at kommunen ikke hadde anledning til å la Veidekke oppfylle kvalifikasjonskravet etter tilbudsfristens utløp som ledd i en dialog om kvalifikasjonskravet.
+Lagmannsretten bemerker for ordens skyld at Høyesterett 12. oktober 2022 (
+HR-2022-1964-A
+ 
+Flage Maskin
+), etter at saken her ble tatt opp til doms, har avsagt en dom som gjelder spørsmål om oppdragsgivers rett til å avvise en tilbyder fordi han ikke oppfylte kvalifikasjonskravene i anbudsinnbydelsen. Dommen har betydelig interesse for spørsmålet om hvilke kvalifikasjonskrav oppdragsgiver har adgang til å stille og hvilket handlingsrom han har når han tar stilling til om kvalifikasjonskravet er oppfylt. Dommen gir imidlertid ikke noen direkte veiledning for rettsspørsmålene i saken her, ettersom saken gjaldt en anskaffelse etter 
+anskaffelsesforskriften del III
+ og det ikke var spørsmål om dialogadgang.
+Saken illustrerer likevel at oppdragsgiver etter omstendighetene har plikt til å avvise en tilbyder som ikke tilfredsstiller kvalifikasjonskrav, selv om disse er vurderingspregede. Høyesterett fremholder i 
+avsnitt 54
+ at det ved vurderingen av om slike krav er oppfylt, vil oppdragsgiver ha et handlingsrom, men at vurderingen må være innenfor rammene kvalifikasjonskravene angir og i samsvar med de grunnleggende prinsippene i 
+anskaffelsesloven § 4
+. Høyesterett synes derimot ikke å legge til grunn at oppdragsgiver har et «innkjøpsfaglig skjønn» ved vurderingen av om de kvalifikasjonskravene han selv har oppstilt, er tilfredssilt.
+ 
+Kravet om erstatning
+Lagmannsretten ser så på spørsmålet om den feilen som foreligger, er tilstrekkelig kvalifisert til at det foreligger ansvarsgrunnlag. I 
+Rt-2001-1062
+ 
+Nucleus
+ ble det lagt til grunn at det må være et visst rom for feil ved vurdering av anbud, både med hensyn til det faktiske grunnlaget og med hensyn til forståelse av regelverket, uten at det kan komme på tale med erstatning. I denne saken ble resultatet at oppdragsgiveren – fylkeskommunen – ble pålagt erstatningsansvar for den positive kontraktsinteresse.
+I 
+HR-2019-1801-A
+ 
+Fosen-Linjen
+ – der resultatet ble erstatningsansvar for den negative kontraktsinteresse – ble dette utlagt slik at bruddet med anskaffelsesregelverket må være «åpenbart og grovt» for at det skal anses som tilstrekkelig kvalifisert.
+I rettspraksis er det lagt til grunn at manglende avvisning presumeres å utgjøre et tilstrekkelig kvalifisert brudd, se f.eks. 
+LH-2020-178227
+. I den saken uttalte lagmannsretten at reglene om hvorvidt et tilbud skal avvises, når man først har konstatert at det foreligger et vesentlige avvik, er «presise og enkle», men at det kan være en mer komplisert vurdering å ta stilling til om avviket er vesentlig. Det fremstår som et fornuftig utgangspunkt også for vår sak.
+Etter lagmannsrettens syn dreier det seg ikke om noen komplisert vurdering i saken her. Som gjennomgått over, kan det ikke anses som særlig tvilsomt at det var stilt kvalifikasjonskrav om at tilbyderne måtte ha tiltaksklasse 3 for sanitær, varme- og slukkeinstallasjoner, og at dette måtte dokumenteres ved inngivelsen av tilbudet. Saken gjaldt ombygging av en legevakt – en helseinstitusjon – som skulle holdes åpen i anleggsperioden. Når kommunen som oppdragsgiver ikke oppdaget at Veidekke ikke hadde dokumentert oppfyllelse av dette kvalifikasjonskravet straks etter at tilbudene var mottatt, må det anses som en tilstrekkelig grov feil i seg selv.
+Det er ingen fornuftig begrunnelse for at det skulle gjelde kvalifikasjonskrav i samsvar med bygningslovgivningens ansvarssystem for andre fagområder, men gjøres unntak for rørfag. Spesielt gjelder det når rørfagene uttrykkelig ble nevnt i konkurransegrunnlagets tilbudsskjema. Det fremstår i det hele tatt som ulogisk at kommunen ikke skulle ønske at det allerede ved inngivelsen av tilbudene skulle ha mulighet til å eliminere tilbydere som etter bygningslovgivningen ville være utelukket fra å utføre entreprisen.
+For så vidt kan saken fremstå saken som en ren forglemmelse fra kommunens side. Det er imidlertid ikke treffende å karakterisere forholdet som en rettsvillfarelse, slik kommunen har anført for lagmannsretten. Selv om saken dreier seg om en forglemmelse, gjelder forglemmelsen kommunens kontroll av interessenter til offentlige byggeentrepriser for helseinsituasjoner tilfredsstiller bygningslovgivningens ansvarsregler.
+At kravet til tilstrekkelig kvalifisert feil er oppfylt fremgår dessuten ved at kommunen allerede i februar 2020 – rundt en måned etter tilbudsfristen men lenge før tildelingen – var klar over at Byggservice Innlandet endret sin underentreprenør på rørfag, og at den utilstrekkelige tiltaksklassen også heftet ved Veidekkes tilbud.
+Kommunen tildelte dessuten kontrakten til Veidekke på et tidspunkt der Syljuåsen uttrykkelig hadde påpekt at det etter deres oppfatning var krav om tiltaksklasse 3 for rørfag – i tråd med den oppfatningen Byggservice Innlandet hadde gitt uttrykk for overfor kommunen.
+Lagmannsretten er ikke enig med kommunen når det anføres at Medby hadde alle forutsetninger for å kunne gjennomføre kontrakten og at eventuelle feil dermed er av formalistisk karakter. Det sentrale er at kommunen hadde valgt å stille en bestemt tiltaksklasse som kvalifikasjonskrav. Det er nærliggende å anta at kvalifikasjonskravet ble valgt fordi entreprisen ikke lovlig kunne gjennomføres av en entreprenør som ikke hadde den aktuelle tiltaksklassen.
+Lagmannsretten kan således ikke se at det er tvil om at oppdragsgivers feil var tilstrekkelig kvalifisert for å kunne pålegge erstatningsansvar for den positive kontraktsinteresse.
+Når det gjelder det økonomiske tapet, er det Syljuåsen som har bevisbyrden for tapets størrelse. Siden lagmannsretten har funnet det sannsynliggjort at Syljuåsen ville blitt tildelt kontrakten om Veidekket hadde blitt avvist, har Syljuåsen krav på å bli stilt som om de hadde blitt tildelt kontrakten og fått gjennomføre denne, dvs. fått den fortjenesten de hadde kalkulert med å få. Fortjenesten er beregnet med utgangspunkt i beregnet dekningsbidrag.
+Dekningsbidraget for kalkulerte arbeider, inkludert riggkostnader, utgjør kr 2.211.626,67. Det er da tatt utgangspunkt i et påslag på 14%.
+Det er dessuten krevd erstatning for endringsarbeider som kommunen godkjente hos den utførende entreprenør, og som det er derfor er grunn til å tro at også ville ha blitt godkjent hos Syljuåsen dersom de hadde blitt tildelt kontrakten. Det er her krevet erstatning med kr 485.473,45,–. Det er da tatt utgangspunkt i et påslag på 17,5%.
+Det er også krevet erstatning for tiltransporterte entrepriser med kr 440.964,–. Det er da tatt utgangspunkt i et påslag på 14%.
+Kommunen har ikke hatt innvendinger til tallene i seg selv, og det er således ikke kommet innvendinger til kravene knyttet til endringsarbeider og tiltransporterte entrepriser. Kommunen har derimot anført at påslagene er for høye sammenlignet med andre tilbydere og at de er høyere enn det som er vanlig i bransjen.
+Lagmannsretten kan ikke se at det er grunn til innvendinger mot den anslåtte fortjenesten, som uansett vil være beheftet med et skjønn. Når det gjelder erstatningskravet knyttet til de kalkulerte arbeidene, bygger de på kalkyler utarbeidet i forbindelse med tilbudet. Det dreier seg således om tidsnære bevis, upåvirket av det senere saksanlegget. Lagmannsretten kan heller ikke se at påslaget er påfallende høyt. Det vises her til kalkyler fra andre oppdrag som Syljuåsen var blitt tildelt og som er fremlagt for lagmannsretten. At Syljuåsens påslag var høyere enn Veidekkes er heller ikke påfallende, hensett til at de jo innga et høyere tilbud.
+Heller ikke påslaget for endringsarbeider kan anses som påfallende høyt. Også disse må anses å være innenfor det som er vanlig. Det er dessuten vanlig at påslaget på endringsarbeider er høyere enn for den kalkulerte entreprisen.
+Lagmannsretten kan heller ikke se at Syljuåsen ikke har oppfylt sin tapsbegrensningsplikt. Det kan ikke legges Syljuåsen til skade at de ikke krevde midlertidig forføyning. Det er ikke åpenbart at et slikt krav ville ført frem. Syljuåsen klaget dessuten kommunen inn for KOFA, og Syljuåsens anførsler – som de nå høres med – har så vidt lagmannsretten kan se, hele tiden vært de samme.
+Etter bevisførselen legger lagmannsretten dessuten til grunn at Syljuåsen i den perioden det er tale om, hadde tilstrekkelig ledig kapasitet til å påta seg andre oppdrag og også har gjort dette. Selskapet har også hatt en omsetningsøkning i perioden. Det er derfor ikke bevismessig dekning for å anta at Syljuåsen har unnlatt å påta seg oppdrag som kunne minimert kommunens tap.
+ 
+Sammenfatning
+Etter ovenstående er lagmannsretten kommet til at tingrettens dom, herunder erstatningsfastsettelsen, må bli stående, og at anken forkastes.
+ 
+Sakskostnader
+Syljuåsen har vunnet ankesaken og har etter hovedregelen i 
+tvisteloven § 20-2
+ krav på erstatning for sine sakskostnader. Det er ikke grunnlag for å gjøre unntak fra sakskostnadsansvaret etter 
+tvisteloven § 20-2
+ tredje ledd.
+Advokat Rosenvold har fremlagt en sakskostnadsoppgave for lagmannsretten på kr 354.051, hvorav kr 6.231 gjelder utlegg. Det er opplyst at Syljuåsen har fradragsrett for merverdiavgift, og beløpet er således angitt uten denne.
+Lagmannsretten bemerker at sakskostnadskravet er høyt, men kan likevel ikke se at det er grunnlag for å redusere kommunens erstatningsansvar. Oppgaven legges til grunn.
+Dommen er enstemmig.
+Dommen er ikke avsagt innen lovens frist. Grunnen er avvikling av ferie for rettens administrator og andre kolliderende gjøremål for lagmannsrettens medlemmer.
+DOMSSLUTNING
+1.
+Anken forkastes.
+ 
+2.
+I sakskostnader for lagmannsretten betaler Gjøvik kommune AS 354.051 – trehundreogfemtifiretusenogenogfemti 0/100 – kroner til Syljuåsen AS innen 2 – to – uker fra forkynnelse av dommen.

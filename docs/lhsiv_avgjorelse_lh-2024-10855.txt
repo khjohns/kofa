@@ -1,0 +1,327 @@
+Utskrift fra Lovdata - 10.02.2026 14:17
+ 
+ 
+Hålogaland lagmannsrett - Dom - LH-2024-10855 Lagmannsrettens vurdering
+ 
+ 
+Instans
+Hålogaland lagmannsrett – Dom
+Dato
+2024-09-06
+Publisert
+LH-2024-10855
+Stikkord
+Offentlige anskaffelser. Erstatning. Erstatningsansvar. Lov om offentlige anskaffelser § 10. Anskaffelsesforskriften.
+Sammendrag
+Saken gjaldt krav om erstatning som følge av brudd på regelverket om offentlige anskaffelser. Ankede part anførte at Kystverket burde ha avvist tilbudet fra en leverandør, da dette inneholdt avvik fra konkurransegrunnlaget og kvalifikasjonskravene. Lagmannsretten fant at avviket ikke var vesentlig, og at leverandøren oppfylte kvalifikasjonskravene gjennom støtte fra underleverandør. Ettersendte dokumenter ble ansett som tillatt avklaring. Retten konkluderte med at Kystverket ikke hadde brutt anskaffelsesregelverket og forkastet dermed anken. Ankede part ble dømt til å betale sakskostnader for lagmannsretten. Sakskostnader for tingretten ble ikke tilkjent. (Sammendrag ved Lovdata)
+Saksgang
+Salten og Lofoten tingrett TSOL-2022-87333 – Hålogaland lagmannsrett LH-2024-10855 (24-010855ASD-HALO).Anke til Høyesterett fremmet til behandling, HR-2025-188-U. For dom i Høyesterett hvor anken forkastes, se HR-2025-1098-A.
+Parter
+Consto Anlegg Nord AS (advokat Kjersti Holum Karlstrøm, advokat Lars Sørensen) mot Staten v/Nærings- og fiskeridepartementet (advokat Kristine Winsnes Hyldmo Bjørnvik, advokat Wenche Sædal).
+Forfatter
+Lagdommer Jussi Erik Pedersen, lagdommer Frode Stock og ekstraordinær lagdommer Kirsti Ramberg.
+Sist oppdatert
+2025-06-13
+ 
+Innholdsfortegnelse
+Hålogaland lagmannsrett - Dom - LH-2024-10855 Lagmannsrettens vurdering
+Innholdsfortegnelse
+Lagmannsrettens vurdering
+Innledning
+Avvisning
+Avvik
+Manglende kvalifikasjoner
+Konklusjon
+Sakskostnader
+ 
+ 
+ 
+Lagmannsrettens vurdering
+ 
+Innledning
+Lagmannsretten vil innledningsvis redegjøre nærmere for prosjektet Hammerfest Ren Havn, samt konkurransegrunnlagets oppbygning.
+Kystverket og Hammerfest kommune inngikk i mars 2021 en samarbeidsavtale for gjennomføringen av prosjektet Hammerfest Ren Havn. Hammerfest kommunes interesse i prosjektet er å rydde opp i forurenset sjøbunn, mens Kystverket har interesse av å utbedre innseiling til fiskerihavner i Finnmark. Kommunen hadde videre behov for masser til utbedring/bygging av sentrumskai ved å fylle opp cellespuntdeponi, mens Kystverket slapp å deponere mudringsmasser i separate deponi/anlegg. Prosjektet utløste med andre ord store synergier for begge parter. Prosjektet er et av flere liknende prosjekter i landet, og er omtalt som et viktig miljø-, infrastruktur- og byutviklingsprosjekt.
+Det grunnleggende utgangspunktet er at kontrakter mellom næringsdrivende skal tolkes objektivt, noe som blant annet innebærer at kontraktens ordlyd skal tillegges stor vekt, jf. 
+Rt-2012-1729 avsnitt 57
+ med videre henvisninger. Begrunnelsen for dette er stikkordsmessig «forretningslivets behov for sikkerhet og forutberegnelighet» og «hensynet til tredjeparter» som må forholde seg til avtalte rettigheter, jf. 
+Rt-2003-1132 avsnitt 34
+ med videre henvisninger.
+Det er imidlertid ikke slik at kontraktens ordlyd alene er avgjørende. I 
+Rt-2012-1729 avsnitt 66
+ viser Høyesterett til følgende uttalelse i 
+Rt-2010-961 avsnitt 44
+:
+Spørsmålet om hvordan kontraktsforholdet mellom partene skal forstås, må da avgjøres ut fra en objektiv fortolkning av bestemmelsene. Det at bestemmelsene må tolkes objektivt, innebærer imidlertid ikke at de utelukkende skal tolkes ut fra hva en naturlig språklig forståelse av bestemmelsen tilsier. Bestemmelsens ordlyd må blant annet leses i lys av de formål de skal ivareta, og andre reelle hensyn.
+Ordlyden skal altså tolkes i lys av formål og andre reelle hensyn, men Høyesterett presiserer videre i 
+Rt-2012-1729 avsnitt 67
+ at «når det nærmere innhold i konkurransegrunnlaget skal fastlegges, vil også systembetraktninger kunne ha betydning, og det vil kunne være nødvendig å se samtlige kontraktsdokumenter i sammenheng».
+Sentralt ved tolkningen er hvordan konkurransegrunnlaget vil bli lest av en normalt forstandig tilbyder, jf. 
+Rt-2012-1729 avsnitt 69
+. Hvilke krav som skal stilles til den normalt forstandige tilbyder vil også gjenspeile seg i kvalifikasjonskrav i prosjektet. For sammenhengens skyld gjentas følgende fra konkurransegrunnlaget om kvalifikasjonskravene:
+Det kreves erfaring fra tilsvarende eller relevante oppdrag/leveranser av samme omfang, karakter og kompleksitet. Det skal legges ved tilbudet referanseliste til foretakets viktigste relevante leveranser de siste 5 årene, inkludert deres verdi, relevans, tidspunkt og mottaker. Referansene kontrolleres ved behov.
+Dette innebærer blant annet erfaring med spunting i sjø og dermed forståelse for krav til korrosjonsbeskyttelse. Det sentrale blir dermed hvordan en normalt forstandig tilbyder i kretsen av kvalifiserte tilbydere vil lese konkurransegrunnlaget og hvilke krav som stilles til utførelsen.
+Tolking av konkurransegrunnlaget er sentralt for å vurdere om NCCs tilbud skulle vært avvist. Det er anført to avvisningsgrunnlag, og lagmannsretten vil først ta stilling til om tilbudet skulle vært avvist som følge av at det inneholdt et vesentlig avvik fra konkurransegrunnlaget.
+ 
+Avvisning
+ 
+Avvik
+For å avgjøre om et tilbud inneholder avvik, må det foretas en tolkning av konkurransegrunnlaget der kravene i konkurransegrunnlaget fastlegges, for deretter å sammenlikne det med hva som er tilbudt. Lagmannsretten er enig med tingretten i at det foreligger et avvik i NCCs tilbud ved at tilbudt løsning for katodisk beskyttelse var i form av et ICCP-anlegg, og ikke ved bruk av offeranoder:
+Mengdebeskrivelsen punkt C-2.41 i konkurransegrunnlaget anga at leveransen skulle omfatte «katodisk beskyttelse med offeranoder». Ut fra postbeskrivelsen og tegningen ville en rimelig opplyst og normalt påpasselig tilbyder forstå dette slik at det skulle leveres katodisk beskyttelse med offeranoder. Opplysningene i spørsmål- og svarrunden underbygget dette idet anodens vekt kun er aktuelt ved bruk av offeranode. NCC synes også selv å ha lagt til grunn at konkurransegrunnlaget anga bruk av offeranode, da selskapet i tilbudsbrevet av 24. september 2021 skrev:
+I vårt tilbud har vi medtatt levering/montering av et komplett ICCP-anlegg (Impressed Current Cathodic Protection.system) i stedet for bruk av offeranoder. (rettens understrekning)
+Retten finner ikke holdepunkt for at konkurransegrunnlaget la opp til valgfrihet for leverandørene med hensyn til ulike former for katodisk beskyttelse. NS 3420 hadde ulike poster for katodiske beskyttelse, hvorav en var «PR3.11 Katodisk beskyttelse – valgfri utførelse». Kystverket kunne således på en enkel måte vist leverandørene at det var lagt opp til valgfrihet når det gjaldt katodisk beskyttelse.
+Retten finner etter dette at tilbudet fra NCC inneholdt et avvik når det gjaldt katodisk beskyttelse. NCC hadde tilbudt og priset en annen type katodisk beskyttelse enn det konkurransegrunnlaget ba om.
+Spørsmålet er så om avviket er vesentlig, jf. 
+anskaffelsesforskriften § 24-8 første ledd bokstav b
+. Lagmannsretten viser til uttalelsene i 
+NOU 2024: 9 side 194
+ med videre henvisninger, hvor det er redegjort nærmere for innholdet i vesentlighetsvurderingen, som lagmannsretten slutter seg til:
+Spørsmålet beror på en konkret objektiv vurdering av betydningen av avviket. Sentrale momenter i vurderingen er: karakteren av kravet det avvikes fra, hvor stort avviket er, viktigheten av bestemmelsene det avvikes fra, kravets betydning for oppdragsgiver, om avviket er egnet til å forrykke konkurransen mellom leverandørene, om avviket er egnet til å forrykke risikoen i kontraktsforholdet, og i hvilken grad avviket kan prissettes.
+Et sentralt tema for ankeforhandlingen er om katodisk beskyttelse i form av offeranoder utgjør et absolutt krav etter konkurransegrunnlaget. Lagmannsretten er også enig med utvalgets oppsummering av betydningen av avvik fra absolutte krav, jf. 
+NOU 2024: 9 side 194
+:
+Når det gjelder spørsmålet om avvik fra krav oppdragsgiver betegner som minstekrav, minimumskrav eller «absolutte krav», har rettspraksis vært noe sprikende. Utgangspunktet har vært at avvik fra slike krav anses som vesentlige. De senere år, har praksisen gått mer i retning av at avvik fra et absolutt krav ikke automatisk har blitt ansett som vesentlig, og at det må foretas en konkret vurdering av avvikets betydning. Det skal imidlertid normalt langt mindre til for å anse et avvik som vesentlig der avviket strider mot slike krav.
+For å fastslå om et krav er absolutt, uttaler utvalget følgende, jf. side 194:
+Hva som anses som absolutte krav, beror på en konkret tolkning der det avgjørende er om anskaffelsesdokumentene samlet sett må forstås slik at manglende oppfyllelse av kravet uten videre vil medføre avvisningsplikt. Dersom det er uklart om kravet må anses som et absolutt krav, eller er upresist formulert, skal det mer til for at det foreligger et vesentlig avvik.
+Dragsten uttaler videre at dersom «oppdragsgiveren har benyttet begreper som ‘minstekrav’, ‘minimumskrav’, ‘absolutte krav’ eller lignende, er det et sterkt moment i retning av at kravet er ufravikelig», Anskaffelsesforskriften, Lovkommentar, § 24-8 punkt 4.8, à jour per 1. september 2019 med videre henvisninger. Lagmannsretten er enig i disse utgangspunktene. Dette innebærer at beskrivelsen klart må angi hva kravet går ut på, samtidig som det for en normalt forstandig tilbyder må fremstå som et absolutt krav.
+Lagmannsretten bemerker at det ved vurderingen av om krav er absolutte, også må tas hensyn til muligheten for at et prosjekt skal kunne forbedres og ikke låses til prosjekterte løsninger i tilfeller hvor disse ikke er optimale. Etter lagmannsrettens syn vil dette være i tråd med formålet i 
+anskaffelsesloven § 1
+ om effektiv bruk av samfunnets ressurser. Dette hensynet har betydning både ved tolkningen av om en post i beskrivelsen utgjør et absolutt krav, samt ved den helhetsvurderingen som skal foretas av om et avvik er vesentlig.
+Lagmannsretten bemerker at den aktuelle posten om katodisk beskyttelse må tolkes i tråd med metoden omtalt ovenfor med utgangspunkt i postbeskrivelsen. For sammenhengens skyld gjentas beskrivelsen i konkurransegrunnlaget:
+PR3.31A
+KATODISK BESKYTTELSE MED OFFERANODER
+Rund sum
+Lokalisering:
+ Cellespunt og permanent profilspunt i nord og sør
+Anodemateriale:
+ –
+Anodens levetid:
+ 25 år
+Dimensjoner:
+ –
+Andre krav:
+a.
+Omfang og prisgrunnlag
+Posten inkluderer også leveranse og montering av anoder inklusive festebraketter på spunt.
+Innfestingen skal tåle påvirkningen av propellstrømmer. Posten omfatter også all nødvendig beregning og plan for plassering av offeranoder.
+ 
+b.
+Utførelse
+Det vises til tegning 10201517-RIG-TEG-709 og -710 for illustrasjon. Anodene monteres utvendig spuntvegg. Entreprenør skal oppgi anodetype med vekt.
+ 
+Lagmannsretten bemerker at det fremkommer klart og tydelig hva som skal leveres. Spørsmålet er om angivelsen av offeranoder fremstår som et absolutt krav for normalt forstandige tilbydere som oppfyller kvalifikasjonskrav til slike prosjekter.
+Det er oppgitt at entreprenøren «skal oppgi anodetype med vekt». Dette er en naturlig konsekvens av at entreprenøren skal prosjektere løsningen som er valgt, og dermed må det naturlig nok oppgis type og vekt. Så lenge beskrivelsen ber om et anlegg med offeranoder, er det et absolutt krav at dette oppgis. Dette innebærer imidlertid ikke at det ut av denne formuleringen kan sluttes at selve offeranodeanlegget er et absolutt krav. Lagmannsretten bemerker at det heller ikke er andre formuleringer eller presiseringer i postbeskrivelsen som angir at bruk av offeranoder fremstår som et absolutt krav eller at offeranoder fremstår som viktig for oppdragsgiver.
+Lagmannsretten vil redegjøre nærmere for de ulike metodene for katodisk beskyttelse, da dette vil kaste lys over spørsmålet om kravet er absolutt, samt de sentrale momenter i vesentlighetsvurderingen. Tingretten har uttalt følgende, som lagmannsretten i det vesentlige kan slutte seg til:
+I et notat av 20. juni 2021 om geoteknisk prosjektering av cellespunt skrev Multiconsult:
+Beregninger viser at cellespunten har tilstrekkelig sikkerhet for de påkjente laster. Det anbefales nåletykkelse på 12,0 mm. For å sikre 100 år levetid må spunten korrosjonsbeskyttes. Det anbefales påsveiste offeranoder som byttes ut etter 25 år, og eventuelt 50 år. Det må da være sveiseforbindelser på deler av spuntlåsene.
+Notatet viser at korrosjonsbeskyttelse var nødvendig for å sikre levetiden på spunten, og at Multiconsult mente at beskyttelsen kunne skje ved bruk av offeranoder. Mengde-beskrivelsen om «katodisk beskyttelse ved bruk av offeranoder» synes å bygge på uttalelsen fra Multiconsult.
+Katodisk beskyttelse kan imidlertid oppnås på andre måter enn gjennom bruk av offeranoder. Det fremgikk av forklaringen fra seksjonslederen for geoteknikk hos Multiconsult at det avgjørende var at man oppnådde korrosjonsbeskyttelse av spunten, og at bruk av offeranoder ikke var et absolutt krav. I dag ville han brukt en valgfri post og ikke en post for «katodisk beskyttelse ved bruk av offeranoder». Retten forstod seksjonslederen slik at mengdebeskrivelsens «katodisk beskyttelse ved bruk av offeranoder» kunne skyldes «gjenbruk» av tidligere beskrivelser.
+...
+Retten legger til grunn at både offeranoder og ICCP-anlegg kan sørge for at man oppnår katodisk beskyttelse av spunten i prosjektet «Hammerfest ren havn». En leverandør av offeranoder og ICCP-anlegg ga i sitt informasjonsmateriell uttrykk for følgende fordeler og ulemper ved løsningene:
+Which methods to use; ICCP or sacrificial anodes for protection of sheet piles or pillars in salt water environments? Features and benefits are different, and the method to be adopted to the particular project.
+...
+Sacrifacial Anodes (SACP)
+Well suitable for small surfaces as well as large ones.
+Very easy to install on brackets or directly to the structure.
+Divers needed for installation.
+Limited affects on neighbour structures such as moored ships.
+Basically self adjusting.
+Hardly any maintenance.
+No independent source of electric power required.
+Anode quantity might be high, depending on the design life time.
+Material costs usually lower than for ICCP.
+Impressed Current Cathodic Protection (ICCP)
+Well suitable for larger surfaces.
+lnstallation brings cabling work and possibly early work preparation of cable pipes and connection boxes in the jetty floor.
+Same versions possible to install without divers.
+Possible affects on neighbour structures. Ship steel hull might be damaged of passing DC current.
+Monitoring of the potential. Remote adjustment option.
+Handles changing conditions.
+Regularly maintenance required.
+Requires an external power source and cabling.
+Anode quantity low and size is small, regardless of the design life time.
+Commissioning, after central and maintenance costs comes in addition to material costs
+En grunnleggende forskjell er at et ICCP-anlegg må ha tilførsel av strøm utenfra, men at dette ikke er tilfelle ved bruk av offeranoder.
+...
+Ifølge Kystverkets prosjektleder krevde ICCP-anlegget noe omprosjektering, men det var uansett behov for omprosjektering og strømtilførsel til kaia. Retten forstår Kystverket slik at ICCP-anlegget ikke ga Kystverket økte etableringskostnader for anlegg for katodisk beskyttelse.
+...
+Når det gjelder driftskostnadene vil ICCP-anlegg i motsetning til offeranodeanlegg ha strømkostnader. Kystverket anslo årlige strømkostnader for ICCP-anlegget til kr 25 – 35 000. Nettleie kom da i tillegg.
+Oppfølgingskostnadene ved et ICCP-anlegg vil være større enn ved et offeranodeanlegg, men begge anleggene vil ha behov for tilsyn. Bruk av offeranoder medfører at anodene forbrukes over tid og at det må foretas utskiftning for å opprettholde beskyttelsen. Man trenger betydelig færre anoder ved et ICCP-anlegg enn ved bruk av offeranoder, men ICCP-anodene vil være mer sårbare for skade. Et ICCP-anlegg krever mer oppfølging, men det gir samtidig muligheter for justering underveis for optimal beskyttelse. Retten forstår det slik at begge løsningene kan gi 25 års levetid på anodene, og retten finner ikke holdepunkt for at det vil være større forskjeller i levetiden for anleggene.
+Vitnet fra Multiconsult, Kristiansen, forklarte det samme for lagmannsretten, selv om lagmannsretten bør være forsiktig med å vektlegge forklaringer gitt i selve rettsprosessen. Det er imidlertid klart for lagmannsretten at selve korrosjonsbeskyttelsen var, og fremsto som helt essensielt i prosjektet, og at dette er noe enhver normalt forstandig tilbyder forstår. Lagmannsretten legger imidlertid til grunn at normalt forstandige og kvalifiserte tilbydere med erfaring med spunting i sjø vil vite at metodevalget ikke har avgjørende betydning for selve korrosjonsbeskyttelsen. Det er derfor et spørsmål om selve metodevalget fremsto som et absolutt krav med utgangspunkt i de forskjellene i anleggene som er beskrevet av tingretten.
+Etter lagmannsrettens syn vil det sentrale i en slik vurdering være at ICCP-anlegget krever strømtilførsel, noe offeranoder ikke krever. Videre er vedlikeholdet av en annen karakter. Etter lagmannsrettens syn må det her legges vekt på at spuntanlegget ligger i sentrum av Hammerfest med enkel og rimelig strømforsyning, uten kompliserende prosjekteringsløsninger. Dette ville naturlig nok fremstått annerledes dersom man velger et ICCP-anlegg for et spuntanlegg i sjø der strømforsyning må etableres på en mer komplisert og kostnadskrevende måte. Begge anlegg har begrensede vedlikeholdskrav. Ut ifra prosjektets art fremstår det klart for lagmannsretten at metodevalget for en normalt forstandig tilbyder, ikke fremstår som et absolutt krav.
+I konkurransegrunnlagets tekniske beskrivelse er følgende uttalt:
+«Denne beskrivelsen er basert på NS 3420 (201903) med veiledninger. Kodene til de spesifiserende tekstene viser til de bestemmelser i standardene som gjelder for de enkelte delprodukter.»
+Consto har gjort det til et vesentlig poeng at beskrevne løsninger basert på NS 3420 utgjør absolutte krav. Ved å basere beskrivelser på NS 3420 gir oppdragsgiver et signal om kontroll og viktighet av beskrevne løsninger, og at de ulike tilbydere vil dermed vil få utfordringer med å skille «viktige og uviktige» krav. Det er blant annet vist til «Veiledning for utarbeidelse av beskrivelser etter NS 3420, P-773:2017» og følgende uttalelse, jf. punkt 3:
+«I en detaljbeskrivelse skal alle forhold i konkurransegrunnlaget som har en prismessig konsekvens, beskrives i en prisbærende post.
+Tilbudsgiveren må tilby de løsningene som er beskrevet, men står fritt til å velge mellom produkter som oppfyller kravene gitt i posten.»
+Videre er det vist til punkt 4.4:
+«Dersom det framgår av tilbudsgrunnlaget at beskrivelsen er basert på NS 3420, etableres det en forventning hos entreprenøren om at systemet blir fulgt. Dette vil være et viktig moment ved tolkningen av avtalen mellom partene. Uklarheter i prisgrunnlaget som oppstår som følge av at systemet ikke følges, vil være oppdragsgivers risiko. Dette kan eksempelvis være at det ikke er samsvar mellom kode og tekst.»
+Det anføres at det vil ha store konsekvenser for bransjen dersom beskrevne løsninger kan fravikes uten avvisning fra konkurransen. Det vil videre få betydning for sammenlikning av tilbud, det vil skape uforutsigbarhet og skape en uoversiktlig situasjon for tilbyderne. NCC derimot anfører at utgangspunktet er motsatt – ingen krav er absolutte uten at dette klart fremkommer av den enkelte posten.
+Lagmannsretten er enig i at de hensyn som Consto peker på er sentrale hensyn. Det sentrale formålet med veilederen er å unngå uklarheter som har priskonsekvens, samt uklarheter om hva som skal leveres. Dersom systemet følges, vil uklarheter unngås ved gjennomføringen. Lagmannsretten er imidlertid ikke enig i at det av dette følger at samtlige krav i en omfattende teknisk beskrivelse dermed utgjør absolutte krav, selv om beskrivelsen er basert på NS 3420. Enkelte poster er av mindre betydning, og dette vil normalt forstandige tilbydere innenfor kretsen av kvalifiserte tilbydere forstå. Utgangspunktet må også her tas i hvordan en forstandig tilbyder i prosjekter med korrosjonsbeskyttelse vil oppfatte den aktuelle postens betydning for oppdragsgiver, samt hvor stor selve posten er i det samlede prosjektet. Dette innebærer at de hensyn som med styrke er anført fra Constos side må vurderes konkret i det enkelte prosjekt. Lagmannsretten finner at det ikke kan opereres med slike utgangspunkter som partene har anført, men at det beror på en konkret vurdering av den enkelte post.
+Det sentrale og absolutte kravet i den aktuelle posten er korrosjonsbeskyttelse, og ikke metoden. Et prosjekt som Hammerfest Ren Havn omfatter en rekke ulike poster av forskjellig karakter, der noen er mindre og andre større. Enkelte poster inngår i en nødvendig sammenheng, der andre postbeskrivelser bygger videre på de beskrevne løsningene. Posten om korrosjonsbeskyttelse er en isolert post, der avvik har minimale følgekonsekvenser, annet enn prosjektering av strømtilførsel og et mindre vedlikehold. Lagmannsretten presiserer at det stilles krav til tilbyderne om at de er normalt forstandige tilbydere innenfor prosjektets rammer, og innenfor dette prosjektsegmentet vil det ikke skape slik usikkerhet som anført av Consto.
+Oppsummert utgjør korrosjonsbeskyttelse et absolutt og helt sentralt krav i prosjektet, men selve metodevalget er ikke et absolutt krav der avvik må lede til ubetinget avvisning av tilbudet. Selve metodevalget har ingen eller liten betydning for gjennomføring av prosjektet Hammerfest Ren Havn, og lagmannsretten finner det klart at normalt forstandige tilbyder med erfaring med spunting i sjø vil ha samme oppfatning.
+Avviket må imidlertid vurderes videre i en bredere konkurranserettslige sammenheng, og i vesentlighetsvurderingen er det videre sentralt om avviket har fått betydning for gjennomføring av konkurransen.
+Lagmannsretten finner det klart at postbeskrivelsen om bruk av offeranoder ikke har avholdt potensielle tilbydere fra å gi tilbud, og dette er heller ikke anført fra Constos side.
+Avvikets størrelse i prosjektet er videre marginalt i omfang, og avviket har mindre prismessige konsekvenser. Lagmannsretten legger til grunn at avviket ikke har hatt betydning for rangering av tilbudene, og lagmannsretten kan på dette punktet slutte seg til tingrettens vurdering:
+Selv om et ICCP-anlegg medførte økte driftskostnader sammenlignet med et offeranodeanlegg, finner retten ingen holdepunkt for et ICCP-anlegg innebar overføring av betydelige økonomisk utlegg og risiko fra NCC til Kystverket. Dersom Consto skulle vunnet konkurransen, måtte punkt C-2.41 i NCCs tilbud vært priset til mer enn kr 16 900 000. Retten finner ingen holdepunkt for at etableringskostnader og økte driftskostnader for et ICCP-anlegg ligger i nærheten av dette.
+Punkt C-2.41 utgjorde en liten del av den totale tilbudspris. I NCCs tilbud utgjorde posten 0,33 % og i Constos tilbud 1,69 %. Avviket gjaldt en liten del av anskaffelsens omfang.
+Det kan være vanskelig å foreta en nøyaktig prissetting av avviket, men retten finner ingen holdepunkt for at kostnadene ved etablering og drift av et ICCP-anlegg var så store at Consto ville vunnet konkurransen.
+Lagmannsretten legger til grunn at konkurransen ikke har blitt påvirket av avviket.
+Samlet sett foreligger det ikke et vesentlig avvik fra konkurransegrunnlaget, og Kystverket hadde dermed ikke plikt til å avvise NCCs tilbud på dette grunnlaget.
+ 
+Manglende kvalifikasjoner
+Spørsmålet er om Kystverket hadde plikt til å avvise tilbudet fordi NCC ikke oppfylte kvalifikasjonskravene. Tingretten har lagt til grunn følgende faktum, som lagmannsretten etter bevisførselen i ankeforhandlingen også legger til grunn:
+NCC hadde bedt om bistand fra FAS når gjaldt arbeider knyttet til spunt og peling. I ESPD-skjemaet hadde NCC besvart spørsmålet ‘Støtter leverandør seg på andre virksomheters kapasitet for å oppfylle kvalifikasjonskravene i del IV og eventuelle kriterier og regler fastsatt i del V nedenfor?’ med ‘ja’. FAS var oppgitt og det var opplyst at ‘ESPD Besvarelse levert’. FAS hadde 10. september 2021 inngitt eget ESPD-skjema.
+FAS hadde 16. september 2021 gitt NCC et tilbud på spunt- og pelearbeider. I tilbudet het det:
+Tilbudet er gitt iht vedlagt beskrivelse og våre vedlagte forutsetninger.
+Vi gjør oppmerksom på følgende:
+•
+Post C-2.16: Evt. påkrevd stans pga støy avregnes etter timer i post R.3.15.
+ 
+•
+Spunt og peler blir levert CIF Hammerfest med båt og FAS holder lossing av båt.
+Vi forutsetter at båt kan losses ved byggeplass. Evt. havneavgifter utover CIF er ikke inkludert.
+ 
+•
+Vi forutsetter at en eventuell kontrakt blir basert på NS 8416.
+ 
+•
+Dagens stålpris og eurokurs er lagt til grunn.
+ 
+Vårt tilbud er basert på at vi har ledig kapasitet når arbeidene kommer til utførelse. På grunn av lange leveringstider må dette avklares nærmere. Fremdrift må koordineres med mulige leveringstider på spunt.
+Vi håper at tilbudet er akseptabelt for Dem og vil samtidig henvise til vår hjemmeside 
+www.fas.no
+.
+Tilbudet var svar på NCCs tilbudsforespørsel av 31. august 2021, hvor det var bedt om at et pristilbud inneholdt følgende:
+Oppstart og gjennomføringstid etter kontraktstildeling.
+Total mannskapsandel på anlegget (timelønnede og funksjonærer).
+Kalkulert timeforbruk på anlegget, med angitte timepriser pr. arbeider.
+Tilbudt utstyr skal spesifiseres med typebetegnelse, størrelse, vekt, kapasitet etc.
+Behov for kontor, spiserom, telefon, andre fasiliteter samt riggplan.
+Beskrivelse av tilbyders kapasitet i f.t utførelsen og hvilke elementer som er kritiske i f.t fremdrift.
+Forbehold, presiseringer og avvik skal fremkomme som separat punkt i tilbudet.
+Påslagsprosent og timepriser i forbindelse med regningsarbeider.
+Det var bedt om en vedståelsesfrist på 150 dager.
+Den 10. september 2021 hadde daglig leder for FAS signert en forpliktelseserklæring. Det fremgikk av denne at FAS forpliktet seg til å stille nødvendige ressurser til disposisjon for NCC i form av pele- og spuntarbeider. Forpliktelseserklæringen ble imidlertid først oversendt NCC 10. november 2021 etter at den var etterspurt.
+Ut fra bevisførselen finner retten ingen holdepunkt for at forpliktelseserklæringen ble signert i ettertid. FAS hadde mottatt en forespørsel fra NCC om de ville inngi tilbud på spunt- og pelearbeid. Det fremgikk av forklaringen til kalkulasjonslederen i FAS at ‘ikke utfylt erklæring’ var sendt FAS 7. september 2021. Erklæringen skulle signeres av daglig leder. Det var vanlig å gjøre erklæringen klar før den skulle sendes. FAS brukte å sende erklæringen når den ble etterspurt.
+Kalkulasjonsleder i Fundamentering AS, Flåtten, forklarte det samme for lagmannsretten, og lagmannsretten er enig med tingretten i at det ikke er noen holdepunkter for at han har forklart seg uriktig på dette punktet.
+Spørsmålet er dermed om NCC oppfylte kvalifikasjonskravet ved tilbudsfristen gjennom støtte fra Fundamentering AS. Problemstillingen omfatter flere delspørsmål.
+Etter 
+anskaffelsesforskriften § 16-1 første ledd første punktum
+ kan oppdragsgiver stille krav til leverandørens kvalifikasjoner, og dersom disse ikke er oppfylt plikter oppdragsgiveren å avvise leverandøren, jf. 
+§ 24-2 første ledd bokstav a
+. I 
+tredje ledd
+ er det fastsatt at oppdragsgiveren skal angi kvalifikasjonskravene sammen med de tilhørende dokumentasjonskravene i kunngjøringen.
+En leverandør kan støtte seg på kapasiteten til andre ressurser for å oppfylle kravene til tekniske og faglige kvalifikasjoner, jf. 
+anskaffelsesforskriften § 16-10 første ledd første punktum
+. Denne adgangen gjelder «uavhengig av den rettslige forbindelsen mellom dem», jf. andre punktum. Dersom en leverandør støtter seg på andre virksomheter for å oppfylle kvalifikasjonskravene, «skal han dokumentere at han råder over de nødvendige ressursene, for eksempel ved å fremlegge en forpliktelseserklæring fra disse virksomhetene», jf. 
+§ 16-10 andre ledd
+. I konkurransegrunnlaget kan det kreves at rådighet dokumenteres gjennom forpliktelseserklæring.
+Lagmannsretten er enig i tingrettens vurdering av at det ikke var et krav om at rådigheten ble dokumentert i tilbudet ved fremleggelse av forpliktelseserklæring:
+Retten kan ikke se at det i konkurransegrunnlaget var stilt krav om at det i forbindelse med tilbudet skulle inngis forpliktelseserklæring fra støttende virksomhet når det gjaldt tekniske og faglige kvalifikasjoner. Under punkt 3.2 B «Økonomisk og finansiell kapasitet» var det uttalt at støttende foretak skulle avgi forpliktelseserklæring. Et tilsvarende krav var ikke tatt inn i punkt C «Tekniske og faglige kvalifikasjoner». Under punkt 3.3 var det vist til at 
+anskaffelsesforskriften § 16-10
+ og vedlagt en mal for forpliktelseserklæring, men det var ikke uttalt at erklæringen skulle vedlegges tilbudet. Hensynene til likebehandling og forutberegnelighet i anskaffelsesprosessen tilsier at et eventuelt krav om innsending av forpliktelseserklæring fra støttende virksomhet sammen med tilbudet, klart tilkjennegis i konkurransegrunnlaget. Retten finner at en alminnelig påpasselig tilbyder kunne legge til grunn at forpliktelseserklæring kunne ettersendes.
+Det må imidlertid likevel fremgå av tilbudet har tilbyder har rådighet over nødvendige ressurser. Slik rådighet anses dokumentert dersom det fremgår av tilbudet til NCC at NCC mente å støtte seg på Fundamentering AS, og at Fundamentering AS har ment å avgi slik støtte, jf. blant annet 
+KOFA 2023/192
+ med videre henvisninger. Det er videre enighet om at rådighet må være etablert på tilbudstidspunktet.
+Lagmannsretten er enig med KOFA i denne saken at det fremkom klart av tilbudet at NCC mente å støtte seg på Fundamentering AS som underleverandør, jf. 
+KOFA 2022/31 avsnitt 33
+:
+«I valgte leverandørs ESPD-skjema var det vist til en vedlagt referanseliste under kvalifikasjonskravet om erfaring. Det var i tillegg svart ja på spørsmålet om leverandøren støttet seg på andre virksomheters kapasitet for å oppfylle kvalifikasjonskravene. Valgte leverandør oppga at de blant annet ville støtte seg på kapasiteten til Fundamentering AS. Klagenemnda mener at det i tilstrekkelig grad fremgikk av tilbudet at valgte leverandør mente å støtte seg på Fundamentering AS’ ressurser for oppfyllelse av kvalifikasjonskravet.»
+Tingretten har lagt til grunn det samme, og lagmannsretten er enig i dette.
+Lagmannsretten finner det videre klart at det fremkom av tilbudet at Fundamentering AS har ment å avgi støtte. Lagmannsretten legger til grunn at Fundamentering AS visste at de ville bli oppgitt som ressurs for spunt og speling i tilbudet til NCC og at dette fremkom av tilbudet, noe som er et minstevilkår for at det er ment å avgi støtte, jf. 
+KOFA 2022/31 avsnitt 35
+. Tilbudet til NCC inneholdt ESPD-skjema fylt ut av Fundamentering AS, og i en slik situasjon fremgår det at Fundamentering AS har ment å avgi støtte til NCC.
+Konklusjonen er dermed at tilbudet isolert sett i tilstrekkelig grad dokumenterte at NCC hadde rådighet over Fundamentering AS, slik at tilbudet ikke kunne avvises av den grunn.
+Dette var imidlertid kun en foreløpig dokumentasjon over rådigheten, jf. 
+anskaffelsesforskriften § 17-1 andre ledd
+, og NCC måtte ettersende tilstrekkelig underliggende dokumentasjon for at kvalifikasjonskravet var oppfylt, jf. 
+§ 17-1 femte ledd
+. Det er enighet mellom partene om dette.
+Slik lagmannsretten forstår Consto, anføres det at NCC reelt sett ikke hadde rådighet over Fundamentering AS på tilbudstidspunktet. Dersom Consto gis medhold i dette, anføres det videre at den etterfølgende ettersending av forpliktelseserklæring i realiteten etablerte rådighet etter tilbudstidspunktet, og dermed utgjør en forbedring av tilbudet som ikke er tillatt, jf. 
+anskaffelsesforskriften § 23-5 andre ledd
+, hvor det heter:
+En ettersending, supplering, avklaring eller utfylling etter første ledd skal ikke medføre at tilbudet forbedres.
+Lagmannsretten er enig i at selve rådigheten rent faktisk måtte være etablert på tilbudstidspunktet, jf. blant annet 
+KOFA-2020-515 avsnitt 39-41
+. Slik lagmannsretten forstår NCC, er det ikke uenighet om dette. Lagmannsretten antar at det sjeldent vil være tilfelle at det foreløpige dokumentasjonskravet er oppfylt, men at det likevel ikke foreligger reell rådighet. I denne saken skyldes dette angivelig, slik lagmannsretten forstår anførselen, at tilbudet fra Fundamentering AS inneholdt et forbehold, samt at NCC ikke hadde mottatt signert forpliktelseserklæring fra Fundamentering AS ved tilbudsfristen, slik Consto hadde.
+Spørsmålet er dermed om NCC hadde reell og faktisk rådighet over Fundamentering AS’ ressurser ved inngivelsen av tilbudet.
+Lagmannsretten legger til grunn at det ikke stilles formkrav til hvordan rådighet etableres, for eksempel gjennom krav til at det er inngått bindende avtaler eller liknende, jf. for eksempel 
+C-234/14
+ avsnitt 28 og C-403-21 avsnitt 73-74. Det var heller ingen ytterligere krav i konkurransegrunnlaget om dokumentasjon for rådighet enn det som allerede er beskrevet. Det avgjørende er at leverandøren faktisk råder over den andre virksomhetens kompetanse ved utførelsen av leveransen.
+Det første spørsmålet er om følgende utsagn i tilbudet fra Fundamentering AS til NCC medfører at det ikke foreligger rådighet i konkurranserettslig forstand:
+Vårt tilbud er basert på at vi har ledig kapasitet når arbeidene kommer til utførelse. På grunn av lange leveringstider må dette avklares nærmere. Fremdrift må koordineres med mulige leveringstider på spunt.
+Dette er en standardformulering som Fundamentering AS inntok i alle sine tilbud, herunder tilbudet til Consto. Flåtten forklarte at Fundamentering AS er avhengig av å bestille spunt fra Luxembourg, og at leveringstiden medfører at de i tilbudet ikke kan forplikte seg til en gitt oppstartsdato. Den som vinner tilbudet går normalt en runde til med underleverandør om blant annet pris og gjennomføring av prosjektet. Først på dette tidspunktet vil spunt bli bestilt. Lagmannsretten ser forbeholdet som kun en presisering av at partene måtte diskutere nærmere tidsplanen for gjennomføringen. Lagmannsretten finner det klart at det avtalerettslig var etablert en forpliktelse til å bistå med gjennomføringen av prosjektet fra Fundamentering AS, og at de – dersom NCC fikk oppdraget – ikke ansvarsfritt kunne trukket seg fra prosjektet med å vise til at de ikke hadde ledig kapasitet. Tilbudet må også ses i sammenheng med at Fundamentering AS overfor oppdragsgiver hadde ment å gi støtte til NCC, og dette etablerte også en forpliktelse over for NCC.
+Det er videre anført at NCC ikke satt på en forpliktelseserklæring fra Fundamentering AS på tilbudstidspunktet, noe Consto gjorde. Consto hadde et tilbud fra Fundamentering AS med samme forbeholdet, men i tillegg hadde altså Consto en forpliktelseserklæring. Det anføres at Consto dermed hadde rådighet over Fundamentering AS, mens NCC ikke hadde det.
+Lagmannsretten er ikke enig i dette. Som allerede nevnt, er ikke selve forpliktelseserklæringen et krav for å etablere faktisk rådighet, men kun en måte å dokumentere rådighet på. Consto kunne i sitt tilbud dokumentere rådighet på en annen måte enn NCC, men dette innebærer naturlig nok ikke at NCC ikke hadde tilstrekkelig rådighet på tilbudstidspunktet. At Fundamentering AS faktisk hadde signert forpliktelseserklæringen og satt på denne i påvente av at den ble etterspurt fra NCC, er også et tegn på at rådigheten var etablert. Motivet for ikke å oversende denne umiddelbart er ikke avgjørende i denne sammenheng.
+Som følge av at NCC hadde faktisk rådighet over Fundamentering AS på tilbudstidspunktet, oppstår dermed ikke spørsmålet om den senere fremleggelse av forpliktelseserklæringen var en forbedring av tilbudet i strid med 
+anskaffelsesforskriften § 23-5 tredje ledd
+.
+Det er til slutt anført at det er foretatt ettersendinger og avklaringer etter tilbudstidspunktet i strid med avklaringsreglene i 
+anskaffelsesforskriften § 23-5
+. Nærmere bestemt er det anført at likebehandlingsprinsippet legger en kvantitativ skranke i tillegg til de materielle (kvalitative) begrensningene. Tilbyder sparer tid i tilbudsprosessen ved at dokumenter samles sammen først i ettertid, og dette gir dermed en konkurransefordel sammenliknet med tilbydere som bruker tid på å samle sammen dokumentasjonen i tilbudsfasen. Det er vist til uttalelser i europeisk konkurranserettslig litteratur, hvor det finnes uttalelser i denne retning.
+Tingretten har redegjort for hva som ble ettersendt etter tilbudsfristen, og lagmannsretten forstår det slik at det ikke er uenighet om dette:
+Etter at klagen fra Consto forelå, ba Kystverket 9. november 2021 NCC ettersende dokumentasjon for oppfyllelse av kvalifikasjonskrav.
+NCC ettersendte firmaattest NCC AB. I tillegg ble kredittvurdering NCC AB, signaturfullmakter NCC AB, ESPD-skjema NCC AB, fullstendig utfylt ESPD-skjema FAS, forpliktelseserklæring FAS, liste med referanseprosjekter FAS, forpliktelseserklæring Sjøentreprenøren AS og forpliktelseserklæring Gagama elektro AS oversendt.
+Lagmannsretten kan fullt ut slutte seg til tingrettens vurdering av de ettersendte dokumenter:
+Retten legger til grunn at henvendelsen fra Kystverket gjaldt opplysninger som forelå på tilbudstidspunktet, men som ikke var oversendt Kystverket i forbindelse med tilbudet. FAS innga tillegg til ESPD-skjemaet med beskrivelse av tekniske og faglige kvalifikasjoner. Referanselisten til FAS var ikke vedlagt ESPD-skjemaet, men ble oversendt etter henvendelsen fra Kystverket til NCC i november 2021. Det er ingen opplysninger om at beskrivelsen ikke var dekkende for FAS’s virksomhet på tilbudstidspunktet eller at referanseprosjektene var gjennomført etter tilbudsfristen. For øvrig var beskrivelse og referanseliste ikke vedlagt ESPD-skjemaet som FAS sendte inn i tilknytning til tilbudet fra Consto.
+Det fremgikk av konkurransegrunnlaget at Kystverket kunne «på ethvert tidspunkt i konkurransen be leverandøren lever alle eller deler av dokumentasjonsbevisene dersom det er nødvendig for å sikre at konkurransen på riktig måte». Konkurransegrunnlaget tilkjennega at det kunne være behov for ettersending av dokumentasjon.
+Ettersendingen hadde et begrenset omfang og ble gjennomført i en begrenset tidsperiode (10. – 17. november 2021). Retten kan ikke se at det var et brudd på likebehandlingsprinsippet at Kystverket innhentet dokumentasjon fra NCC som var vinnende part i konkurransen. Ettersendingen innebar ingen forbedring av tilbudet, men innebar at Kystverket fikk forsikring for at kvalifikasjonskravene var oppfylt.
+Retten finner ikke at ettersendingen var for omfattende og i strid med likebehandlingsprinsippet.
+Lagmannsretten utelukker ikke at det finnes en kvantitativ begrensing i adgangen til å ettersende dokumenter med grunnlag i likebehandlingsprinsippet i 
+anskaffelsesloven § 4
+. Lagmannsretten kan ikke se at omfanget i denne saken medfører at NCC har fått en fordel i tilbudsfasen som er i strid med likebehandlingsprinsippet.
+Lagmannsrettens konklusjon er at det ikke er begått feil av oppdragsgiver ved at avklaring og ettersending har skjedd i strid med 
+anskaffelsesforskriften § 23-5
+ og/eller 
+anskaffelsesloven § 4
+.
+ 
+Konklusjon
+Kystverket hadde ikke plikt til å avvise tilbudet fra NCC. Det forelå ikke vesentlige avvik i tilbudet sammenliknet med konkurransegrunnlaget, og NCC oppfylte kvalifikasjonskravet gjennom støtten fra Fundamentering AS. Dette ble dokumentert i tilbudet i tilstrekkelig grad. De etterfølgende avklaringer og ettersendinger har ikke vært i strid med anskaffelsesregelverket.
+Samlet sett har det ikke skjedd erstatningsbetingende feil i anskaffelsen og det foreligger dermed ikke ansvarsgrunnlag i saken. Årsakssammenheng og tap vil dermed ikke bli behandlet av lagmannsretten.
+Anken blir dermed å forkaste.
+ 
+Sakskostnader
+Staten ved Nærings- og fiskeridepartementet (Kystverket) har vunnet saken for lagmannsretten, jf. 
+tvisteloven § 20-2 andre ledd
+. Dette innebærer at staten har krav på full erstatning for sine sakskostnader. Staten har krevd sakskostnader både for tingretten og lagmannsretten.
+Lagmannsretten har vurdert, men finner ikke at det foreligger tungtveiende grunner som gjør det rimelig å frita Consto for erstatningsansvar helt eller delvis for behandlingen i lagmannsretten.
+Tvisteloven § 20-5 første ledd
+ inneholder nærmere utmålingsregler, og første og andre punktum lyder slik:
+Full erstatning for sakskostnader skal dekke alle partens nødvendige kostnader ved saken som ikke særlige regler gir grunnlag for å unnta. Ved vurderingen av om kostnadene har vært nødvendige, legges det vekt på om det ut fra betydningen av saken har vært rimelig å pådra dem.
+Staten har inngitt sakskostnadsoppgave, hvor det fremgår at det kreves 1 551 992,50 kroner i salær, inklusive merverdiavgift. For lagmannsretten har det medgått 269 timer, med en gjennomsnittlig timepris på 4 615 eksklusive merverdiavgift. Det er flere advokater som har arbeidet med saken, og derfor fremkommer timesatsen som et gjennomsnitt. Det er videre krevd erstatning for utlegg på kroner 492 621 kroner, hvorav 97 650 kroner til sakkyndig vitne Skavås fra Veritas, som har redegjort for metoder for korrosjonsbeskyttelse, og 283 450 kroner til sakkyndig vitne Skaar fra Oslo Economics, som har forklart seg om tapsutmålingen.
+Consto har protestert på de samlede sakskostnadene, og det er for det første anført at det er satt unødvendige advokatressurser på saken i form av to partnere, samt en advokat back office som har fulgt ankeforhandlingen pr. video. Det er videre anført at de sakkyndige vitnene Skavås og Skaar ikke har vært nødvendige for å opplyse saken, slik at disse utleggene ikke utgjør nødvendige kostnader.
+Lagmannsretten finner at det har vært rimelig å sette to partnerressurser på saken, da selve utmålingen er utskilt til et eget tema med omfattende bevisførsel. Det samlede timetallet fremstår likevel som for høyt. Dette gjelder særlig arbeid etter inngivelse av anketilsvar og frem til ankeforhandling, hvor det er krevd 743 248 kroner eksklusive merverdiavgift for 164 timers arbeid. Dette fremstår som et for høyt timetall tatt i betraktning at saken har vært i KOFA og tingretten, og at sakens problemstillinger har vært godt opplyst og gjennomarbeidet. Lagmannsretten kan ikke se at det for lagmannsretten har oppstått nye problemstillinger som rettferdiggjør arbeid i et slikt omfang. Lagmannsretten kan heller ikke se at Constos anke og anførsler skal rettferdiggjøre et slikt salær. Constos reviderte tapsutmåling har krevd arbeid, men her må salærkravet ses i sammenheng med at statens innsigelser i stor grad er basert på sakkyndig vitne Skaars arbeid i saken. Det har vært en omfattende utveksling av prosesskriv for lagmannsretten, men disse er i hovedsak generert av Consto, som har fremlagt sine tapsutmålinger. Consto har deretter bedt om at staten konkretiserer sine innsigelser til tapsutmålingen, men disse har generelt – både i forberedelsene til ankeforhandlingen og under ankeforhandlingen – blitt møtt med at tapet fraviker fra generelle bransjetall om hva som ville vært en sannsynlig fortjenestemargin. Lagmannsretten bemerker at Constos opplegg for lagmannsretten ikke rettferdiggjør et så høyt timetall som beskrevet ovenfor.
+Lagmannsretten finner at salæret samlet bør kuttes med 300 000 kroner inklusive merverdiavgift. Da salærkravet er vurdert i sammenheng med vitne Skaars arbeid, finner ikke lagmannsretten grunn til å vurdere Skaars oppgave isolert.
+Det er fremmet innsigelser til nødvendigheten av å føre sakkyndig vitne Skavås. Han har forklart seg detaljert om korrosjonsbeskyttelse og om de ulike metodene. Da dette har vært et helt avgjørende tema i saken, finner lagmannsretten at dette utlegget har vært nødvendig.
+Samlet sett tilkjennes sakskostnader på 1 744 614 kroner inklusive merverdiavgift.
+Lagmannsretten skal videre legge sitt resultat til grunn ved vurderingen av sakskostnadene for tingretten, jf. 
+tvisteloven § 20-9 andre ledd
+. Staten har vunnet også for tingretten, jf. 
+tvisteloven § 20-2 andre ledd
+, og har i utgangspunktet krav på full erstatning for nødvendige sakskostnader, jf. første ledd, jf. 
+§ 20-5 første ledd
+.
+Lagmannsretten finner – som tingretten – at det foreligger tungtveiende grunner som gjør det rimelig å frita Consto helt for erstatningsansvaret, og det vises til tingrettens begrunnelse:
+Det følger av 
+tvisteloven § 20-3 tredje ledd
+ at motparten kan helt eller delvis fritas for erstatningsansvar hvis tungtveiende grunner gjør det rimelig. Bokstav a, b og c nevner enkelte hensyn som det skal legges «særlig vekt på». Disse hensynene er prioritert hensyn, men de er ikke uttømmende og de glir også noe over i hverandre. I justiskomiteens innstilling til Odelstinget er det uttalt at «det vesentlige ved den konkrete lovanvendelse vil være å finne frem til et resultat som fremstår som rettferdig og rimelig».
+I sin avgjørelse uttalte KOFA at Kystverket hadde brutt 
+anskaffelsesforskriften § 24-8 første ledd
+ ved ikke å avvise NCC’s tilbud fra konkurransen som følge av et vesentlig avvik. Kystverket ville ikke følge KOFA’s avgjørelse. Det var da påregnelig og naturlig at Consto reiste søksmål mot Kystverket.
+I likhet med KOFA finner retten at NCC’s tilbud innebar et avvik fra konkurransegrunnlaget, men i motsetning til KOFA finner retten at det ikke forelå et vesentlig avvik. Spørsmålet om det foreligger et vesentlig avvik beror på en helhetsvurdering.
+Sett i lys av KOFA’s avgjørelse hadde Consto god grunn til å få saken prøvd rettslig. Etter saksanlegget har saken blitt bevismessig avklart. Saken har vært bedre opplyst for retten enn den var for KOFA. Saken har vært lagt bredt opp og sakskostnadene er betydelige. I Kystverkets sakskostnadsoppgave er det medtatt betydelige utgifter til sakkyndige vitner.
+Retten finner at tungtveiende grunner gjør det rimelig at Consto fritas for erstatningsansvaret, og at Kystverket bør bære egne sakskostnader.
+Lagmannsretten slutter seg til dette, og finner at det ikke skal tilkjennes sakskostnader for tingretten.
+Dommen er enstemmig.
+Dommen er ikke avsagt innen lovens frist. Grunnen er dommernes ferieavvikling. Det ble meddelt ved ankeforhandlingens avslutning at dommen ikke vil bli avsagt innen fristen.
+DOMSSLUTNING
+1.
+Anken forkastes.
+ 
+2.
+I sakskostnader for lagmannsretten betaler Consto Anlegg Nord AS til Staten ved Nærings- og fiskeridepartementet (Kystverket) 1 744 614 – enmillionsyvhundreogførtifiretusensekshundreogfjorten – kroner innen to uker fra forkynnelse av dommen.
+ 
+3.
+Sakskostnader for tingretten tilkjennes ikke.
