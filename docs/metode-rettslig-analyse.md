@@ -58,7 +58,7 @@ Mål: gå fra null til en prioritert kandidatliste *uten å lese noen saker*. Fr
 
 1. **Referansetabell** — finn alle saker som refererer til primærbestemmelsen (f.eks. § 16-10). Dette er kjernesettet.
 2. **Interseksjonsutvidelse** — finn saker som refererer til *flere* relevante bestemmelser (f.eks. § 16-10 ∩ § 17-1). Interseksjonen gir de mest presise treffene.
-3. **FTS-supplement** — fulltekstsøk etter spesifikke begreper (f.eks. «forpliktelseserklæring») for å kompensere for gap i referansetabellen. Referansetabellen har kjente hull — ikke alle lovhenvisninger i avgjørelsene er fanget av regex-ekstraksjonen.
+3. **FTS-supplement** — fulltekstsøk etter spesifikke begreper (f.eks. «forpliktelseserklæring»). FTS fanger saker der referansetabellen mangler treff — enten fordi bestemmelsen diskuteres uten formell paragrafhenvisning, eller fordi saken bruker alternativ terminologi.
 4. **Interseksjonsrangering** — kombiner og ranger etter kildeoverlapp:
    - **A** = referansetabell(primær) ∩ referansetabell(sekundær) ∩ FTS(nøkkelbegrep) → mest relevant
    - **B** = referansetabell(primær) ∩ FTS(nøkkelbegrep) → relevant
@@ -136,6 +136,32 @@ Konkret, avgrenset spørsmål. Gjerne nummerert hvis det er flere delspørsmål.
 
 ## 2. Rettslig rammeverk
 Kort gjennomgang av relevante bestemmelser med ordlyd der nødvendig.
+
+## Søkestrategi
+
+### Inklusjons- og eksklusjonskriterier
+- **Inkludert:** [bestemmelser, tidsrom, sakstyper]
+- **Ekskludert:** [begrunnelse for avgrensninger]
+
+### Primærsøk
+| Trinn | Søk | Treff | Kommentar |
+|---|---|---|---|
+| 1. Referansetabell | [primærbestemmelse] | n | Kjernesett |
+| 2. Interseksjon | [primær ∩ sekundær] | n | Presise treff |
+| 3. FTS-supplement | [nøkkelbegrep] | n | Kompenserer for manglende paragrafref. |
+| 4. Rangering | A / B / C | n/n/n | Prioritert leseliste |
+
+### Ettersøk
+| Søk | Treff | Nye relevante | Kommentar |
+|---|---|---|---|
+| [gap-søk / vinkelrotasjon / etc.] | n | n | [hva ble funnet] |
+
+### Flyt: identifisert → screenet → inkludert
+- Identifisert via primærsøk: n
+- Screenet (lest vurdering): n
+- Inkludert i analysen: n
+- Tilført fra ettersøk: n
+- **Totalt analysert: n**
 
 ## 3. Praksis
 Gjennomgang av relevante avgjørelser, typisk gruppert i kategorier.
@@ -243,3 +269,18 @@ Ettersøksfasen (nå formalisert i Steg 2, Fase 2) avdekket ~10 nye kandidater f
 **Negativt funn er også funn.** Gap 1 (kvantitative bemanningskrav) og Gap 2 (ESPD som eneste holdepunkt) ga null treff — som bekrefter at disse scenariene genuint er utestet i praksis. Denne bekreftelsen styrker notatets konklusjon.
 
 **Nøkkelkolonner i CLAUDE.md.** SQL-spørringer mot Supabase feilet på grunn av feil kolonnenavn (`case_number` vs `sak_nr`, `content` vs `text`). CLAUDE.md bør inneholde nøkkelkolonner for alle tabeller — oppdatert.
+
+### Søkeeffektivitet per notat
+
+*Akkumulerende tabell — oppdateres etter hvert notat for å identifisere mønstre.*
+
+| Notat | Primær (A+B) | Screenet | Inkl. primær | Ettersøk nye | Presisjon A | Presisjon B | Totalt analysert |
+|---|---|---|---|---|---|---|---|
+| Rådighet/forpliktelseserklæring | 27 | 27 | ~18 | 7 | 3/3 (100%) | ~15/24 (63%) | 20 KOFA + 6 retts. |
+| Grensedragning § 16-10 | *avledet fra ettersøk* | — | — | — | — | — | 11 KOFA |
+
+**Foreløpige observasjoner:**
+- A-kategorien (trippel interseksjon) har 100% presisjon — bekrefter at interseksjon er en sterk relevansprediktor
+- B-kategorien har ~63% presisjon — en tredjedel faller utenfor problemstillingen etter lesing
+- Ettersøket øker dekningen med ~28% (7/25) — vesentlig, men med fallende marginalnytte
+- Ettersøk produserer materiale for *andre* dokumenter (5 av 7 funn gikk til kommentar/nytt notat) — bør gjøres med hele porteføljen i tankene

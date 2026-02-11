@@ -40,32 +40,49 @@ Spørsmålet er:
 
 ## Søkestrategi
 
+### Inklusjons- og eksklusjonskriterier
+
+- **Inkludert:** Saker som behandler dokumentasjon av rådighet over støttende virksomhets ressurser under § 16-10, herunder ettersendelse av forpliktelseserklæring, ESPD som holdepunkt, og type/omfang av dokumentasjonskrav. Også del II-saker med tilsvarende problematikk.
+- **Inkludert (rettskilder):** Lagmannsrettsdommer og høyesterettsdommer som behandler § 16-10-rådighet.
+- **Ekskludert:** Saker før 2017 (ny forskrift trådte i kraft). C-kategorien avgrenset til 2017+ av samme grunn. Saker som kun nevner «forpliktelseserklæring» i kontekst av andre bestemmelser (f.eks. § 28-1 leverandørbytte) ble vurdert men bare inkludert der de belyser dokumentasjonskravet.
+
 ### Primærsøk (interseksjonsbasert fangst)
 
 Kandidatlisten ble bygget i fire trinn uten å lese noen saker:
 
-1. **Referansetabell for § 16-10** — 33 saker i `kofa_law_references`.
-2. **Interseksjon med § 17-1** — 3 saker refererer til begge bestemmelser *og* nevner «forpliktelseserklæring» i fulltekst. Disse ble prioritert som kategori A.
-3. **FTS-supplement** — fulltekstsøk for «forpliktelseserklæring» ga 82 saker (2017+) utover referansetabellen. Av disse 82 hadde 24 også § 16-10 i referansetabellen (kategori B). Referansetabellen har kjente gap (33 av 37 FTS-treff for § 16-10) — FTS-supplementet kompenserer for dette.
-4. **Interseksjonsrangering:**
+| Trinn | Søk | Treff | Kommentar |
+|---|---|---|---|
+| 1. Referansetabell | § 16-10 i `kofa_law_references` | 33 | Kjernesett |
+| 2. Interseksjon | § 16-10 ∩ § 17-1 ∩ FTS(«forpliktelseserklæring») | 3 | Kategori A — mest presise |
+| 3. FTS-supplement | FTS(«forpliktelseserklæring»), 2017+ | 82 | 24 med § 16-10 (kat. B), 58 uten (kat. C) |
+| 4. Rangering | A / B / C | 3 / 24 / 82 | A+B = 27 gjennomgått |
 
-| Kategori | Definisjon | Antall |
-|---|---|---|
-| A | § 16-10 ∩ § 17-1 ∩ FTS(«forpliktelseserklæring») | 3 |
-| B | § 16-10 ∩ FTS(«forpliktelseserklæring») | 24 |
-| C | FTS(«forpliktelseserklæring») alene (2017+) | 82 |
-
-A- og B-sakene (27 totalt) ble gjennomgått. Fra C-kategorien ble saker med § 17-1-referanse (5 stk.) og saker identifisert ved ettersøk prioritert.
+Fra C-kategorien ble saker med § 17-1-referanse (5 stk.) og saker identifisert ved ettersøk prioritert.
 
 ### Ettersøk (gap-søk og vinkelrotasjon)
 
 Etter at primæranalysen var ferdig, avdekket seksjon 9 (Videre arbeid) konkrete hull. Ettersøket brukte:
 
-1. **Gap-søk** — direkte SQL mot identifiserte hull (§ 16-10 + kvantitative termer, ESPD som eneste holdepunkt)
-2. **Vinkelrotasjon** — alternative søketermer: «råder over», «støttende virksomhet», «underleverandør + kvalifikasjon»
-3. **Kryssvalidering** — saker som traff i flere uavhengige søk ble prioritert (2019/379, 2024/1092, 2022/1643 traff i 3–4 søk)
+| Søk | Treff | Nye relevante | Kommentar |
+|---|---|---|---|
+| Gap: § 16-10 + kvantitative termer | 0 | 0 | Bekrefter at scenariet er utestet |
+| Gap: ESPD som eneste holdepunkt | 0 | 0 | Bekrefter at scenariet er utestet |
+| Vinkel: «råder over» | ~15 | 3 | Fanger saker uten «forpliktelseserklæring» |
+| Vinkel: «støttende virksomhet» | ~20 | 2 | Overlapp med referansetabell |
+| Vinkel: «underleverandør + kvalifikasjon» | ~30 | 2 | Grensedragningssaker |
+| **Totalt ettersøk** | | **7** | 2 til dette notat, 5 til kommentar/nytt notat |
 
-Ettersøket ga ~10 nye kandidater, hvorav 7 med substansielt ny dekning. Av disse tilhørte 2 dette notatet, 5 kommentaren eller det nye notatet om grensedragning. To gap-søk (kvantitative bemanningskrav, ESPD som eneste holdepunkt) ga null treff — som bekrefter at scenariene er utestet i praksis.
+Saker som traff i flere uavhengige søk ble prioritert (2019/379, 2024/1092, 2022/1643 traff i 3–4 søk).
+
+### Flyt: identifisert → screenet → inkludert
+
+- Identifisert via primærsøk (A+B): 27
+- Screenet (lest vurdering): 27
+- Inkludert fra primærsøk: ~18
+- Tilført fra ettersøk: 7 (hvorav 2 i dette notat)
+- Tilført fra C-kategorien: ~3
+- Lagmannsrettsdommer (via kryssreferanser): 5 + HR-2025-1098-A
+- **Totalt analysert: 20 KOFA + 5 lagmannsrett + 1 HR = 26 avgjørelser**
 
 ### Lagmannsrettsdommer
 
