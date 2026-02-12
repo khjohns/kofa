@@ -31,3 +31,6 @@ docs/notat-*.md
 docs/arbeidsnotat-*.md
 docs/kommentar-foa-*.md
 docs/metode-rettslig-analyse.md
+docs/plan-*.md
+docs/temp/
+scripts/sync_notion.py
