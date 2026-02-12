@@ -12,7 +12,7 @@ Prosjektnavn: `unified-timeline` (delt med paragraf og andre Catenda-prosjekter)
 
 ## Tabeller (alle prefikset `kofa_`)
 
-- `kofa_cases` — Saker med metadata og vektet FTS. PK: `sak_nr`. Nøkkelkolonner: `saken_gjelder`, `innklaget`, `klager`, `sakstype`, `regelverk`, `summary`, `pdf_url`
+- `kofa_cases` — Saker med metadata og vektet FTS. PK: `sak_nr`. Nøkkelkolonner: `innklaget`, `klager`, `sakstype`, `avgjoerelse`, `saken_gjelder`, `regelverk`, `konkurranseform`, `prosedyre`, `avsluttet` (date), `summary`, `pdf_url`
 - `kofa_decision_text` — Avgjørelsestekst per avsnitt. PK: `id`. Nøkkelkolonner: `sak_nr`, `paragraph_number`, `section`, `text`, `search_vector`, `embedding`
 - `kofa_law_references` — Lovhenvisninger. PK: `id`. Nøkkelkolonner: `sak_nr`, `law_name`, `law_section`, `raw_text`, `context`, `regulation_version`
 - `kofa_case_references` — KOFA-kryssreferanser. Nøkkelkolonner: `from_sak_nr`, `to_sak_nr`, `context`
