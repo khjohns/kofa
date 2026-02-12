@@ -194,6 +194,7 @@ class MCPServer:
             {
                 "name": "sok",
                 "title": "Søk i KOFA-saker",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Fulltekstsøk i KOFA-avgjørelser. "
                     "Søker i saksnummer, parter, tema og sammendrag. "
@@ -222,6 +223,7 @@ class MCPServer:
             {
                 "name": "hent_sak",
                 "title": "Hent KOFA-sak",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Hent en spesifikk KOFA-sak med alle detaljer. Bruk saksnummer som '2023/1099'."
                 ),
@@ -239,6 +241,7 @@ class MCPServer:
             {
                 "name": "hent_avgjoerelse",
                 "title": "Hent avgjørelsestekst",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Hent full avgjørelsestekst fra en KOFA-sak. "
                     "Uten seksjon: viser innholdsfortegnelse med avsnittantall per seksjon. "
@@ -268,6 +271,7 @@ class MCPServer:
             {
                 "name": "sok_avgjoerelse",
                 "title": "Fulltekstsøk i avgjørelsestekst",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Fulltekstsøk direkte i KOFA-avgjørelsesteksten (ikke bare metadata). "
                     "Finner eksakte ord/fraser i vurderinger, bakgrunn, anførsler. "
@@ -304,6 +308,7 @@ class MCPServer:
             {
                 "name": "semantisk_sok_kofa",
                 "title": "Semantisk søk i KOFA-avgjørelser",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Semantisk søk med AI-embeddings i KOFA-avgjørelsestekst. "
                     "Finner relaterte avsnitt selv om ordene ikke matcher eksakt. "
@@ -342,6 +347,7 @@ class MCPServer:
             {
                 "name": "siste_saker",
                 "title": "Siste KOFA-saker",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Hent de nyeste KOFA-avgjørelsene med valgfrie filtre. "
                     "Kan filtrere på sakstype, avgjørelse og innklaget."
@@ -378,6 +384,7 @@ class MCPServer:
             {
                 "name": "finn_praksis",
                 "title": "Finn KOFA-praksis etter lovhenvisning",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Finn KOFA-saker som refererer til en bestemt lov eller forskrift. "
                     "Bruk 'paragrafer' med flere verdier for å finne saker som refererer "
@@ -423,6 +430,7 @@ class MCPServer:
             {
                 "name": "relaterte_saker",
                 "title": "Relaterte KOFA-saker",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Finn saker relatert til en gitt KOFA-sak via kryssreferanser. "
                     "Viser både saker denne saken refererer til, og saker som siterer denne. "
@@ -442,6 +450,7 @@ class MCPServer:
             {
                 "name": "mest_siterte",
                 "title": "Mest siterte KOFA-saker",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Finn de mest siterte KOFA-sakene. "
                     "Viser prinsipielle avgjørelser som andre saker oftest refererer til. "
@@ -462,6 +471,7 @@ class MCPServer:
             {
                 "name": "eu_praksis",
                 "title": "Finn EU-domstolspraksis i KOFA",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Finn KOFA-saker som refererer til en bestemt EU-domstolsavgjørelse. "
                     "Eks: eu_praksis(eu_case_id='C-19/00') for SIAC Construction"
@@ -485,6 +495,7 @@ class MCPServer:
             {
                 "name": "mest_siterte_eu",
                 "title": "Mest siterte EU-dommer i KOFA",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Finn de mest siterte EU-domstolsavgjørelsene i KOFA-saker. "
                     "Viser hvilke EU-dommer KOFA oftest refererer til."
@@ -504,6 +515,7 @@ class MCPServer:
             {
                 "name": "hent_eu_dom",
                 "title": "Hent EU-dom",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Hent fulltekst fra en EU-domstolsavgjørelse referert i KOFA-praksis. "
                     "Uten seksjon: viser metadata og innholdsfortegnelse. "
@@ -531,6 +543,7 @@ class MCPServer:
             {
                 "name": "statistikk",
                 "title": "KOFA-statistikk",
+                "annotations": {"readOnlyHint": True},
                 "description": (
                     "Aggregert statistikk over KOFA-saker. "
                     "Kan grupperes etter avgjørelse, sakstype, etc. "
@@ -555,6 +568,7 @@ class MCPServer:
             {
                 "name": "sync",
                 "title": "Synkroniser KOFA-data",
+                "annotations": {"destructiveHint": True, "readOnlyHint": False},
                 "description": (
                     "Synkroniser saker fra KOFA. "
                     "Henter saker via WordPress API og beriker med HTML-metadata."
@@ -583,6 +597,7 @@ class MCPServer:
             {
                 "name": "status",
                 "title": "KOFA-status",
+                "annotations": {"readOnlyHint": True},
                 "description": "Vis status for synkronisert KOFA-data.",
                 "inputSchema": {
                     "type": "object",
