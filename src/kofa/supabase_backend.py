@@ -1509,14 +1509,30 @@ class KofaSupabaseBackend:
         return stats
 
     def _find_missing_eu_case_law(self, force: bool) -> list[str]:
-        """Find EU case IDs referenced in KOFA but not yet in kofa_eu_case_law."""
-        # Get all unique eu_case_id from kofa_eu_references
+        """Find EU case IDs referenced in KOFA or forarbeider but not yet in kofa_eu_case_law."""
         referenced: set[str] = set()
         page_size = 1000
+
+        # From KOFA decisions
         offset = 0
         while True:
             result = (
                 self.client.table("kofa_eu_references")
+                .select("eu_case_id")
+                .range(offset, offset + page_size - 1)
+                .execute()
+            )
+            batch = _rows(result.data)
+            referenced.update(r["eu_case_id"] for r in batch)
+            if len(batch) < page_size:
+                break
+            offset += page_size
+
+        # From forarbeider
+        offset = 0
+        while True:
+            result = (
+                self.client.table("kofa_forarbeider_eu_refs")
                 .select("eu_case_id")
                 .range(offset, offset + page_size - 1)
                 .execute()

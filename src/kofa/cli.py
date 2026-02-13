@@ -117,6 +117,10 @@ def cmd_status(args):
 
 
 def main():
+    from dotenv import load_dotenv  # pyright: ignore[reportMissingImports]
+
+    load_dotenv()
+
     parser = argparse.ArgumentParser(
         prog="kofa",
         description="MCP server for KOFA decisions (offentlige anskaffelser)",

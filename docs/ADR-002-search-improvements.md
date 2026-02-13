@@ -453,3 +453,37 @@ egen side). 6,5M tegn totalt, snitt 34k tegn per dom. Alle på engelsk.
 **Metadata-dekning:** 53 av 191 dommer har `case_name` og `subject` (eldre format
 med DC-meta-tags). Nyere format (post-~2012) mangler disse — kan eventuelt
 berikes fra teksten eller CELLAR SPARQL i fremtiden.
+
+### 2026-02-12: Forarbeider — lovforarbeider som ny rettskilde
+
+Forarbeider (proposisjoner, NOU-er) er sentrale rettskilder for tolkning av
+anskaffelsesregelverket. Fire dokumenter importert via PyMuPDF TOC-basert
+chunking (`05ba92b`):
+
+| Dokument | Seksjoner | Tegn | Lovrefs | EU-refs |
+|---|---|---|---|---|
+| Prop. 51 L (2015–2016) — anskaffelsesloven | 88 | 387k | 100 | 2 |
+| Prop. 147 L (2024–2025) — ny anskaffelseslov | 161 | 461k | 142 | 4 |
+| NOU 2023: 26 — ny anskaffelseslov | 385 | 2.1M | 589 | 481 |
+| NOU 2024: 9 — ny anskaffelseslov | 552 | 1.8M | 803 | 202 |
+| **Totalt** | **1186** | **4.7M** | **1634** | **689** |
+
+**Designvalg:**
+
+| Beslutning | Valg | Begrunnelse |
+|---|---|---|
+| Chunking | TOC-entry-nivå | PDFenes innebygde innholdsfortegnelse gir naturlig hierarkisk struktur (3–4 nivåer) |
+| Lagring | To tabeller (`kofa_forarbeider` + `kofa_forarbeider_sections`) | Per-seksjon embeddings for semantisk søk over 1186 entries |
+| Referanseekstraksjon | Gjenbruk `ReferenceExtractor` | Samme regex som KOFA-avgjørelser — trekker ut lov- og EU-referanser |
+| MCP-verktøy | Separate fra KOFA-praksis | `finn_forarbeider` (lovoppslag) adskilt fra `finn_praksis` (KOFA-saker) |
+
+**4 MCP-verktøy:**
+- `hent_forarbeide` — browse/les (TOC + seksjonstekst)
+- `sok_forarbeider` — fulltekstsøk med norsk stemming
+- `semantisk_sok_forarbeider` — hybrid vektor+FTS (krever embeddings)
+- `finn_forarbeider` — finn seksjoner som refererer en gitt lovparagraf
+
+**Kobling til observasjon 3b (EU-kobling):** Forarbeidene inneholder tabeller
+som mapper norske bestemmelser til EU-artikler. Referanseekstraksjon fanger
+lovhenvisninger, men ikke EU-artikkel-koblingen. Dette gjenstår som fremtidig
+forbedring — semi-automatisk ekstraksjon fra forarbeider-tekst.

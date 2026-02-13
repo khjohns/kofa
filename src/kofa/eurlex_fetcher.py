@@ -174,6 +174,14 @@ class EurLexFetcher:
         ) as client:
             try:
                 resp = client.get(url)
+                # EUR-Lex returns 202 Accepted when content is being generated
+                # Retry once after a pause
+                if resp.status_code == 202:
+                    import time
+
+                    logger.info(f"{eu_case_id}: EUR-Lex returned 202, retrying in 15s...")
+                    time.sleep(15)
+                    resp = client.get(url)
                 resp.raise_for_status()
             except httpx.HTTPStatusError as e:
                 if e.response.status_code == 404:
