@@ -303,7 +303,7 @@ _CASE_REF_RE = re.compile(
 # Matches: "C-19/00 SIAC Construction", "C-368/10 (Max Havelaar)", "C-213/13"
 # Name follows either in parentheses or as capitalized words with connectors
 _EU_CASE_RE = re.compile(
-    r"(C-\d+/\d+)"  # case number
+    r"(C-\d+/\d{1,2})"  # case number (year is always 1-2 digits)
     r"(?:"
     r"\s+\(([^)]+)\)"  # name in parens: (Max Havelaar)
     r"|"
@@ -545,13 +545,20 @@ class ReferenceExtractor:
 
         return refs
 
+    # Known PDF extraction errors: footnote numbers merged with case IDs
+    _EU_CASE_CORRECTIONS = {
+        "C-243/39": "C-243/89",  # Storebælt — "139" footnote merged with "/89"
+        "C-298/21": "C-298/15",  # Borta — "215" footnote, regex truncated to /21
+        "C-391/31": "C-391/15",  # Marina del Mediterráneo — "315" footnote, truncated to /31
+    }
+
     def extract_eu_references(self, text: str) -> list[EUCaseReference]:
         """Extract EU Court of Justice case references from text."""
         refs: list[EUCaseReference] = []
         seen: set[str] = set()
 
         for m in _EU_CASE_RE.finditer(text):
-            case_id = m.group(1)
+            case_id = self._EU_CASE_CORRECTIONS.get(m.group(1), m.group(1))
             if case_id in seen:
                 continue
             seen.add(case_id)
