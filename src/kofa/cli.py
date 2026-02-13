@@ -74,6 +74,7 @@ def cmd_sync(args):
         pdf=args.pdf,
         references=args.references,
         eu_cases=args.eu_cases,
+        forarbeider=args.forarbeider,
         force=args.force,
         limit=args.limit,
         max_time=args.max_time,
@@ -158,6 +159,11 @@ def main():
         "--eu-cases",
         action="store_true",
         help="Fetch EU Court judgment text from EUR-Lex",
+    )
+    sync_parser.add_argument(
+        "--forarbeider",
+        action="store_true",
+        help="Import forarbeider (forarbeids-dokumenter) from PDFs",
     )
     sync_parser.add_argument(
         "--embeddings", action="store_true", help="Generate embeddings for decision text"

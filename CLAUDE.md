@@ -25,6 +25,11 @@ kofa sync --pdf                          # PDF → kofa_decision_text
 kofa sync --references                   # Regex → kofa_law/case/eu_references
 kofa sync --eu-cases                     # EUR-Lex → kofa_eu_case_law
 kofa sync --embeddings                   # Gemini → embeddings
+kofa sync --forarbeider                  # PDF → kofa_forarbeider + referanser
+
+# Forarbeider-embeddings (separat script)
+python scripts/embed_forarbeider.py --dry-run   # Vis antall og kostnad
+python scripts/embed_forarbeider.py              # Generer embeddings
 
 # Kvalitet
 ./venv/bin/ruff check src/               # Linting

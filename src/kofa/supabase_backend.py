@@ -1627,6 +1627,335 @@ class KofaSupabaseBackend:
         return _rows(result.data)
 
     # =========================================================================
+    # Forarbeider (legislative preparatory works)
+    # =========================================================================
+
+    @with_retry()
+    def get_forarbeide(self, doc_id: str) -> dict | None:
+        """Get a forarbeider document by doc_id."""
+        result = (
+            self.client.table("kofa_forarbeider")
+            .select("*")
+            .eq("doc_id", doc_id)
+            .limit(1)
+            .execute()
+        )
+        return _row(result.data)
+
+    @with_retry()
+    def list_forarbeider(self) -> list[dict]:
+        """List all forarbeider documents."""
+        result = self.client.table("kofa_forarbeider").select("*").order("doc_id").execute()
+        return _rows(result.data)
+
+    @with_retry()
+    def get_forarbeider_sections(
+        self,
+        doc_id: str,
+        section_number: str | None = None,
+    ) -> list[dict]:
+        """
+        Get sections for a forarbeider document.
+
+        If section_number is provided, matches on prefix: "4.1" returns
+        4.1, 4.1.1, 4.1.2 etc.
+        """
+        query = (
+            self.client.table("kofa_forarbeider_sections")
+            .select("section_number, title, level, page_start, sort_order, text, char_count")
+            .eq("doc_id", doc_id)
+        )
+        if section_number:
+            # Prefix match: "4.1" matches "4.1", "4.1.1", "4.1.2"
+            query = query.or_(
+                f"section_number.eq.{section_number},section_number.like.{section_number}.%"
+            )
+        query = query.order("sort_order").limit(500)
+        result = query.execute()
+        return _rows(result.data)
+
+    def upsert_forarbeider(self, doc_data: dict) -> None:
+        """Upsert a forarbeider document metadata."""
+        self.client.table("kofa_forarbeider").upsert(doc_data, on_conflict="doc_id").execute()
+
+    def upsert_forarbeider_sections(self, doc_id: str, sections: list[dict]) -> int:
+        """Replace all sections for a forarbeider document."""
+        # Delete existing sections
+        self.client.table("kofa_forarbeider_sections").delete().eq("doc_id", doc_id).execute()
+
+        # Batch insert (chunks of 500 to stay under PostgREST limits)
+        inserted = 0
+        for i in range(0, len(sections), 500):
+            batch = sections[i : i + 500]
+            self.client.table("kofa_forarbeider_sections").insert(batch).execute()
+            inserted += len(batch)
+
+        return inserted
+
+    @with_retry()
+    def search_forarbeider(
+        self, query: str, doc_id: str | None = None, limit: int = 20
+    ) -> list[dict]:
+        """Full-text search on forarbeider sections via RPC."""
+        result = self.client.rpc(
+            "search_kofa_forarbeider",
+            {
+                "search_query": query,
+                "doc_filter": doc_id,
+                "max_results": limit,
+            },
+        ).execute()
+        return _rows(result.data)
+
+    def sync_forarbeider(
+        self,
+        pdf_dir: str,
+        force: bool = False,
+        verbose: bool = False,
+    ) -> dict:
+        """
+        Import forarbeider PDFs from a directory into the database.
+
+        Reads all known PDFs from pdf_dir, extracts sections via TOC,
+        and upserts into kofa_forarbeider + kofa_forarbeider_sections.
+        """
+        from pathlib import Path
+
+        from kofa.forarbeider_extractor import (
+            FORARBEIDER_REGISTRY,
+            ForarbeiderExtractor,
+        )
+
+        stats: dict[str, int] = {"documents": 0, "sections": 0, "errors": 0}
+        log = _log if verbose else lambda msg: logger.info(msg)
+        pdf_path = Path(pdf_dir)
+
+        extractor = ForarbeiderExtractor()
+
+        for filename in sorted(FORARBEIDER_REGISTRY.keys()):
+            filepath = pdf_path / filename
+            if not filepath.exists():
+                log(f"Ikke funnet: {filename}")
+                stats["errors"] += 1
+                continue
+
+            try:
+                doc = extractor.extract(filepath)
+
+                # Check if already imported (skip if not force)
+                if not force:
+                    existing = self.get_forarbeide(doc.doc_id)
+                    if existing and existing.get("section_count", 0) == doc.section_count:
+                        log(f"Allerede importert: {doc.title} ({doc.section_count} seksjoner)")
+                        continue
+
+                # Upsert document metadata
+                doc_data = {
+                    "doc_id": doc.doc_id,
+                    "doc_type": doc.doc_type,
+                    "title": doc.title,
+                    "full_title": doc.full_title,
+                    "session": doc.session,
+                    "page_count": doc.page_count,
+                    "char_count": doc.char_count,
+                    "section_count": doc.section_count,
+                    "source_file": doc.source_file,
+                }
+                self.upsert_forarbeider(doc_data)
+
+                # Build section rows
+                section_rows = []
+                for s in doc.sections:
+                    section_rows.append(
+                        {
+                            "doc_id": doc.doc_id,
+                            "section_number": s.section_number,
+                            "title": s.title,
+                            "level": s.level,
+                            "page_start": s.page_start,
+                            "parent_path": s.parent_path,
+                            "sort_order": s.sort_order,
+                            "text": s.text,
+                        }
+                    )
+
+                inserted = self.upsert_forarbeider_sections(doc.doc_id, section_rows)
+                stats["documents"] += 1
+                stats["sections"] += inserted
+
+                non_empty = sum(1 for s in doc.sections if s.text.strip())
+                log(
+                    f"Importert: {doc.title} — {inserted} seksjoner "
+                    f"({non_empty} med tekst, {doc.char_count:,} tegn)"
+                )
+
+            except Exception as e:
+                logger.error(f"Feil ved import av {filename}: {e}")
+                stats["errors"] += 1
+
+        log(
+            f"Ferdig: {stats['documents']} dokumenter, "
+            f"{stats['sections']} seksjoner, {stats['errors']} feil"
+        )
+
+        return stats
+
+    def sync_forarbeider_references(
+        self,
+        force: bool = False,
+        verbose: bool = False,
+    ) -> dict:
+        """Extract law and EU references from forarbeider section text."""
+        from kofa.reference_extractor import ReferenceExtractor
+
+        stats: dict[str, int] = {
+            "documents": 0,
+            "law_refs": 0,
+            "eu_refs": 0,
+            "errors": 0,
+        }
+        log = _log if verbose else lambda msg: logger.info(msg)
+
+        # Get all forarbeider documents
+        docs = self.list_forarbeider()
+        if not docs:
+            log("No forarbeider documents found")
+            return stats
+
+        extractor = ReferenceExtractor()
+
+        for doc in docs:
+            doc_id = doc["doc_id"]
+            try:
+                # Check if already extracted (skip if refs exist and not force)
+                if not force:
+                    existing = (
+                        self.client.table("kofa_forarbeider_law_refs")
+                        .select("id", count="exact")  # type: ignore[arg-type]
+                        .eq("doc_id", doc_id)
+                        .limit(1)
+                        .execute()
+                    )
+                    if existing.count and existing.count > 0:
+                        log(f"Allerede ekstrahert: {doc_id}")
+                        continue
+
+                # Get all sections with text
+                sections = self.get_forarbeider_sections(doc_id)
+                if not sections:
+                    continue
+
+                all_law_refs = []
+                all_eu_refs = []
+
+                for section in sections:
+                    text = section.get("text", "")
+                    if not text or len(text) < 20:
+                        continue
+
+                    section_number = section.get("section_number", "")
+                    extractor.reset_context()
+
+                    law_refs = extractor.extract_law_references(text)
+                    eu_refs = extractor.extract_eu_references(text)
+
+                    for ref in law_refs:
+                        all_law_refs.append(
+                            {
+                                "doc_id": doc_id,
+                                "section_number": section_number,
+                                "law_name": ref.law_name,
+                                "law_section": ref.section,
+                                "context": text[:300],
+                            }
+                        )
+
+                    for ref in eu_refs:
+                        all_eu_refs.append(
+                            {
+                                "doc_id": doc_id,
+                                "section_number": section_number,
+                                "eu_case_id": ref.case_id,
+                                "context": text[:300],
+                            }
+                        )
+
+                # Deduplicate within document (same law_name+law_section per section)
+                seen_law: set[tuple[str, str, str]] = set()
+                unique_law_refs = []
+                for ref in all_law_refs:
+                    key = (ref["section_number"], ref["law_name"], ref["law_section"])
+                    if key not in seen_law:
+                        seen_law.add(key)
+                        unique_law_refs.append(ref)
+
+                seen_eu: set[tuple[str, str]] = set()
+                unique_eu_refs = []
+                for ref in all_eu_refs:
+                    key = (ref["section_number"], ref["eu_case_id"])
+                    if key not in seen_eu:
+                        seen_eu.add(key)
+                        unique_eu_refs.append(ref)
+
+                # Delete existing refs for this doc (in case of re-run)
+                self.client.table("kofa_forarbeider_law_refs").delete().eq(
+                    "doc_id", doc_id
+                ).execute()
+                self.client.table("kofa_forarbeider_eu_refs").delete().eq(
+                    "doc_id", doc_id
+                ).execute()
+
+                # Insert in batches
+                if unique_law_refs:
+                    for i in range(0, len(unique_law_refs), 500):
+                        batch = unique_law_refs[i : i + 500]
+                        self.client.table("kofa_forarbeider_law_refs").insert(batch).execute()
+
+                if unique_eu_refs:
+                    for i in range(0, len(unique_eu_refs), 500):
+                        batch = unique_eu_refs[i : i + 500]
+                        self.client.table("kofa_forarbeider_eu_refs").insert(batch).execute()
+
+                stats["documents"] += 1
+                stats["law_refs"] += len(unique_law_refs)
+                stats["eu_refs"] += len(unique_eu_refs)
+
+                log(
+                    f"Referanser: {doc_id} — "
+                    f"{len(unique_law_refs)} lovhenvisninger, "
+                    f"{len(unique_eu_refs)} EU-referanser"
+                )
+
+            except Exception as e:
+                logger.error(f"Feil ved referanseekstraksjon for {doc_id}: {e}")
+                stats["errors"] += 1
+
+        return stats
+
+    @with_retry()
+    def find_forarbeider_by_law_reference(
+        self,
+        law_name: str,
+        section: str | None = None,
+        limit: int = 10,
+    ) -> list[dict]:
+        """Find forarbeider sections citing a specific law section."""
+        query = (
+            self.client.table("kofa_forarbeider_law_refs")
+            .select(
+                "doc_id, section_number, law_name, law_section, context, kofa_forarbeider(title)"
+            )
+            .eq("law_name", law_name)
+        )
+
+        if section:
+            query = query.eq("law_section", section)
+
+        query = query.order("doc_id").limit(limit)
+        result = query.execute()
+        return _rows(result.data)
+
+    # =========================================================================
     # Status
     # =========================================================================
 

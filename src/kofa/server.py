@@ -48,6 +48,10 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | `sok_avgjoerelse(query, seksjon?, limit?)` | Fulltekstsøk i avgjørelsesteksten (ikke metadata) |
 | `semantisk_sok_kofa(query, seksjon?, limit?)` | Semantisk søk med AI-embeddings i avgjørelsestekst |
 | `statistikk(aar?, gruppering?)` | Aggregert statistikk |
+| `hent_forarbeide(doc_id?, seksjon?)` | Hent/bla i forarbeider (Prop., NOU) til anskaffelsesregelverket |
+| `sok_forarbeider(query, doc_id?, limit?)` | Fulltekstsøk i forarbeider |
+| `semantisk_sok_forarbeider(query, doc_id?, limit?)` | Semantisk søk i forarbeider |
+| `finn_forarbeider(lov, paragraf?, limit?)` | Finn forarbeider-seksjoner som drøfter en lovbestemmelse |
 
 ## Velg riktig verktøy
 
@@ -68,6 +72,9 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 | Spør om en EU-dom | `eu_praksis(eu_case_id="C-19/00")` | KOFA-saker som anvender EU-dommen |
 | Vil lese selve EU-dommen | `hent_eu_dom("C-19/00")` → TOC, deretter `hent_eu_dom("C-19/00", "begrunnelse")` | Fulltekst fra EUR-Lex |
 | Vil se viktigste EU-dommer | `mest_siterte_eu(limit=10)` | De mest refererte EU-dommene i KOFA |
+| Vil lese forarbeidene | `hent_forarbeide(doc_id='nou-2023-26', seksjon='4')` | Direkte lesing av lovforarbeider |
+| Søker i forarbeidene | `sok_forarbeider("kvalifikasjonskrav")` | FTS i proposisjoner og NOU-er |
+| Vil finne forarbeider til en paragraf | `finn_forarbeider(lov="foa", paragraf="16-10")` | Lovhenvisninger i forarbeider |
 
 **Kjerneforskjell mellom søkeverktøyene:**
 - `sok` søker i sakens metadata (parter, tema, sammendrag)
@@ -82,8 +89,9 @@ gebyrsaker (overtredelsesgebyr ved ulovlige direkte anskaffelser).
 3. **Les avgjørelsen** → `hent_avgjoerelse(sak_nr)` for innholdsfortegnelse, deretter `hent_avgjoerelse(sak_nr, seksjon="vurdering")` for begrunnelsen
 4. **Se kontekst** → `relaterte_saker(sak_nr)` for å se hva saken bygger på og hvem som bygger videre
 5. **Les EU-dommen** → Hvis KOFA refererer en EU-dom: `hent_eu_dom("C-19/00")` for innhold, deretter `hent_eu_dom("C-19/00", "begrunnelse")` for selve begrunnelsen
-6. **Slå opp lovhjemmel** → Bruk Paragraf MCP (`lov("anskaffelsesforskriften", "8-3")`) for å se selve lovteksten
-7. **Tilby videre utforskning** → Se under
+6. **Les forarbeidene** → `hent_forarbeide()` for å finne relevant kontekst i proposisjoner/NOU-er
+7. **Slå opp lovhjemmel** → Bruk Paragraf MCP (`lov("anskaffelsesforskriften", "8-3")`) for å se selve lovteksten
+8. **Tilby videre utforskning** → Se under
 
 ## VIKTIG: Tilby videre utforskning
 
@@ -170,6 +178,23 @@ KOFA MCP og Paragraf MCP utfyller hverandre:
 | "Kan man stille krav om lokal tilknytning?" | `sok("lokal tilknytning")` | `sok("tildelingskriterier")` |
 
 **Beste praksis:** Kombiner lovtekst (Paragraf) med KOFA-praksis for fullstendige svar.
+
+## Forarbeider
+
+Tilgang til lovforarbeider (proposisjoner og NOU-er) som ligger til grunn for anskaffelsesregelverket:
+
+| Dokument | ID | Seksjoner |
+|----------|-----|-----------|
+| Prop. 51 L (2015–2016) | `prop-51-l-2015-2016` | 88 |
+| Prop. 147 L (2024–2025) | `prop-147-l-2024-2025` | 161 |
+| NOU 2023: 26 | `nou-2023-26` | 385 |
+| NOU 2024: 9 | `nou-2024-9` | 552 |
+
+**Arbeidsflyt:**
+1. `hent_forarbeide()` → se tilgjengelige dokumenter
+2. `hent_forarbeide(doc_id='nou-2023-26')` → se innholdsfortegnelse
+3. `hent_forarbeide(doc_id='nou-2023-26', seksjon='4.1')` → les en seksjon
+4. `sok_forarbeider("tildelingskriterier")` → søk på tvers av alle dokumenter
 
 ## Begrensninger
 
@@ -566,6 +591,150 @@ class MCPServer:
                 },
             },
             {
+                "name": "hent_forarbeide",
+                "title": "Hent forarbeider",
+                "annotations": {"readOnlyHint": True},
+                "description": (
+                    "Hent forarbeider (proposisjoner og NOU-er) til "
+                    "anskaffelsesregelverket. "
+                    "Uten argumenter: viser tilgjengelige dokumenter. "
+                    "Med doc_id: viser innholdsfortegnelse med "
+                    "token-estimat. "
+                    "Med doc_id + seksjon: viser seksjonens tekst. "
+                    "Eks: hent_forarbeide(doc_id="
+                    "'prop-51-l-2015-2016', seksjon='7.9')"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "doc_id": {
+                            "type": "string",
+                            "description": (
+                                "Dokument-ID. Tilgjengelige: "
+                                "'prop-51-l-2015-2016', "
+                                "'prop-147-l-2024-2025', "
+                                "'nou-2023-26', 'nou-2024-9'"
+                            ),
+                        },
+                        "seksjon": {
+                            "type": "string",
+                            "description": (
+                                "Seksjonsnummer fra "
+                                "innholdsfortegnelsen "
+                                "(f.eks. '7.9', '2.2.1'). "
+                                "Prefix-match: '2' gir hele "
+                                "kapittel 2."
+                            ),
+                        },
+                    },
+                    "required": [],
+                },
+            },
+            {
+                "name": "sok_forarbeider",
+                "title": "Søk i forarbeider",
+                "annotations": {"readOnlyHint": True},
+                "description": (
+                    "Fulltekstsøk i forarbeider (proposisjoner og "
+                    "NOU-er) til anskaffelsesregelverket. "
+                    "Søker i seksjonstitler og tekst. "
+                    "Eks: 'kvalifikasjonskrav', "
+                    "'tildelingskriterier', 'rammeavtale'"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": (
+                                "Søketekst. Støtter "
+                                "websearch-syntaks: "
+                                '"eksakt frase", OR, -ekskluder'
+                            ),
+                        },
+                        "doc_id": {
+                            "type": "string",
+                            "description": ("Filtrer på dokument (valgfritt)"),
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": ("Maks antall resultater (standard: 20)"),
+                            "default": 20,
+                        },
+                    },
+                    "required": ["query"],
+                },
+            },
+            {
+                "name": "semantisk_sok_forarbeider",
+                "title": "Semantisk søk i forarbeider",
+                "annotations": {"readOnlyHint": True},
+                "description": (
+                    "Semantisk søk med AI-embeddings i forarbeider. "
+                    "Finner relaterte seksjoner selv om ordene ikke "
+                    "matcher eksakt. "
+                    "Eks: 'krav til leverandørens erfaring', "
+                    "'miljøhensyn i anskaffelser'"
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": (
+                                "Søketekst i naturlig språk. "
+                                "Eks: 'krav til leverandørens "
+                                "kompetanse og erfaring'"
+                            ),
+                        },
+                        "doc_id": {
+                            "type": "string",
+                            "description": ("Filtrer på dokument (valgfritt)"),
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": ("Maks antall resultater (standard: 10)"),
+                            "default": 10,
+                        },
+                    },
+                    "required": ["query"],
+                },
+            },
+            {
+                "name": "finn_forarbeider",
+                "title": "Finn forarbeider etter lovhenvisning",
+                "annotations": {"readOnlyHint": True},
+                "description": (
+                    "Finn forarbeider-seksjoner som refererer til en bestemt lov eller "
+                    "paragraf. Eks: finn_forarbeider(lov='foa', paragraf='16-10') "
+                    "finner steder i proposisjoner og NOU-er som drøfter § 16-10."
+                ),
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "lov": {
+                            "type": "string",
+                            "description": (
+                                "Lovnavn: 'anskaffelsesloven', "
+                                "'anskaffelsesforskriften', 'foa', 'loa', etc."
+                            ),
+                        },
+                        "paragraf": {
+                            "type": "string",
+                            "description": (
+                                "Paragrafnummer (f.eks. '4', '16-10'). Utelat for alle paragrafer."
+                            ),
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maks antall resultater (standard: 20)",
+                            "default": 20,
+                        },
+                    },
+                    "required": ["lov"],
+                },
+            },
+            {
                 "name": "sync",
                 "title": "Synkroniser KOFA-data",
                 "annotations": {"destructiveHint": True, "readOnlyHint": False},
@@ -732,6 +901,29 @@ class MCPServer:
                 content = self.service.hent_eu_dom(
                     eu_case_id=arguments.get("eu_case_id", ""),
                     seksjon=arguments.get("seksjon"),
+                )
+            elif tool_name == "hent_forarbeide":
+                content = self.service.hent_forarbeide(
+                    doc_id=arguments.get("doc_id"),
+                    seksjon=arguments.get("seksjon"),
+                )
+            elif tool_name == "sok_forarbeider":
+                content = self.service.sok_forarbeider(
+                    query=arguments.get("query", ""),
+                    doc_id=arguments.get("doc_id"),
+                    limit=arguments.get("limit", 20),
+                )
+            elif tool_name == "semantisk_sok_forarbeider":
+                content = self.service.semantisk_sok_forarbeider(
+                    query=arguments.get("query", ""),
+                    doc_id=arguments.get("doc_id"),
+                    limit=arguments.get("limit", 10),
+                )
+            elif tool_name == "finn_forarbeider":
+                content = self.service.finn_forarbeider(
+                    lov=arguments.get("lov", ""),
+                    paragraf=arguments.get("paragraf"),
+                    limit=arguments.get("limit", 20),
                 )
             elif tool_name == "statistikk":
                 content = self.service.statistics(

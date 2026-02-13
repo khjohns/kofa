@@ -608,6 +608,289 @@ class KofaService:
 
         return "\n".join(lines)
 
+    # =========================================================================
+    # Forarbeider (legislative preparatory works)
+    # =========================================================================
+
+    def hent_forarbeide(self, doc_id: str | None = None, seksjon: str | None = None) -> str:
+        """
+        Browse forarbeider (propositions and NOU reports).
+
+        Three modes:
+        1. No args → list all documents
+        2. doc_id only → show table of contents with token estimates
+        3. doc_id + seksjon → show section text (prefix match)
+        """
+        # Mode 1: List all documents
+        if not doc_id:
+            docs = self.backend.list_forarbeider()
+            if not docs:
+                return "Ingen forarbeider tilgjengelig."
+
+            lines = ["## Forarbeider\n"]
+            lines.append(f"{len(docs)} dokumenter tilgjengelig:\n")
+
+            for doc in docs:
+                title = doc.get("title", doc.get("doc_id", "?"))
+                did = doc.get("doc_id", "?")
+                doc_type = doc.get("doc_type", "")
+                session = doc.get("session", "")
+                section_count = doc.get("section_count", 0)
+                char_count = doc.get("char_count", 0)
+                tokens = char_count // 4
+
+                lines.append(f"### {title}")
+                lines.append(f"**ID:** `{did}`")
+                meta_parts = []
+                if doc_type:
+                    meta_parts.append(f"**Type:** {doc_type}")
+                if session:
+                    meta_parts.append(f"**Sesjon:** {session}")
+                if meta_parts:
+                    lines.append(" | ".join(meta_parts))
+                lines.append(
+                    f"**Omfang:** {section_count} seksjoner, "
+                    f"{char_count:,} tegn (~{tokens:,} tokens)"
+                )
+                lines.append("")
+
+            lines.append("Bruk `hent_forarbeide(doc_id='...')` for innholdsfortegnelse.")
+            return "\n".join(lines)
+
+        # Mode 2 & 3: Need document metadata
+        doc = self.backend.get_forarbeide(doc_id)
+        if not doc:
+            return (
+                f"Fant ikke forarbeide: {doc_id}. "
+                f"Bruk `hent_forarbeide()` for å se tilgjengelige "
+                f"dokumenter."
+            )
+
+        title = doc.get("title", doc_id)
+
+        # Mode 3: Show section text
+        if seksjon:
+            sections = self.backend.get_forarbeider_sections(doc_id, seksjon)
+            if not sections:
+                return (
+                    f"Fant ingen seksjoner som matcher '{seksjon}' i "
+                    f"{title}. Bruk "
+                    f"`hent_forarbeide(doc_id='{doc_id}')` for "
+                    f"innholdsfortegnelse."
+                )
+
+            first = sections[0]
+            header_sec = first.get("section_number", seksjon)
+            header_title = first.get("title", "")
+            header = f"## {title} — {header_sec}"
+            if header_title:
+                header += f" {header_title}"
+            lines = [header, ""]
+
+            for s in sections:
+                sec_num = s.get("section_number", "")
+                sec_title = s.get("title", "")
+                level = s.get("level", 2)
+                text = s.get("text", "")
+
+                # Heading level: level 1 → ##, 2 → ###, etc.
+                hashes = "#" * min(level + 1, 6)
+                heading = f"{hashes} {sec_num}"
+                if sec_title:
+                    heading += f" {sec_title}"
+                lines.append(heading)
+                lines.append("")
+                if text.strip():
+                    lines.append(text)
+                    lines.append("")
+
+            return "\n".join(lines)
+
+        # Mode 2: Show TOC
+        all_sections = self.backend.get_forarbeider_sections(doc_id)
+        total_chars = doc.get("char_count", 0)
+        total_tokens = total_chars // 4
+        section_count = doc.get("section_count", 0)
+
+        lines = [f"## {title} — Innholdsfortegnelse\n"]
+        lines.append(
+            f"{section_count} seksjoner, {total_chars:,} tegn (~{total_tokens:,} tokens)\n"
+        )
+
+        # Group by top-level section (level 1)
+        lines.append("| # | Seksjon | Tegn | ~Tokens |")
+        lines.append("|---|---------|-----:|--------:|")
+
+        # Build TOC: for each level-1 section, sum chars of it
+        # and its subsections
+        current_l1: dict | None = None
+        l1_chars = 0
+
+        for s in all_sections:
+            level = s.get("level", 1)
+            if level == 1:
+                # Flush previous level-1 section
+                if current_l1 is not None:
+                    sec_num = current_l1.get("section_number", "?")
+                    sec_title = current_l1.get("title", "")
+                    tokens = l1_chars // 4
+                    lines.append(f"| {sec_num} | {sec_title} | {l1_chars:,} | {tokens:,} |")
+                current_l1 = s
+                l1_chars = s.get("char_count", 0) or 0
+            else:
+                l1_chars += s.get("char_count", 0) or 0
+
+        # Flush last level-1 section
+        if current_l1 is not None:
+            sec_num = current_l1.get("section_number", "?")
+            sec_title = current_l1.get("title", "")
+            tokens = l1_chars // 4
+            lines.append(f"| {sec_num} | {sec_title} | {l1_chars:,} | {tokens:,} |")
+
+        lines.append(
+            f"\nBruk `hent_forarbeide(doc_id='{doc_id}', seksjon='...')` for å lese en seksjon."
+        )
+        return "\n".join(lines)
+
+    def sok_forarbeider(self, query: str, doc_id: str | None = None, limit: int = 20) -> str:
+        """Full-text search in forarbeider sections."""
+        results = self.backend.search_forarbeider(query, doc_id, limit)
+
+        if not results:
+            doc_label = f" (dokument: {doc_id})" if doc_id else ""
+            return f"Ingen treff i forarbeider for: {query}{doc_label}"
+
+        lines = [f"## Søk i forarbeider: {query}\n"]
+        if doc_id:
+            lines.append(f"*Filtrert på dokument: {doc_id}*\n")
+        lines.append(f"Fant {len(results)} treff:\n")
+
+        for r in results:
+            doc_title = r.get("doc_title", r.get("doc_id", "?"))
+            sec_num = r.get("section_number", "?")
+            sec_title = r.get("title", "")
+            rank = r.get("rank", 0)
+            text = r.get("text", "")
+            char_count = r.get("char_count", 0)
+            r_doc_id = r.get("doc_id", "?")
+
+            heading = f"### {doc_title} — {sec_num}"
+            if sec_title:
+                heading += f" {sec_title}"
+            snippet = text[:300] + "..." if len(text) > 300 else text
+
+            parts = [heading]
+            parts.append(f"*Rank: {rank:.3f} | {char_count} tegn*")
+            parts.append(f"\n{snippet}\n")
+            parts.append(f'-> `hent_forarbeide("{r_doc_id}", "{sec_num}")`')
+            parts.append("")
+            lines.append("\n".join(parts))
+
+        return "\n".join(lines)
+
+    def semantisk_sok_forarbeider(
+        self,
+        query: str,
+        doc_id: str | None = None,
+        limit: int = 10,
+    ) -> str:
+        """Semantic (hybrid vector + FTS) search in forarbeider."""
+        try:
+            from kofa.vector_search import ForarbeiderVectorSearch
+
+            vs = ForarbeiderVectorSearch()
+            results = vs.search(query, limit=limit, doc_id=doc_id)
+        except Exception as e:
+            logger.warning(f"Forarbeider semantic search failed, falling back to FTS: {e}")
+            return self.sok_forarbeider(query, doc_id, limit)
+
+        if not results:
+            doc_label = f" (dokument: {doc_id})" if doc_id else ""
+            return f"Ingen treff for semantisk søk i forarbeider: {query}{doc_label}"
+
+        lines = [f"## Semantisk søk i forarbeider: {query}\n"]
+        if doc_id:
+            lines.append(f"*Filtrert på dokument: {doc_id}*\n")
+        lines.append(f"Fant {len(results)} treff:\n")
+
+        for r in results:
+            doc_title = getattr(r, "doc_title", "?")
+            sec_num = getattr(r, "section_number", "?")
+            sec_title = getattr(r, "title", "")
+            text = getattr(r, "text", "")
+            r_doc_id = getattr(r, "doc_id", "?")
+
+            heading = f"### {doc_title} — {sec_num}"
+            if sec_title:
+                heading += f" {sec_title}"
+            snippet = text[:300] + "..." if len(text) > 300 else text
+
+            combined = getattr(r, "combined_score", 0)
+            sim = getattr(r, "similarity", 0)
+            fts = getattr(r, "fts_rank", 0)
+
+            parts = [heading]
+            parts.append(f"*Score: {combined:.3f} (vektor: {sim:.3f}, FTS: {fts:.3f})*")
+            parts.append(f"\n{snippet}\n")
+            parts.append(f'-> `hent_forarbeide("{r_doc_id}", "{sec_num}")`')
+            parts.append("")
+            lines.append("\n".join(parts))
+
+        return "\n".join(lines)
+
+    def finn_forarbeider(
+        self,
+        lov: str,
+        paragraf: str | None = None,
+        limit: int = 20,
+    ) -> str:
+        """Find forarbeider sections citing a specific law provision."""
+        from kofa.reference_extractor import LAW_ALIASES, _normalize_section
+
+        lov = lov.strip()
+        if not lov:
+            return "Feil: 'lov' er påkrevd. Bruk f.eks. 'anskaffelsesforskriften' eller 'foa'."
+
+        canonical = LAW_ALIASES.get(lov.lower())
+        if not canonical:
+            canonical = lov.lower()
+
+        if paragraf:
+            paragraf = _normalize_section(paragraf)
+            if not paragraf:
+                paragraf = None
+
+        results = self.backend.find_forarbeider_by_law_reference(canonical, paragraf, limit)
+
+        if not results:
+            section_label = f" § {paragraf}" if paragraf else ""
+            return f"Ingen forarbeider-seksjoner funnet som refererer til {lov}{section_label}"
+
+        section_label = f" § {paragraf}" if paragraf else ""
+        lines = [f"## Forarbeider: {lov}{section_label}\n"]
+        lines.append(f"Fant {len(results)} seksjoner:\n")
+
+        for r in results:
+            doc_title = ""
+            fa_meta = r.get("kofa_forarbeider")
+            if fa_meta:
+                doc_title = fa_meta.get("title", "")
+            section_nr = r.get("section_number", "")
+            doc_id = r.get("doc_id", "")
+            law_section = r.get("law_section", "")
+            context = r.get("context", "")
+            snippet = context[:200] + "..." if len(context) > 200 else context
+
+            parts = [f"### {doc_title} — {section_nr}"]
+            if law_section:
+                parts.append(f"**Referert paragraf:** § {law_section}")
+            if snippet:
+                parts.append(f"> {snippet}")
+            parts.append(f'-> `hent_forarbeide("{doc_id}", "{section_nr}")`\n')
+            lines.append("\n".join(parts))
+
+        return "\n".join(lines)
+
     @staticmethod
     def _format_ref_line(case: dict) -> str:
         """Format a cross-referenced case as a compact line."""
@@ -635,6 +918,7 @@ class KofaService:
         pdf: bool = False,
         references: bool = False,
         eu_cases: bool = False,
+        forarbeider: bool = False,
         force: bool = False,
         limit: int | None = None,
         max_time: int = 0,
@@ -646,8 +930,8 @@ class KofaService:
         """Run sync operation."""
         lines = ["## Synkronisering\n"]
 
-        # WP API sync (skip if only doing PDF, reference, or EU case law extraction)
-        if not pdf and not references and not eu_cases:
+        # WP API sync (skip if only doing PDF, reference, EU, or forarbeider)
+        if not pdf and not references and not eu_cases and not forarbeider:
             wp_stats = self.backend.sync_from_wp_api(force=force, verbose=verbose)
             lines.append("### WordPress API")
             lines.append(f"- Hentet **{wp_stats['upserted']}** saker fra {wp_stats['pages']} sider")
@@ -731,6 +1015,39 @@ class KofaService:
                 lines.append(f"- {eu_stats['skipped']} hoppet over (404)")
             if eu_stats.get("stopped_reason"):
                 lines.append(f"- Stoppet: {eu_stats['stopped_reason']}")
+
+        # Forarbeider import (optional)
+        if forarbeider:
+            import os
+
+            pdf_dir = os.path.join(os.path.dirname(__file__), "..", "..", "docs", "forarbeider")
+            pdf_dir = os.path.normpath(pdf_dir)
+            fa_stats = self.backend.sync_forarbeider(
+                pdf_dir=pdf_dir,
+                force=force,
+                verbose=verbose,
+            )
+            lines.append("\n### Forarbeider (PDF-import)")
+            lines.append(
+                f"- Importert **{fa_stats['documents']}** dokumenter "
+                f"({fa_stats['sections']} seksjoner)"
+            )
+            if fa_stats["errors"]:
+                lines.append(f"- {fa_stats['errors']} feil")
+
+            # Extract references from imported text
+            ref_stats = self.backend.sync_forarbeider_references(
+                force=force,
+                verbose=verbose,
+            )
+            if ref_stats["documents"] > 0:
+                lines.append(
+                    f"- Referanser: **{ref_stats['law_refs']}** lovhenvisninger, "
+                    f"**{ref_stats['eu_refs']}** EU-referanser "
+                    f"(fra {ref_stats['documents']} dokumenter)"
+                )
+            if ref_stats["errors"]:
+                lines.append(f"- {ref_stats['errors']} referansefeil")
 
         return "\n".join(lines)
 

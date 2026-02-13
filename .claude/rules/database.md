@@ -19,6 +19,10 @@ Prosjektnavn: `unified-timeline` (delt med paragraf og andre Catenda-prosjekter)
 - `kofa_eu_references` — EU-domstolsreferanser. Nøkkelkolonner: `sak_nr`, `eu_case_id`, `eu_case_name`, `context`
 - `kofa_eu_case_law` — Fulltekst EU-dommer fra EUR-Lex. PK: `eu_case_id`. Nøkkelkolonner: `celex`, `case_name`, `full_text`, `char_count` (generated), `language`
 - `kofa_court_references` — Norske domstolsreferanser. Nøkkelkolonner: `sak_nr`, `court_case_id`, `court_level`, `court_name`, `context`
+- `kofa_forarbeider` — Forarbeider-dokumenter (Prop., NOU). PK: `doc_id`. Nøkkelkolonner: `doc_type`, `title`, `full_title`, `session`, `section_count`, `char_count`
+- `kofa_forarbeider_sections` — Seksjoner fra forarbeider-PDF (TOC-basert). PK: `id`. Nøkkelkolonner: `doc_id`, `section_number`, `title`, `level`, `sort_order`, `text`, `search_vector`, `embedding`
+- `kofa_forarbeider_law_refs` — Lovhenvisninger fra forarbeider. Nøkkelkolonner: `doc_id`, `section_number`, `law_name`, `law_section`, `context`
+- `kofa_forarbeider_eu_refs` — EU-referanser fra forarbeider. Nøkkelkolonner: `doc_id`, `section_number`, `eu_case_id`, `context`
 - `kofa_sync_meta` — Sync-status og cursors. PK: `source`
 
 ## RLS-mønster
