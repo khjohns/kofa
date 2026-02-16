@@ -19,6 +19,26 @@ Sist oppdatert: 2026-02-16
 | Paragrafer (non-raw) | 139 216 | — | — | |
 | Embeddings | 139 216 | 139 216 | 100% | Gemini text-embedding-004 |
 
+## Forarbeider
+
+| Steg | Antall | Av total | % | Merknad |
+|---|---|---|---|---|
+| Dokumenter importert | 4 | 4 | 100% | Prop. 51 L, Prop. 147 L, NOU 2023:26, NOU 2024:9 |
+| Seksjoner | 1 186 | 1 186 | 100% | TOC-basert chunking fra PDF |
+| Tegn totalt | 4,7M | — | — | |
+| Referanser: lov | 1 634 | — | — | Ekstrahert fra seksjonstekst |
+| Referanser: EU | 687 | — | — | Ekstrahert fra seksjonstekst |
+| Embeddings | 0 | 1 186 | 0% | Gjenstår — `scripts/embed_forarbeider.py` |
+
+| Dokument | Seksjoner | Tegn |
+|---|---|---|
+| Prop. 51 L (2015–2016) | 88 | 387k |
+| Prop. 147 L (2024–2025) | 161 | 461k |
+| NOU 2023: 26 | 385 | 2,1M |
+| NOU 2024: 9 | 552 | 1,8M |
+
+**Status:** Synkronisert med seksjoner, referanser og FTS (`search_vector`). Semantisk søk (`semantisk_sok_forarbeider`) krever embeddings som ikke er generert ennå.
+
 ## Gapanalyse
 
 ### 1. Saker uten PDF-URL: 922 saker
@@ -89,5 +109,6 @@ Integritetskontroll bestått: 0 selv-referanser, 0 `new` på pre-2016 saker, 367
 1. ~~**Embeddings**~~ — Ferdig (139 216 paragrafer, 2026-02-11)
 2. ~~**IVFFlat-indeks**~~ — Ferdig (lists=100, vector_cosine_ops, 1 088 MB, 2026-02-11)
 3. ~~**EU-dommer fra EUR-Lex**~~ — Ferdig (320 av 324 hentet, 2026-02-16). 4 genuint mangler (C-188/04, C-456/17, C-469/99, C-574/12)
-4. **Vurdere OCR** — for 60 skannede PDFer (lav prioritet)
-5. **Vurdere forbedret seksjonering** — for 99 substansielle raw-only saker (lav prioritet)
+4. **Forarbeider-embeddings** — 1 186 seksjoner, kjør `scripts/embed_forarbeider.py`
+5. **Vurdere OCR** — for 60 skannede PDFer (lav prioritet)
+6. **Vurdere forbedret seksjonering** — for 99 substansielle raw-only saker (lav prioritet)

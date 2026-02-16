@@ -110,17 +110,64 @@ Skriv notatet. Skille tydelig mellom:
 - **Rimelig tolkning** — slutninger som følger naturlig av praksis
 - **Analytiske konstruksjoner** — logiske slutninger som ikke er uttalt i praksis
 
-### Steg 6: Rettskilder utenfor databasen
+### Steg 6: Rettskilder utenfor KOFA-avgjørelsene
 
-Supplere med kilder som ikke er i KOFA-databasen:
-- Lagmannsrettsdommer og høyesterettsdommer (Lovdata)
-- EU-domstolen (direktivtolkning)
-- Forarbeider (NOU, Prop.)
-- Juridisk litteratur
+Supplere med kilder utover KOFA-praksis — se `docs/rettskildeoversikt.md` for komplett oversikt over hva som er tilgjengelig i systemet og kjente hull. Sentrale kilder:
+
+- **Lovtekst** — Paragraf MCP (`lov("foa", "paragraf")`)
+- **Forarbeider** — KOFA MCP (`hent_forarbeide`, `finn_forarbeider`, `sok_forarbeider`)
+- **EU-domstolspraksis** — KOFA MCP (`hent_eu_dom`) — 320 dommer i systemet
+- **EU-direktiver** — ikke i systemet, krever web-oppslag
+- **Norsk rettspraksis** — ikke i systemet, bruk Lovdata/web
+- **Juridisk litteratur** — eksterne kilder
 
 ### Steg 7: Deponer i lovkommentar
 
-Oppdater kommentarene til berørte bestemmelser med funn og rettssetninger.
+Oppdater kommentarene til berørte bestemmelser med funn og rettssetninger. Hvis kommentaren ikke eksisterer: opprett den etter skjelettet i seksjon 4. Merk ubehandlede ledd med «Ikke behandlet» — kommentaren vokser organisk etter hvert som nye notater utforsker nye spørsmål.
+
+### Steg 8: Kvalitetssikring
+
+Separat pass — helst i ny kontekst for å unngå bekreftelsesbias. Sjekkliste:
+
+1. **Sitatverifisering.** Verifiser de viktigste sitatene (minimum 3–5) mot databasen. Se etter trunkering som fjerner kvalifikasjoner.
+2. **Logisk konsistens.** Følger konklusjonen av praksisen? Er analogier eksplisitt flagget som analogier?
+3. **Motargumenter.** Er de sterkeste motargumentene adressert i *vurderingen* — ikke bare opplistet under «argumenter for»?
+4. **Dekning.** Er det A-kandidater fra kandidatlisten som ikke er behandlet uten begrunnelse?
+5. **Kildehenvisninger i tabeller.** Bærer hver henvisning den spesifikke påstanden, eller er den for generell?
+
+## Skaleringsmodell: Parallelle subagenter
+
+Når kandidatlisten er stor (8+ saker) eller søkestrategien har 3+ uavhengige søketyper, kan arbeidet paralleliseres med subagenter. Mønsteret bevarer kontekstvinduet for syntesefasen.
+
+### Anbefalt arbeidsflyt
+
+```
+Hovedkontekst                    Subagenter (parallelle)
+─────────────                    ──────────────────────
+1. Vektorsøk (krever bash)
+2. Formuler søkeinstruksjoner →  3. Referansetabell-søk (SQL)
+                                    FTS-batteri (SQL)
+                                    EU/rettsreferanser (SQL)
+4. Konsolider kandidatliste
+5. Formuler screeninginstruksjoner → 6. Screening batch 1 (SQL + les)
+                                        Screening batch 2 (SQL + les)
+                                        Screening batch 3 (SQL + les)
+7. Syntese (les oppsummeringer, skriv notat)
+8. Deponer funn i kommentarer
+```
+
+### Tommelfingerregler
+
+- **Terskel:** 8+ kandidater → bruk subagenter for screening. Under 5 → les direkte.
+- **Verktøy:** Subagenter har Supabase MCP (SQL) men *ikke* bash/Python. Vektorsøk kjøres fra hovedkonteksten.
+- **Batch-størrelse:** 3–5 saker per screeningagent. Gi eksplisitt mal for oppsummeringsformat.
+- **Kontekstgevinst:** Screening via subagenter sparer ~40% av kontekstvinduet sammenlignet med å lese all avgjørelsestekst direkte.
+
+### Begrensninger
+
+- Subagenter kan ikke skrive til filsystemet — resultater returneres som tekst til hovedkonteksten.
+- Kvalitetskontroll: stikkprøv oppsummeringer mot originaltekst, spesielt for nøkkelsitater.
+- Koordineringskostnad gjør dette uegnet for små undersøkelser.
 
 ## 3. Skjelett: Problemdrevet notat
 
@@ -228,6 +275,7 @@ Referanse til problemdrevne notater som utforsker disse.
 ```
 docs/
   metode-rettslig-analyse.md          # Dette dokumentet
+  rettskildeoversikt.md               # Tilgjengelige kilder og hull
   notat-[tema].md                     # Problemdrevne notater
   kommentar-foa-[paragraf].md         # Lovkommentarer per bestemmelse
 ```
@@ -300,6 +348,8 @@ Mest dramatisk forskjell. FTS: 7 treff, 1 relevant (14% presisjon) — matchet p
 | Rådighet/forpliktelseserklæring | 27 | 27 | ~18 | 7 | 3/3 (100%) | ~15/24 (63%) | 20 KOFA + 6 retts. |
 | Grensedragning § 16-10 | *avledet fra ettersøk* | — | — | — | — | — | 11 KOFA |
 | NF-doktrinens grenser | 20 | 20 | 17 | 2 | 15/17 (88%) | 2/3 (67%) | 19 KOFA + 2 retts. |
+| Akkumulering minimumsomsetning | 12 (A+B) | 12 | 12 | — | 4/4 (100%) | 8/8 (100%) | 12 KOFA + 2 EU |
+| Intervju som tildelingskriterium | 16 (A+B) | 12 | 10 | — | 6/8 (75%) | 4/8 (50%) | 10 KOFA + 1 EU |
 
 **Foreløpige observasjoner:**
 - A-kategorien (trippel interseksjon) har 100% presisjon — bekrefter at interseksjon er en sterk relevansprediktor
@@ -312,3 +362,35 @@ Mest dramatisk forskjell. FTS: 7 treff, 1 relevant (14% presisjon) — matchet p
 **Motpraksis krever alternativ terminologi.** FTS på doktrine­begrepet («naturlig forståelse») gir høy presisjon for bekreftelser (88%), men fanger dårlig motpraksis — saker der oppdragsgiver har gått *utenfor*. Disse bruker sjelden doktrinebegrepet og konstaterer i stedet at noe er «utenfor tildelingskriteriets rammer» eller at oppdragsgiver har «gått utenfor». Ettersøk med alternativ terminologi fanget 2 av 3 motpraksiskandidater.
 
 **Implikasjon for søkestrategi:** Ved doktrine-kartlegging bør primærsøket suppleres med FTS på *konklusjonstermene* (brudd, utenfor, ikke innenfor) — ikke bare doktrinens egne begreper.
+
+### Fra akkumulering av minimumsomsetning (2026-02-12)
+
+**Parallelle subagenter for søk og screening.** Notatet ble utarbeidet med en ny tilnærming: parallelle Opus-agenter for søkefasen (4 samtidige søkeagenter) og screeningfasen (3 samtidige screeningagenter). Hovedkonteksten koordinerte og utførte syntesen.
+
+**Referansetabell-interseksjon gir smal trakt.** § 16-10 ∩ § 16-3 ga kun 4 saker — nesten alle relevante, men for smalt for å fange bredden. FTS og vektorsøk fant vesentlig flere kandidater. Den smale trakten skyldes at mange saker diskuterer økonomisk kapasitet uten formell paragrafhenvisning til § 16-3.
+
+**Vektorsøk avgjørende for konseptuelle spørsmål.** Alle hybrid-treff hadde fts_rank=0 — FTS matchet ikke fordi søkene var formulert som naturlig språk. Vektorsøket fant 2009/21 (formålet), 2015/46 (direktivtolkning), 2011/191 (del II) som FTS ikke fanget.
+
+**Subagent-begrensninger.** General-purpose-agenter fikk ikke bash-tilgang — hybrid/vektorsøk måtte kjøres fra hovedkonteksten. Bash-agenter fikk heller ikke tilgang. Supabase MCP fungerte for general-purpose-agenter. Implikasjon: subagenter egner seg best for SQL-baserte oppgaver, ikke for oppgaver som krever Python/bash.
+
+**Screening via subagenter var effektivt.** 3 parallelle agenter leste og oppsummerte 12 saker + 2 EU-dommer i ~3 minutter. Oppsummeringene var strukturerte og presise nok til å bygge syntese på. Hovedkonteksten slapp å lese ~100 sider avgjørelsestekst direkte.
+
+**72 identifiserte → 12 screenet → 12 inkludert.** Uvanlig høy presisjon (100%) i screeningfasen, men dette skyldes at kandidatlisten allerede var godt filtrert gjennom konsolideringen. Ettersøksfase ble ikke gjennomført — anbefales som oppfølging.
+
+### Fra intervju som tildelingskriterium (2026-02-16)
+
+**Negativt funn som hovedresultat.** Ingen KOFA-avgjørelse behandler spørsmålet om *selektiv* intervjuering i åpen anbudskonkurranse direkte. Analysen måtte bygges på analogi fra tre praksislinjer: (1) lovligheten av intervju, (2) likebehandling i evalueringsarena, (3) trinnvis evaluering. Negativt funn på tvers av alle fire søkemetoder (referansetabell, FTS, vektorsøk, FTS-avgjørelsestekst) styrker konklusjonen om at problemstillingen genuint er ubehandlet.
+
+**Subagenter feilet konsistent på MCP-tilgang.** Alle 8 subagenter (4 søk + 4 screening) fikk tilgangsnekt til kofa-paragraf/claude_ai MCP-verktøy. Hovedkonteksten hadde full tilgang. Implikasjon: MCP-avhengige oppgaver bør kjøres fra hovedkonteksten. Subagenter egner seg for oppgaver uten MCP-avhengighet — eller man må bruke «allow all» tillatelsesmodus.
+
+**Fire parallelle søkeagenter + konsolidering fungerte godt.** Til tross for MCP-begrensningen ga mønsteret (4 agenter med ulike søkestrategier → konsolidert kandidatliste → screening) en bredere fangst enn sekvensiell søking. Vektorsøket (fts_rank=0 for alle treff) avdekket 5 A-kandidater som FTS ikke fanget — konsistent med tidligere validering.
+
+**Presisjon lavere enn tidligere notater.** A-presisjon (75%) og B-presisjon (50%) er lavere enn normalt. Dette skyldes at problemstillingen er konseptuelt bred — mange saker om intervju/likebehandling er relevant for *deler* av analysen men ikke direkte for kjernespørsmålet (selektiv intervjuering). Interseksjonsrangeringen fungerer best for avgrensede paragrafspørsmål, svakere for tverrgående konseptuelle spørsmål.
+
+### Fra kvalitetssikring av intervju-notatet (2026-02-16)
+
+**QA i separat kontekst fanger systematiske feil.** Kvalitetssikring av det ferdige notatet avdekket tre typer feil som forfatterkonteksten ikke fanget: (1) trunkerte sitater som utelot kvalifikasjoner (Montte premiss 32 og 37 manglet «as regards the technical evaluation» og «and thus do not meet the needs of the contracting authority»), (2) en upresis kildehenvisning i konklusjonstabellen (Montte p38 er for generell til å bære påstanden alene), (3) en uflagget analogi (Montte-distinksjonen ble presentert som direkte anvendelse uten å erkjenne at den overføres fra evalueringsfaser til evalueringsarenaer). Alle tre er typiske «bekreftelsesbias»-feil — forfatteren vet hva sitatet *skal* si og leser det inn.
+
+**Motargumenter må adresseres i vurderingen, ikke bare opplistes.** Notatet hadde en «argumenter for»-seksjon og en «argumenter mot»-seksjon, men vurderingen behandlet ikke alle motargumenter eksplisitt. Spesielt: 2006/90-unntaket (asymmetrisk behandling lovlig ved full score) og proporsjonalitetsargumentet ble avfeid for raskt. Etter QA ble begge adressert med substansiell begrunnelse — noe som styrker konklusjonen.
+
+**Implikasjon for arbeidsflyt:** QA bør gjøres i en separat sesjon, ikke som siste steg i samme kontekst. Formalisert som steg 8 i metodikken ovenfor.

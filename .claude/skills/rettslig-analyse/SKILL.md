@@ -12,7 +12,7 @@ Prosjektet produserer rettslig analyse i to lag (se `docs/metode-rettslig-analys
 
 ## Prosess
 
-Ved rettslig analyse: følg metodikken i `docs/metode-rettslig-analyse.md` (skjelett, to-fase søk, søkestrategi-seksjon, søkeeffektivitetstabell). Oppdater metodedokumentet med nye observasjoner og søkeeffektivitetsrad etter hvert notat.
+Ved rettslig analyse: følg metodikken i `docs/metode-rettslig-analyse.md` (skjelett, to-fase søk, søkestrategi-seksjon, søkeeffektivitetstabell). Se `docs/rettskildeoversikt.md` for tilgjengelige kilder, MCP-verktøy og kjente hull. Oppdater metodedokumentet med nye observasjoner og søkeeffektivitetsrad etter hvert notat.
 
 ## Sitater og kildehenvisninger
 
