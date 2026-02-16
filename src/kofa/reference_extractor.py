@@ -545,11 +545,29 @@ class ReferenceExtractor:
 
         return refs
 
-    # Known PDF extraction errors: footnote numbers merged with case IDs
+    # Known PDF extraction errors: footnote numbers merged with case IDs,
+    # transposed digits, or wrong year/number from OCR/copy errors.
     _EU_CASE_CORRECTIONS = {
+        # Footnote-merged errors (digit from footnote merged into year)
         "C-243/39": "C-243/89",  # Storebælt — "139" footnote merged with "/89"
         "C-298/21": "C-298/15",  # Borta — "215" footnote, regex truncated to /21
         "C-391/31": "C-391/15",  # Marina del Mediterráneo — "315" footnote, truncated to /31
+        # Truncated years (1-digit year from regex or PDF extraction)
+        "C-15/6": "C-6/15",  # Dimarso — case number and year swapped
+        "C-448/0": "C-448/01",  # Wienstrom — year truncated to single digit
+        "C-6/0": "C-6/05",  # Medipac-Kazantzidis — year truncated to single digit
+        # Wrong year
+        "C-57/92": "C-57/94",  # Commission v Italy (Ascoli-Mare) — year off by 2
+        "C-458/02": "C-458/03",  # Parking Brixen — year off by 1
+        "C-394/03": "C-394/02",  # Commission v Greece — year off by 1
+        "C-448/07": "C-448/01",  # Wienstrom — wrong year entirely
+        # Transposed/wrong case number
+        "C-91/00": "C-19/00",  # SIAC Construction — digits transposed (91↔19)
+        "C-20/04": "C-29/04",  # Commission v Austria (Mödling) — wrong case number
+        "C-367/10": "C-368/10",  # Commission v Netherlands (Max Havelaar) — off by 1
+        # Wrong case number AND year
+        "C-523/99": "C-513/99",  # Concordia Bus Finland — wrong case number
+        "C-517/01": "C-513/99",  # Concordia Bus Finland — wrong number and year
     }
 
     def extract_eu_references(self, text: str) -> list[EUCaseReference]:

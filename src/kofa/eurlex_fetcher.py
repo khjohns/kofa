@@ -38,7 +38,32 @@ class EUJudgment:
     language: str  # "EN"
 
 
-def case_id_to_celex(case_id: str) -> str:
+# Joined cases: EUR-Lex publishes the judgment under the primary (lowest) case number.
+# Maps secondary case ID → primary case ID for cases referenced in KOFA/forarbeider.
+_JOINED_CASE_MAP: dict[str, str] = {
+    "C-34/03": "C-21/03",  # Fabricom
+    "C-260/99": "C-223/99",  # Agorà/Excelsior
+    "C-286/99": "C-285/99",  # Impresa Lombardini
+    "C-28/01": "C-20/01",  # Commission v Germany
+    "C-149/08": "C-145/08",  # Club Hotel Loutraki
+    "C-156/19": "C-155/19",  # FIGC
+    "C-161/12": "C-159/12",  # Venturini
+    "C-183/11": "C-182/11",  # Econord
+    "C-228/04": "C-226/04",  # La Cascina
+    "C-275/21": "C-274/21",  # EPIC Financial Consulting
+    "C-384/21": "C-383/21",  # Sambre & Biesme
+    "C-443/22": "C-441/22",  # Obshtina Razgrad
+    "C-463/03": "C-462/03",  # Strabag/Kostmann
+    "C-48/93": "C-46/93",  # Brasserie du Pêcheur
+    "C-203/11": "C-197/11",  # Libert v Gouvernement flamand
+    "C-601/20": "C-37/20",  # WM/Sovim v Luxembourg
+    "C-722/19": "C-721/19",  # Sisal/Magellan Robotech
+    "C-84/21": "C-68/21",  # Iveco Orecchia
+    "C-91/19": "C-89/19",  # Rieco (Order, joined C-89/19 to C-91/19)
+}
+
+
+def case_id_to_celex(case_id: str, doc_type: str = "CJ") -> str:
     """
     Convert EU case ID to CELEX number.
 
@@ -50,6 +75,8 @@ def case_id_to_celex(case_id: str) -> str:
     - Court: CJ = Court of Justice (C-), TJ = General Court (T-)
     - Year: 4 digits
     - Case number: zero-padded to 4 digits
+
+    doc_type overrides the court suffix (e.g. "CO" for Orders).
     """
     case_id = case_id.strip()
     m = re.match(r"([CT])-(\d+)/(\d+)", case_id)
@@ -67,7 +94,12 @@ def case_id_to_celex(case_id: str) -> str:
     else:
         year = int(year_short)
 
-    court = "CJ" if court_letter == "C" else "TJ"
+    if doc_type != "CJ":
+        court = doc_type
+    elif court_letter == "C":
+        court = "CJ"
+    else:
+        court = "TJ"
     return f"6{year}{court}{case_num:04d}"
 
 
@@ -157,14 +189,44 @@ class EurLexFetcher:
         """
         Fetch and parse a single EU Court judgment.
 
+        Handles three failure modes:
+        1. Joined cases — redirects to primary case via _JOINED_CASE_MAP
+        2. Orders (CO) — retries with CO suffix when CJ returns 404
+        3. Language fallback — tries French when English returns 404
+
         Returns None on 404. Raises on other HTTP errors.
         """
+        # Resolve joined cases: fetch under primary case ID
+        primary_id = _JOINED_CASE_MAP.get(eu_case_id)
+        if primary_id:
+            logger.info(f"{eu_case_id}: Joined case, fetching under {primary_id}")
+            result = self.fetch(primary_id, language=language)
+            if result:
+                # Store under the original case ID so the caller gets the right reference
+                result.eu_case_id = eu_case_id
+            return result
+
         try:
             celex = case_id_to_celex(eu_case_id)
         except ValueError as e:
             logger.warning(f"Cannot convert case ID '{eu_case_id}': {e}")
             return None
 
+        result = self._fetch_celex(eu_case_id, celex, language)
+        if result:
+            return result
+
+        # CJ not found — try CO (Order) before giving up
+        try:
+            celex_co = case_id_to_celex(eu_case_id, doc_type="CO")
+        except ValueError:
+            return None
+
+        logger.info(f"{eu_case_id}: CJ not found, trying CO (Order)")
+        return self._fetch_celex(eu_case_id, celex_co, language)
+
+    def _fetch_celex(self, eu_case_id: str, celex: str, language: str = "EN") -> EUJudgment | None:
+        """Fetch a specific CELEX document from EUR-Lex."""
         url = EURLEX_HTML_URL.format(lang=language, celex=celex)
 
         with httpx.Client(
@@ -187,8 +249,8 @@ class EurLexFetcher:
                 if e.response.status_code == 404:
                     if language == "EN":
                         logger.info(f"{eu_case_id}: No English version, trying French")
-                        return self.fetch(eu_case_id, language="FR")
-                    logger.warning(f"{eu_case_id}: Not found on EUR-Lex ({language})")
+                        return self._fetch_celex(eu_case_id, celex, language="FR")
+                    logger.debug(f"{eu_case_id}: Not found ({celex}, {language})")
                     return None
                 raise
 
