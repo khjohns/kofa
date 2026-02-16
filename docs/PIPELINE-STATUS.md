@@ -1,6 +1,6 @@
 # KOFA Pipeline Status
 
-Sist oppdatert: 2026-02-11
+Sist oppdatert: 2026-02-16
 
 ## Oversikt
 
@@ -12,9 +12,10 @@ Sist oppdatert: 2026-02-11
 | PDF-tekst ekstrahert | 3 670 | 4 652 | 79% | 98% av de med PDF-URL |
 | Seksjonsinndelt | 3 348 | 3 670 | 91% | |
 | Raw-only | 322 | 3 670 | 9% | Hovedsakelig pre-2013 |
-| Referanser: lov | 3 314 | 3 670 | 90% | 25 901 enkeltref |
+| Referanser: lov | 3 314 | 3 670 | 90% | 25 882 enkeltref |
 | Referanser: KOFA-saker | 2 435 | 3 670 | 66% | 6 602 enkeltref |
-| Referanser: EU-dommer | 1 005 | 3 670 | 27% | 1 867 enkeltref, 213 unike EU-saker |
+| Referanser: EU-dommer | 1 005 | 3 670 | 27% | 1 864 enkeltref, 203 unike EU-saker |
+| EU-dommer hentet (EUR-Lex) | 320 | 324 | 99% | 11,6M tegn. 4 genuint mangler |
 | Paragrafer (non-raw) | 139 216 | — | — | |
 | Embeddings | 139 216 | 139 216 | 100% | Gemini text-embedding-004 |
 
@@ -87,5 +88,6 @@ Integritetskontroll bestått: 0 selv-referanser, 0 `new` på pre-2016 saker, 367
 
 1. ~~**Embeddings**~~ — Ferdig (139 216 paragrafer, 2026-02-11)
 2. ~~**IVFFlat-indeks**~~ — Ferdig (lists=100, vector_cosine_ops, 1 088 MB, 2026-02-11)
-3. **Vurdere OCR** — for 60 skannede PDFer (lav prioritet)
-4. **Vurdere forbedret seksjonering** — for 99 substansielle raw-only saker (lav prioritet)
+3. ~~**EU-dommer fra EUR-Lex**~~ — Ferdig (320 av 324 hentet, 2026-02-16). 4 genuint mangler (C-188/04, C-456/17, C-469/99, C-574/12)
+4. **Vurdere OCR** — for 60 skannede PDFer (lav prioritet)
+5. **Vurdere forbedret seksjonering** — for 99 substansielle raw-only saker (lav prioritet)
