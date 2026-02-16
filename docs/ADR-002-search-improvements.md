@@ -369,7 +369,7 @@ er mottatt — PDF-ekstraksjon). Steg 3: lav.
 |---|---|---|---|---|---|
 | 6 | Håndtering av opphevede lover | paragraf | Lav | Høy | **Ferdig** — `is_current`-kolonne + sync-logikk (`e0247fb` i paragraf) |
 | 1 | Lovhenvisning-filter i `finn_praksis` | kofa | Lav | Høy | **Ferdig** — `paragrafer`-parameter med AND-semantikk |
-| 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | **Ferdig** — 191 dommer hentet fra EUR-Lex, `hent_eu_dom` MCP-verktøy |
+| 4 | EU-domstolspraksis (211 saker) | kofa | Lav | Høy | **Ferdig** — 191 dommer hentet, 43 feil-IDer løst (joined cases, CO-fallback, korreksjoner). ~8 nye etter neste sync |
 | 8a | Norsk rettspraksis — referanseekstraksjon | kofa | Lav | Høy | **Ferdig** — `kofa_court_references`-tabell, regex for HR/Rt/lagmannsrett/tingrett |
 | 8b | Norsk rettspraksis — fulltekst (HR + lagmannsrett) | kofa | Middels | Høy | HR fra domstol.no (klar), lagmannsrett via innsynsbegjæring (avventer svar) |
 | 7 | Fallback-seksjonering (99 saker) | kofa | Lav | Middels | Etter hoved-embedding |
@@ -424,8 +424,8 @@ Referanseekstraksjon for norske domstolsavgjørelser implementert (`64f6ad2`):
 
 Fulltekst for EU-dommer referert i KOFA hentet fra EUR-Lex HTML (`7d0a219`):
 
-**Resultat:** 191 av 208 unike EU-saker hentet (22 ga 404 — joined cases uten
-egen side). 6,5M tegn totalt, snitt 34k tegn per dom. Alle på engelsk.
+**Resultat:** 191 av 208 unike EU-saker hentet initialt (se oppdatering 2026-02-16
+for de resterende 43 som ga 404).
 
 **Designvalg vs. opprinnelig plan:**
 
@@ -487,3 +487,59 @@ chunking (`05ba92b`):
 som mapper norske bestemmelser til EU-artikler. Referanseekstraksjon fanger
 lovhenvisninger, men ikke EU-artikkel-koblingen. Dette gjenstår som fremtidig
 forbedring — semi-automatisk ekstraksjon fra forarbeider-tekst.
+
+### 2026-02-16: Observasjon 4 — 43 EU-saker med 404 fra EUR-Lex
+
+Undersøkt alle 43 EU-saker som returnerte 404 ved første sync (`390b437`).
+Tre rotårsaker identifisert:
+
+| Årsak | Antall | Løsning |
+|---|---|---|
+| Feil saks-ID fra PDF-ekstraksjon | 12 | `_EU_CASE_CORRECTIONS` i `reference_extractor.py` |
+| Joined case (tekst under primær-ID) | 19 | `_JOINED_CASE_MAP` i `eurlex_fetcher.py` |
+| Order (CO-suffiks, ikke CJ) | 6 | Automatisk CO-fallback i `fetch()` |
+| Genuint mangler | 4 | Logges som skipped |
+| Edge cases (ukjent CELEX-format) | 2 | Avventer — C-424/01 og C-574/12 |
+
+**Feil-IDer (12 stk):** PDF-ekstraksjon fra KOFA-avgjørelser ga feil saksnumre
+(transponerte siffer, feil årstall, trunkerte år). Korrigert i
+`_EU_CASE_CORRECTIONS` som virker ved `kofa sync --references`. Alle 12 korrekte
+IDer finnes allerede i `kofa_eu_case_law` fra andre KOFA-saker som siterte riktig.
+
+**Joined cases (19 stk):** EUR-Lex publiserer dommen kun under primær-saksnummer
+(laveste nummeret). Ny `_JOINED_CASE_MAP` i `eurlex_fetcher.py` redirecter
+sekundær → primær ved henting. 18 av 19 primære IDer allerede i DB.
+
+**Orders (6 stk):** Kjennelser bruker CO-suffiks i CELEX i stedet for CJ.
+`fetch()` refaktorert til å prøve CJ først, deretter CO ved 404. Disse 6 er
+alle fra forarbeider-referanser og utgjør genuint nytt innhold.
+
+**Ny arkitektur i `eurlex_fetcher.py`:**
+
+```
+fetch(eu_case_id)
+  ├─ _JOINED_CASE_MAP? → fetch(primary_id), lagre under sekundær-ID
+  ├─ case_id_to_celex(CJ) → _fetch_celex()
+  ├─ 404? → case_id_to_celex(CO) → _fetch_celex()  (CO-fallback)
+  └─ _fetch_celex: 404 EN? → retry FR                (språk-fallback)
+```
+
+**Etter neste sync (~8 genuint nye tekster):**
+
+| EU-sak | Type | Kilde |
+|---|---|---|
+| C-197/11 (Libert) | Primær for joined C-203/11 | kofa |
+| C-6/05 (Medipac) | Korrigert fra C-6/0 | kofa |
+| C-89/19 (Rieco) | Order (CO) + primær for C-91/19 | forarbeider |
+| C-244/02 (Kauppatalo Hansel) | Order (CO) | forarbeider |
+| C-54/18 (Coop. Animazione Valdocco) | Order (CO) | forarbeider |
+| C-787/21 (Estaleiros Navais) | Order (CO) | forarbeider |
+| C-492/06 (Consorzio Elisoccorso) | Order (CO) | forarbeider |
+| C-35/15 (Comm. v Vanbreda) | Order (CO) | forarbeider |
+
+Pluss 19 duplikat-rader for joined cases (lagret under sekundær-ID).
+
+**Viktig rekkefølge:** `kofa sync --references` **må** kjøres før `--eu-cases`
+for at feil-ID-korreksjoner skal virke. Uten dette vil 6 feil-IDer med gyldige
+CELEX-numre (C-91/00, C-57/92, C-20/04, C-458/02, C-394/03, C-448/07) hente
+*feil dom* fra EUR-Lex.
