@@ -18,6 +18,7 @@ venv/
 # Environment
 .env
 .env.local
+.sync-state.json
 
 # OS
 .DS_Store
@@ -32,6 +33,7 @@ docs/arbeidsnotat-*.md
 docs/kommentar-foa-*.md
 docs/metode-rettslig-analyse.md
 docs/plan-*.md
+docs/forarbeider/
 docs/research/
 docs/temp/
 scripts/sync_notion.py

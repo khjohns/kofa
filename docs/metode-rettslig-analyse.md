@@ -135,39 +135,84 @@ Separat pass — helst i ny kontekst for å unngå bekreftelsesbias. Sjekkliste:
 4. **Dekning.** Er det A-kandidater fra kandidatlisten som ikke er behandlet uten begrunnelse?
 5. **Kildehenvisninger i tabeller.** Bærer hver henvisning den spesifikke påstanden, eller er den for generell?
 
-## Skaleringsmodell: Parallelle subagenter
+## Operasjonell arbeidsflyt: batch-drevet prosess
 
-Når kandidatlisten er stor (8+ saker) eller søkestrategien har 3+ uavhengige søketyper, kan arbeidet paralleliseres med subagenter. Mønsteret bevarer kontekstvinduet for syntesefasen.
+Rettslig analyse sprenger typisk én kontekst. For å bevare tilstand brukes et batch-mønster der hvert steg produserer varige artefakter i en forskningsmappe. Artefaktene fungerer som eksternt minne — hvis konteksten dør, kan en ny instans lese filene og fortsette.
 
-### Anbefalt arbeidsflyt
+### Forskningsmappe
 
 ```
-Hovedkontekst                    Subagenter (parallelle)
-─────────────                    ──────────────────────
-1. Vektorsøk (krever bash)
-2. Formuler søkeinstruksjoner →  3. Referansetabell-søk (SQL)
-                                    FTS-batteri (SQL)
-                                    EU/rettsreferanser (SQL)
-4. Konsolider kandidatliste
-5. Formuler screeninginstruksjoner → 6. Screening batch 1 (SQL + les)
-                                        Screening batch 2 (SQL + les)
-                                        Screening batch 3 (SQL + les)
-7. Syntese (les oppsummeringer, skriv notat)
-8. Deponer funn i kommentarer
+docs/research/{problem}/
+  00-plan.md                    # Scoping: problemstilling, søkestrategi, fremdrift
+  01-referansetabell.md         # Subagent: paragraf-interseksjoner
+  02-fts-sok.md                 # Subagent: FTS-batteri
+  03-semantisk-sok.md           # Subagent: vektorsøk via MCP
+  04-rettskilder.md             # Subagent: lovtekst, forarbeider, EU-rett
+  05-kandidatliste.md           # Hovedkontekst: konsolidering + prioritering
+  06-screening-batch{N}.md      # Subagenter: per-batch oppsummeringer
+  06-screening-resultater.md    # Hovedkontekst: syntese av screening
 ```
 
-### Tommelfingerregler
+Ferdig notat skrives til `docs/notat-{problem}.md`. QA og deponering er egne steg.
 
-- **Terskel:** 8+ kandidater → bruk subagenter for screening. Under 5 → les direkte.
-- **Verktøy:** Subagenter har Supabase MCP (SQL) men *ikke* bash/Python. Vektorsøk kjøres fra hovedkonteksten.
-- **Batch-størrelse:** 3–5 saker per screeningagent. Gi eksplisitt mal for oppsummeringsformat.
-- **Kontekstgevinst:** Screening via subagenter sparer ~40% av kontekstvinduet sammenlignet med å lese all avgjørelsestekst direkte.
+### Batches og sjekkpunkter
 
-### Begrensninger
+| Batch | Steg | Artefakt | Utfører | Sjekkpunkt |
+|---|---|---|---|---|
+| 0 | Scoping — formuler problemstilling, søkestrategi | `00-plan.md` | Hovedkontekst | Bruker godkjenner retning (valgfritt) |
+| 1 | Søk — referansetabell, FTS, vektorsøk, rettskilder | `01-` til `04-` | Subagenter (parallelle) | — |
+| 2 | Konsolidering — kombiner søk, ranger A/B/C | `05-kandidatliste.md` | Hovedkontekst | **Sjekkpunkt 1:** Bruker ser kandidatliste |
+| 3 | Screening — les og oppsummer kandidater | `06-screening-*` | Subagenter + hovedkontekst | **Sjekkpunkt 2:** Kontekst-sjekk |
+| 4 | Syntese — skriv notatet | `docs/notat-{problem}.md` | Hovedkontekst | — |
+| 5 | QA — verifiser sitater, logikk, motargumenter | Korreksjoner i notatet | Ny kontekst | **Sjekkpunkt 3:** Bruker review |
+| 6 | Deponering — oppdater lovkommentarer | `docs/kommentar-foa-*.md` | Hovedkontekst | — |
 
-- Subagenter kan ikke skrive til filsystemet — resultater returneres som tekst til hovedkonteksten.
-- Kvalitetskontroll: stikkprøv oppsummeringer mot originaltekst, spesielt for nøkkelsitater.
-- Koordineringskostnad gjør dette uegnet for små undersøkelser.
+### Sjekkpunkter
+
+Sjekkpunktene er obligatoriske pausepunkter der Claude stopper og avventer tilbakemelding:
+
+1. **Sjekkpunkt 1 (etter konsolidering):** Bruker ser kandidatlisten og kan justere søkestrategi, legge til/fjerne kandidater, eller bekrefte retning.
+2. **Sjekkpunkt 2 (etter screening):** Naturlig punkt for kontekst-sjekk. Hvis konteksten nærmer seg full, oppsummer tilstand, oppdater fremdrift i `00-plan.md`, og overlever til ny instans.
+3. **Sjekkpunkt 3 (etter QA):** Bruker reviewer notatet etter kvalitetssikring.
+
+Claude skal *også* stoppe mellom batches hvis konteksten er merkbart forbrukt, selv om det ikke er et formelt sjekkpunkt. Oppdater fremdrift i `00-plan.md` og beskriv hva som gjenstår.
+
+### Fremdriftssporing
+
+`00-plan.md` inneholder en `## Fremdrift`-seksjon som oppdateres etter hvert steg:
+
+```markdown
+## Fremdrift
+
+- [x] 00-plan.md — scoping godkjent
+- [x] 01–04 — søkefase (4 subagenter)
+- [x] 05-kandidatliste.md — 14 A, 8 B, konsolidert
+- [ ] 06-screening — neste: batch 1 (A-saker, 4 stk)
+- [ ] Notat
+- [ ] QA
+- [ ] Deponering
+```
+
+Ny instans leser `00-plan.md` → ser fremdrift → leser siste ferdigstilte artefakt → fortsetter.
+
+### Screening-resultater som kompresjonslag
+
+`06-screening-resultater.md` syntetiserer alle screening-batches til ett dokument. Den tjener to formål:
+
+- **Input til notatskriving** — hovedkonteksten leser denne i stedet for alle batch-filer
+- **Handoff-artefakt** — ved kontekstbytte er dette det eneste en ny instans trenger fra screeningfasen
+
+Hovedkonteksten skriver den etter å ha lest batch-filene fra subagentene.
+
+### Subagenter
+
+- **Søkefase (batch 1):** 3–4 parallelle subagenter — én per søketype (referansetabell, FTS, vektorsøk, rettskilder). Alle søketyper inkl. vektorsøk kan kjøres via MCP-verktøy (`semantisk_sok_kofa`, `finn_praksis`, `sok_avgjoerelse`) eller direkte SQL via Supabase MCP.
+- **Screeningfase (batch 3):** 2–4 parallelle subagenter, 3–5 saker per batch. Gi eksplisitt oppsummeringsmal.
+- **Terskel:** 8+ kandidater → bruk subagenter. Under 5 → les direkte.
+- **Verktøy:** Subagenter har tilgang til Supabase MCP (SQL), KOFA MCP og Paragraf MCP.
+- **Kontekstgevinst:** Screening via subagenter sparer ~40% kontekst.
+- **Filskriving:** Subagenter returnerer tekst til hovedkonteksten, som skriver artefaktene til disk.
+- **Kvalitetskontroll:** Stikkprøv oppsummeringer mot originaltekst, spesielt for nøkkelsitater.
 
 ## 3. Skjelett: Problemdrevet notat
 
@@ -276,8 +321,18 @@ Referanse til problemdrevne notater som utforsker disse.
 docs/
   metode-rettslig-analyse.md          # Dette dokumentet
   rettskildeoversikt.md               # Tilgjengelige kilder og hull
-  notat-[tema].md                     # Problemdrevne notater
+  notat-[tema].md                     # Problemdrevne notater (ferdig produkt)
   kommentar-foa-[paragraf].md         # Lovkommentarer per bestemmelse
+  research/
+    [problem]/                        # Forskningsmappe per problemstilling
+      00-plan.md                      # Scoping + fremdrift
+      01-referansetabell.md           # Søkeartefakter
+      02-fts-sok.md
+      03-semantisk-sok.md
+      04-rettskilder.md
+      05-kandidatliste.md             # Konsolidert kandidatliste
+      06-screening-batch{N}.md        # Screening per batch
+      06-screening-resultater.md      # Syntese av screening
 ```
 
 ## 6. Kvalitetskriterier

@@ -29,6 +29,10 @@ Direktiv 2014/24/EU artikkel 63.
 
 Leverandøren kan støtte seg på enhver virksomhet, uavhengig av rettslig tilknytning (konsern, underleverandør, samarbeidspartner). Gjelder både økonomisk/finansiell kapasitet og teknisk/faglig kvalifikasjon.
 
+**Akkumulering av minimumsomsetning.** Leverandøren kan støtte seg på andre virksomheters omsetning for å oppfylle krav om minimumsomsetning etter § 16-3 (C-176/98 avsnitt 27, 2009/21 avsnitt 82, 2019/379 avsnitt 32–33). Omsetning fra flere støttende virksomheter kan summeres — i 2021/1143 og 2021/1216 aksepterte oppdragsgiver at tre solidarisk ansvarlige underleverandører ble medtatt i evalueringen (samlet 835 MNOK), uten innvendinger fra KOFA. Men vurderingstemaet er ikke ren aritmetisk summering: det «kan ikke ses vekk fra leverandørens egne regnskapstall» (2021/603 avsnitt 48). Støttende virksomhet må ha forpliktet seg til å stille økonomisk kapasitet til disposisjon slik at leverandøren *reelt sett* oppfyller kravet. Forpliktelseserklæring må spesifisere hvilke ressurser som stilles til rådighet — ren avkrysning er utilstrekkelig for kvantitative krav (2021/603 avsnitt 49).
+
+**Solidaransvar ved økonomisk støtte.** Oppdragsgiver *kan* kreve solidaransvar mellom leverandør og støttende virksomhet for økonomisk/finansiell kapasitet (§ 16-10, jf. direktivet art. 63(1); 2021/2067 avsnitt 46). Det er fakultativt, men utbredt i praksis — de fleste oppdragsgivere krever det (2021/79, 2021/521, 2025/1370). Best practice: separate vedlegg for økonomisk støtte (med solidaransvar) og teknisk støtte (2025/1370 avsnitt 5).
+
 **Saklig virkeområde.** Støtteadgangen gjelder bare for kvalifikasjonskrav om økonomisk/finansiell kapasitet (§ 16-5) og teknisk/faglig kvalifikasjon (§ 16-6). Krav om registrering (§ 16-2) og autorisasjoner mv. (§ 16-3) er en tredje type kvalifikasjonskrav der § 16-10 ikke gjelder — verken forskriften eller direktivet (art. 63, jf. art. 58 nr. 3 og 4) åpner for støtte her (KOFA 2022/549 avsnitt 23–27).
 
 **Avgrensning nedad: støttende virksomhet vs. gjennomføringsunderleverandør.** § 16-10 gjelder bare når leverandøren bruker en annen virksomhets kapasitet for å oppfylle *kvalifikasjonskrav*. Underleverandører som bare bistår ved kontraktsgjennomføring — uten å bidra til kvalifikasjonsoppfyllelse — faller utenfor § 16-10. For slike kreves ikke rådighetsbevis eller forpliktelseserklæring (KOFA 2024/1092 avsnitt 37–38, jf. 2023/852 avsnitt 28). Tilsvarende: et ordinært kjøp fra en leverandør (f.eks. traktor) er ikke det samme som å «støtte seg på» virksomhetens kapasitet (KOFA 2023/993 avsnitt 41).
@@ -50,6 +54,7 @@ Leverandøren kan støtte seg på enhver virksomhet, uavhengig av rettslig tilkn
 ### Dybdeanalyse
 
 → `docs/notat-grensedragning-16-10.md`
+→ `docs/notat-akkumulering-omsetning.md`
 
 ---
 

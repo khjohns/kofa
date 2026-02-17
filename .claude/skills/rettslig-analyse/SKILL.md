@@ -10,9 +10,38 @@ Prosjektet produserer rettslig analyse i to lag (se `docs/metode-rettslig-analys
 1. **Problemdrevne notater** (`docs/notat-*.md`) — dybdeanalyse av konkrete rettsspørsmål. Systematisk søk → kategorisering → analyse → funn. Selvstendig lesbare.
 2. **Lovkommentarer** (`docs/kommentar-foa-*.md`) — akkumulerende referansestruktur per bestemmelse. Oppdateres med funn fra notatene.
 
-## Prosess
+## Operasjonell arbeidsflyt
 
-Ved rettslig analyse: følg metodikken i `docs/metode-rettslig-analyse.md` (skjelett, to-fase søk, søkestrategi-seksjon, søkeeffektivitetstabell). Se `docs/rettskildeoversikt.md` for tilgjengelige kilder, MCP-verktøy og kjente hull. Oppdater metodedokumentet med nye observasjoner og søkeeffektivitetsrad etter hvert notat.
+Rettslig analyse utføres som en **batch-drevet prosess** med varige artefakter. Se `docs/metode-rettslig-analyse.md` for full metodebeskrivelse og `docs/rettskildeoversikt.md` for tilgjengelige kilder.
+
+### Forskningsmappe
+
+Opprett alltid `docs/research/{problem}/` med `00-plan.md` før søk starter. Alle mellomresultater skrives hit — dette er eksternt minne som overlever kontekstbytter.
+
+### Batches
+
+| Batch | Artefakt | Sjekkpunkt |
+|---|---|---|
+| 0. Scoping | `00-plan.md` | Bruker godkjenner retning (valgfritt) |
+| 1. Søk | `01-` til `04-` (subagenter + hovedkontekst) | — |
+| 2. Konsolidering | `05-kandidatliste.md` | **Stopp:** Bruker ser kandidatliste |
+| 3. Screening | `06-screening-*` (subagenter → resultater) | **Stopp:** Kontekst-sjekk |
+| 4. Syntese | `docs/notat-{problem}.md` | — |
+| 5. QA | Korreksjoner i notatet (ny kontekst) | **Stopp:** Bruker review |
+| 6. Deponering | `docs/kommentar-foa-*.md` | — |
+
+### Sjekkpunkt-protokoll
+
+- **Stopp ved sjekkpunkter** og avvent tilbakemelding.
+- **Stopp også mellom batches** hvis konteksten er merkbart forbrukt.
+- **Oppdater fremdrift** i `00-plan.md` ved hvert stopp — ny instans leser denne for å fortsette.
+
+### Nøkkelregler
+
+- Subagenter for søk (3–4 parallelle) og screening (2–4 parallelle, 3–5 saker per batch).
+- Alle søketyper inkl. vektorsøk kan delegeres til subagenter via MCP-verktøy (`semantisk_sok_kofa`, `finn_praksis`, `sok_avgjoerelse`) eller direkte SQL via Supabase MCP.
+- `06-screening-resultater.md` er kompresjonslaget — syntetiser alle batches hit. Ny instans trenger bare denne + plan.
+- Oppdater søkeeffektivitetstabellen i metodedokumentet etter hvert notat.
 
 ## Sitater og kildehenvisninger
 

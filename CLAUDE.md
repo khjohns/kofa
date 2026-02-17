@@ -31,6 +31,10 @@ kofa sync --forarbeider                  # PDF → kofa_forarbeider + referanser
 python scripts/embed_forarbeider.py --dry-run   # Vis antall og kostnad
 python scripts/embed_forarbeider.py              # Generer embeddings
 
+# Notion-sync (rettslige arbeidsdokumenter)
+./venv/bin/python scripts/sync_notion.py         # Sync endrede filer
+./venv/bin/python scripts/sync_notion.py --force # Sync alt (ignorer cache)
+
 # Kvalitet
 ./venv/bin/ruff check src/               # Linting
 ./venv/bin/pyright src/                   # Type-checking
