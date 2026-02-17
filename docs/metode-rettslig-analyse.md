@@ -207,7 +207,7 @@ Hovedkonteksten skriver den etter å ha lest batch-filene fra subagentene.
 ### Subagenter
 
 - **Søkefase (batch 1):** 3–4 parallelle subagenter — én per søketype (referansetabell, FTS, vektorsøk, rettskilder). Alle søketyper inkl. vektorsøk kan kjøres via MCP-verktøy (`semantisk_sok_kofa`, `finn_praksis`, `sok_avgjoerelse`) eller direkte SQL via Supabase MCP.
-- **Screeningfase (batch 3):** 2–4 parallelle subagenter, 3–5 saker per batch. Gi eksplisitt oppsummeringsmal.
+- **Screeningfase (batch 3):** 2–4 parallelle subagenter, 3–5 saker per batch. Bruk screening-malen fra `rettslig-analyse`-skillen i task-prompten — den sikrer at subagentene bevarer kvalifikasjoner i sitater og noterer motargumenter.
 - **Terskel:** 8+ kandidater → bruk subagenter. Under 5 → les direkte.
 - **Verktøy:** Subagenter har tilgang til Supabase MCP (SQL), KOFA MCP og Paragraf MCP.
 - **Kontekstgevinst:** Screening via subagenter sparer ~40% kontekst.

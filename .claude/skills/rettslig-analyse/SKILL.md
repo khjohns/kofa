@@ -44,6 +44,37 @@ Opprett alltid `docs/research/{problem}/` med `00-plan.md` før søk starter. Al
 - `06-screening-resultater.md` er kompresjonslaget — syntetiser alle batches hit. Ny instans trenger bare denne + plan.
 - Oppdater søkeeffektivitetstabellen i metodedokumentet etter hvert notat.
 
+## Subagent-instruksjoner
+
+Subagenter arver ikke denne skillen. Hovedkonteksten må inkludere relevante regler i task-prompten. Bruk malene under ved opprettelse av subagenter.
+
+### Screening-mal
+
+Kopier dette inn i task-prompten for screening-subagenter:
+
+```
+INSTRUKSJONER FOR SCREENING:
+
+For hver sak: les vurderingen med hent_avgjoerelse(sak_nr, seksjon="vurdering").
+Returner per sak:
+
+1. **Faktum** — kort om hva saken gjelder
+2. **Nemndas vurdering** — hva nemnda konkluderer og hvorfor
+3. **Rettssetning** — destillert regel som kan gjenbrukes
+4. **Nøkkelsitater** — ordrett fra teksten (avsnittsnr.). VIKTIG:
+   - Ikke trunker bort kvalifikasjoner. Hvis originalteksten har vilkår
+     som begrenser utsagnet, skal de med i sitatet.
+   - Ta med avsnittsnummer for hvert sitat.
+5. **Motargumenter/nyanser** — noter hvis nemnda drøfter motargumenter,
+   unntak, eller dissens. Disse er like viktige som hovedkonklusjonen.
+6. **Relevans** — A (direkte relevant) / B (utfyllende) / C (perifer).
+   Begrunn kort.
+```
+
+### Søk-mal
+
+Søk-subagenter trenger normalt bare oppgavebeskrivelse + tabellnavn/kolonner. Ingen spesielle kvalitetsregler.
+
 ## Sitater og kildehenvisninger
 
 - **Verifiser mot databasen.** Hent avgjørelsestekst med `hent_avgjoerelse` og EU-dommer med `hent_eu_dom`. Sammenlign ordrett.
