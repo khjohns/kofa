@@ -40,6 +40,7 @@ Opprett alltid `docs/research/{problem}/` med `00-plan.md` før søk starter. Al
 
 - Subagenter for søk (3–4 parallelle) og screening (2–4 parallelle, 3–5 saker per batch).
 - Alle søketyper inkl. vektorsøk kan delegeres til subagenter via MCP-verktøy (`semantisk_sok_kofa`, `finn_praksis`, `sok_avgjoerelse`) eller direkte SQL via Supabase MCP.
+- **Ved subagent-feil: STOPP.** Ikke utfør oppgaven selv fra hovedkonteksten — det spiser kontekst som trengs til syntese. Meld feilen til bruker.
 - `06-screening-resultater.md` er kompresjonslaget — syntetiser alle batches hit. Ny instans trenger bare denne + plan.
 - Oppdater søkeeffektivitetstabellen i metodedokumentet etter hvert notat.
 

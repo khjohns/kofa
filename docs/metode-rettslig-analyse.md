@@ -212,6 +212,7 @@ Hovedkonteksten skriver den etter å ha lest batch-filene fra subagentene.
 - **Verktøy:** Subagenter har tilgang til Supabase MCP (SQL), KOFA MCP og Paragraf MCP.
 - **Kontekstgevinst:** Screening via subagenter sparer ~40% kontekst.
 - **Filskriving:** Subagenter returnerer tekst til hovedkonteksten, som skriver artefaktene til disk.
+- **Ved subagent-feil: STOPP.** Hvis en subagent feiler (MCP-tilgang, timeout, etc.), *ikke* utfør oppgaven fra hovedkonteksten. Det spiser kontekst som trengs til syntese. Meld feilen til bruker og la dem velge: retry subagent, endre tilnærming, eller akseptere hullet.
 - **Kvalitetskontroll:** Stikkprøv oppsummeringer mot originaltekst, spesielt for nøkkelsitater.
 
 ## 3. Skjelett: Problemdrevet notat
