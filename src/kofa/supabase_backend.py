@@ -1124,11 +1124,11 @@ class KofaSupabaseBackend:
 
     @staticmethod
     def _deduplicate_law_refs(refs: list[dict]) -> list[dict]:
-        """Deduplicate law references within a case (keep first occurrence)."""
-        seen: set[tuple[str, str]] = set()
+        """Deduplicate law references per paragraph (one row per law+section+paragraph)."""
+        seen: set[tuple[str, str, int | None]] = set()
         unique = []
         for ref in refs:
-            key = (ref["law_name"], ref["law_section"])
+            key = (ref["law_name"], ref["law_section"], ref.get("paragraph_number"))
             if key not in seen:
                 seen.add(key)
                 unique.append(ref)
@@ -1136,38 +1136,40 @@ class KofaSupabaseBackend:
 
     @staticmethod
     def _deduplicate_case_refs(refs: list[dict]) -> list[dict]:
-        """Deduplicate case references within a case."""
-        seen: set[str] = set()
+        """Deduplicate case references per paragraph (one row per to_sak_nr+paragraph)."""
+        seen: set[tuple[str, int | None]] = set()
         unique = []
         for ref in refs:
-            if ref["to_sak_nr"] not in seen:
-                seen.add(ref["to_sak_nr"])
+            key = (ref["to_sak_nr"], ref.get("paragraph_number"))
+            if key not in seen:
+                seen.add(key)
                 unique.append(ref)
         return unique
 
     @staticmethod
     def _deduplicate_eu_refs(refs: list[dict]) -> list[dict]:
-        """Deduplicate EU case references within a case, keeping longest name."""
-        by_id: dict[str, dict] = {}
+        """Deduplicate EU refs per paragraph, keeping longest case name within each paragraph."""
+        by_key: dict[tuple[str, int | None], dict] = {}
         for ref in refs:
-            case_id = ref["eu_case_id"]
-            if case_id not in by_id:
-                by_id[case_id] = ref
+            key = (ref["eu_case_id"], ref.get("paragraph_number"))
+            if key not in by_key:
+                by_key[key] = ref
             else:
                 new_name = ref.get("eu_case_name") or ""
-                old_name = by_id[case_id].get("eu_case_name") or ""
+                old_name = by_key[key].get("eu_case_name") or ""
                 if len(new_name) > len(old_name):
-                    by_id[case_id]["eu_case_name"] = ref["eu_case_name"]
-        return list(by_id.values())
+                    by_key[key]["eu_case_name"] = ref["eu_case_name"]
+        return list(by_key.values())
 
     @staticmethod
     def _deduplicate_court_refs(refs: list[dict]) -> list[dict]:
-        """Deduplicate court references within a case."""
-        seen: set[str] = set()
+        """Deduplicate court references per paragraph (one row per case_id+paragraph)."""
+        seen: set[tuple[str, int | None]] = set()
         unique = []
         for ref in refs:
-            if ref["court_case_id"] not in seen:
-                seen.add(ref["court_case_id"])
+            key = (ref["court_case_id"], ref.get("paragraph_number"))
+            if key not in seen:
+                seen.add(key)
                 unique.append(ref)
         return unique
 
